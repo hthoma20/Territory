@@ -1,0 +1,8 @@
+.root {
+    -fx-font-family: monospace;
+}
+
+.border {
+    -fx-border-width: 1;
+    -fx-border-color: steelblue;
+}
