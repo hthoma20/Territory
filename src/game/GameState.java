@@ -1,6 +1,7 @@
 package game;
 
 
+import game.construction.Mine;
 import game.player.Player;
 import game.sprite.Sprite;
 
@@ -11,17 +12,25 @@ import java.util.stream.Collectors;
 public class GameState implements Copyable<GameState> {
     private int numPlayers;
     private Inventory[] playerInventories;
+    private List<Mine> mines;
 
     public GameState(int numPlayers){
         this.numPlayers = numPlayers;
         initInventories();
+        initMines();
     }
 
     public GameState(GameState src){
         this.numPlayers = src.numPlayers;
+
         this.playerInventories = new Inventory[src.playerInventories.length];
         for(int i = 0; i < playerInventories.length; i++){
             this.playerInventories[i] = src.playerInventories[i].copy();
+        }
+
+        this.mines = new ArrayList<>(src.mines.size());
+        for(Mine srcMine : src.mines){
+            this.mines.add(srcMine.copy());
         }
     }
 
@@ -38,6 +47,16 @@ public class GameState implements Copyable<GameState> {
         }
     }
 
+    private void initMines(){
+        this.mines = new ArrayList<>();
+
+        mines.add(new Mine(0, 0));
+
+        for(int i = 0; i < mines.size(); i++){
+            mines.get(i).setIndex(i);
+        }
+    }
+
     public List<Sprite> getAllSprites(){
         List<Sprite> sprites = new ArrayList<>();
 
@@ -45,6 +64,8 @@ public class GameState implements Copyable<GameState> {
             sprites.addAll(inventory.getUnits());
             sprites.addAll(inventory.getVillages());
         }
+
+        sprites.addAll(mines);
 
         return sprites;
     }

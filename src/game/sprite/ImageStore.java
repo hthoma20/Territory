@@ -2,6 +2,7 @@ package game.sprite;
 
 import game.GameColor;
 import game.GameState;
+import game.construction.Mine;
 import game.construction.Village;
 import game.unit.Miner;
 import javafx.scene.image.Image;
@@ -22,6 +23,7 @@ public class ImageStore {
 
         loadImage(Miner.class, GameColor.PURPLE, "units/Miner_purple.png");
         loadImage(Village.class, GameColor.PURPLE, "constructions/Village_purple.png");
+        loadImage(Mine.class, null, "constructions/Mine.png");
     }
 
     public Image imageFor(Sprite sprite, GameColor color){
