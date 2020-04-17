@@ -1,5 +1,8 @@
 package gui;
 
+import game.GameState;
+import game.Inventory;
+import game.construction.Village;
 import game.sprite.Sprite;
 import javafx.geometry.Point2D;
 import javafx.scene.canvas.Canvas;
@@ -8,41 +11,85 @@ import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 
+import javax.swing.*;
 import java.util.Collection;
 
 public class CanvasPainter {
     //coordinates of center of board
     private double centerX = 0, centerY = 0;
 
-    private Point2D circle = new Point2D(0, 0);
-
     //ratio of pixels per unit
     private double aspectRatio = 1;
+
+    private Controller controller;
 
     private Canvas canvas;
     private GraphicsContext gc;
     private Paint background;
 
-    public CanvasPainter(Canvas canvas){
+    //current items for convienience
+    private GameState currentState;
+    private Inventory currentInventory;
+
+    public CanvasPainter(Controller controller, Canvas canvas){
+        this.controller = controller;
         this.canvas = canvas;
         this.gc = canvas.getGraphicsContext2D();
         this.background = Color.AZURE;
     }
 
-    public void paintSprites(Collection<Sprite> sprites){
+    /**
+     * Paint the current state of the game
+     */
+    public void paint(){
+        this.currentState = controller.getCurrentState();
+        this.currentInventory = currentState.getPlayerInventory(controller.getPlayer());
+
+        //fill background
         gc.setFill(background);
         gc.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
 
+        //transform canvas so that game coordinates may be used
         gc.save();
-
         this.transformCanvas();
 
+        paintSprites(currentState.getAllSprites());
+        paintSelection();
+
+        gc.restore();
+    }
+
+    private void paintSprites(Collection<Sprite> sprites){
         for(Sprite sprite : sprites){
             Image image = sprite.getImage();
             gc.drawImage(image, sprite.getX(), sprite.getY());
         }
+    }
 
-        gc.restore();
+    /**
+     * Highlight selected items
+     */
+    public void paintSelection(){
+        double highlightMargin = 2;
+        double highlightOpacity = .2;
+
+        //highlight selected village
+        int villageIndex = controller.getSelectedVillageIndex();
+
+        if(villageIndex == -1){
+            return;
+        }
+
+        Village village = currentInventory.getVillage(villageIndex);
+
+        gc.setFill(new Color(0, 1, 0, highlightOpacity));
+
+        double x = village.getX() - highlightMargin;
+        double y = village.getY() - highlightMargin;
+        double width = village.getImage().getWidth() + 2*highlightMargin;
+        double height = village.getImage().getHeight() + 2*highlightMargin;
+
+        gc.fillRect(x, y, width, height);
     }
 
     /**

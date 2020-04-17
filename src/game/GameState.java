@@ -5,7 +5,8 @@ import game.player.Player;
 import game.sprite.Sprite;
 
 import java.util.ArrayList;
-import java.util.Collection;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class GameState implements Copyable<GameState> {
     private int numPlayers;
@@ -37,15 +38,20 @@ public class GameState implements Copyable<GameState> {
         }
     }
 
-    public Collection<Sprite> getAllSprites(){
-        Collection<Sprite> sprites = new ArrayList<>();
+    public List<Sprite> getAllSprites(){
+        List<Sprite> sprites = new ArrayList<>();
 
         for(Inventory inventory : playerInventories){
-            sprites.addAll(inventory.getAllUnits());
+            sprites.addAll(inventory.getUnits());
             sprites.addAll(inventory.getVillages());
         }
 
         return sprites;
+    }
+
+    public List<Sprite> getSpritesContaining(double x, double y){
+        return getAllSprites().stream().filter(sprite -> sprite.containsPoint(x, y))
+                .collect(Collectors.toList());
     }
 
     public Inventory getPlayerInventory(int playerIndex){

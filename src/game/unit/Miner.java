@@ -9,6 +9,6 @@ public class Miner extends Unit {
     }
 
     public Miner(Miner src){
-        super(src.owner, src.x, src.y);
+        super(src);
     }
 }

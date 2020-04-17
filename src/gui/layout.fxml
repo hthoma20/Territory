@@ -23,39 +23,41 @@
 
         <!-- Display info -->
         <GridPane styleClass="border" >
-            <Label text="Population:" GridPane.columnIndex="0" GridPane.rowIndex="0" />
-            <Label fx:id="populationLabel" text="150" GridPane.columnIndex="1" GridPane.rowIndex="0" />
-            <Label text="Stone:" GridPane.columnIndex="0" GridPane.rowIndex="1" />
-            <Label fx:id="stoneLabel" text="25" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-            <Label text="Gold:" GridPane.columnIndex="0" GridPane.rowIndex="2" />
-            <Label fx:id="goldLabel" text="0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+
+            <Label text="Stone:" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+            <Label fx:id="stoneLabel" text="25" GridPane.columnIndex="1" GridPane.rowIndex="0" />
+            <Label text="Gold:" GridPane.columnIndex="0" GridPane.rowIndex="1" />
+            <Label fx:id="goldLabel" text="0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
         </GridPane>
 
         <!-- Train units -->
         <GridPane styleClass="border" >
-            <Label text="Miner" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
-            <Button userData="1" text="+1" onAction="#trainMinerButtonClicked"
-                    GridPane.columnIndex="1" GridPane.rowIndex="0"/>
-            <Button userData="5" text="+5" onAction="#trainMinerButtonClicked"
-                    GridPane.columnIndex="2" GridPane.rowIndex="0"/>
-            <Button userData="10" text="+10" onAction="#trainMinerButtonClicked"
-                    GridPane.columnIndex="3" GridPane.rowIndex="0"/>
+            <Label fx:id="populationLabel" text="Village Population: 0" GridPane.columnIndex="0" GridPane.rowIndex="0"
+                                                GridPane.columnSpan="4" />
 
-            <Label text="Builder" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
-            <Button userData="1" text="+1" onAction="#trainBuilderButtonClicked"
+            <Label text="Miner" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
+            <Button userData="1" text="+1" onAction="#trainMinerButtonClicked"
                     GridPane.columnIndex="1" GridPane.rowIndex="1"/>
-            <Button userData="5" text="+5" onAction="#trainBuilderButtonClicked"
+            <Button userData="5" text="+5" onAction="#trainMinerButtonClicked"
                     GridPane.columnIndex="2" GridPane.rowIndex="1"/>
-            <Button userData="10" text="+10" onAction="#trainBuilderButtonClicked"
+            <Button userData="10" text="+10" onAction="#trainMinerButtonClicked"
                     GridPane.columnIndex="3" GridPane.rowIndex="1"/>
 
-            <Label text="Soldier" GridPane.columnIndex="0" GridPane.rowIndex="2"/>
-            <Button userData="1" text="+1" onAction="#trainSoldierButtonClicked"
+            <Label text="Builder" GridPane.columnIndex="0" GridPane.rowIndex="2"/>
+            <Button userData="1" text="+1" onAction="#trainBuilderButtonClicked"
                     GridPane.columnIndex="1" GridPane.rowIndex="2"/>
-            <Button userData="5" text="+5" onAction="#trainSoldierButtonClicked"
+            <Button userData="5" text="+5" onAction="#trainBuilderButtonClicked"
                     GridPane.columnIndex="2" GridPane.rowIndex="2"/>
-            <Button userData="10" text="+10" onAction="#trainSoldierButtonClicked"
+            <Button userData="10" text="+10" onAction="#trainBuilderButtonClicked"
                     GridPane.columnIndex="3" GridPane.rowIndex="2"/>
+
+            <Label text="Soldier" GridPane.columnIndex="0" GridPane.rowIndex="3"/>
+            <Button userData="1" text="+1" onAction="#trainSoldierButtonClicked"
+                    GridPane.columnIndex="1" GridPane.rowIndex="3"/>
+            <Button userData="5" text="+5" onAction="#trainSoldierButtonClicked"
+                    GridPane.columnIndex="2" GridPane.rowIndex="3"/>
+            <Button userData="10" text="+10" onAction="#trainSoldierButtonClicked"
+                    GridPane.columnIndex="3" GridPane.rowIndex="3"/>
 
         </GridPane>
 

@@ -9,6 +9,10 @@ public abstract class ImageSprite extends Sprite {
         super(x, y);
     }
 
+    public ImageSprite(ImageSprite src){
+        super(src);
+    }
+
     @Override
     public boolean containsPoint(double x, double y) {
         Image image = getImage();

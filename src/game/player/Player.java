@@ -1,13 +1,10 @@
 package game.player;
 
-import game.GameColor;
-import game.GameState;
-import game.Inventory;
-import game.LocalGame;
+import game.*;
 import game.action.GameAction;
 import game.info.GameInfo;
 
-public abstract class Player {
+public abstract class Player implements Indexable {
     private LocalGame game;
 
     protected int index = -1;

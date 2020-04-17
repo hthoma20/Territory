@@ -13,7 +13,7 @@ import javafx.stage.WindowEvent;
 
 public class Main extends Application {
 
-    private double initialWidth = 500, initialHeight = 300;
+    private double initialWidth = 605, initialHeight = 405;
 
     @Override
     public void start(Stage primaryStage) throws Exception{

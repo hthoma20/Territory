@@ -6,3 +6,7 @@
     -fx-border-width: 1;
     -fx-border-color: steelblue;
 }
+
+.noVillage {
+    -fx-color: red;
+}

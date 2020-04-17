@@ -39,18 +39,32 @@ public class Inventory implements Copyable<Inventory>{
 
     public void addUnit(Unit unit){
         this.units.add(unit);
+
+        //we just added this to the back of the list
+        unit.setIndex(this.units.size()-1);
     }
 
     public void addVillage(Village village){
         this.villages.add(village);
+
+        //we just added this to the back of the list
+        village.setIndex(this.villages.size()-1);
     }
 
-    public List<Unit> getAllUnits(){
+    public List<Unit> getUnits(){
         return units;
     }
 
     public List<Village> getVillages(){
         return villages;
+    }
+
+    public Unit getUnit(int index){
+        return units.get(index);
+    }
+
+    public Village getVillage(int index){
+        return villages.get(index);
     }
 
     /**
