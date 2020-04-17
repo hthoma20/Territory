@@ -115,7 +115,7 @@ public class LocalGame {
     //send the state to all players
     private void sendStateToPlayers() {
         for(Player player : this.players){
-            player.sendState(this.state);
+            player.sendState(this.state.copy());
         }
     }
 

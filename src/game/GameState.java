@@ -7,13 +7,26 @@ import game.sprite.Sprite;
 import java.util.ArrayList;
 import java.util.Collection;
 
-public class GameState {
+public class GameState implements Copyable<GameState> {
     private int numPlayers;
     private Inventory[] playerInventories;
 
     public GameState(int numPlayers){
         this.numPlayers = numPlayers;
         initInventories();
+    }
+
+    public GameState(GameState src){
+        this.numPlayers = src.numPlayers;
+        this.playerInventories = new Inventory[src.playerInventories.length];
+        for(int i = 0; i < playerInventories.length; i++){
+            this.playerInventories[i] = src.playerInventories[i].copy();
+        }
+    }
+
+    @Override
+    public GameState copy() {
+        return new GameState(this);
     }
 
     private void initInventories(){

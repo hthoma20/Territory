@@ -7,4 +7,8 @@ public class Miner extends Unit {
     public Miner(Player owner, double x, double y) {
         super(owner, x, y);
     }
+
+    public Miner(Miner src){
+        super(src.owner, src.x, src.y);
+    }
 }
