@@ -37,11 +37,11 @@ public abstract class Player {
     }
 
     public void sendState(GameState state){
-        new Thread(() -> this.receiveState(state));
+        new Thread(() -> this.receiveState(state)).start();
     }
 
     public void sendInfo(GameInfo info){
-        new Thread(() -> this.receiveInfo(info));
+        new Thread(() -> this.receiveInfo(info)).start();
     }
 
     protected abstract void receiveState(GameState state);

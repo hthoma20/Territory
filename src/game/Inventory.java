@@ -10,7 +10,7 @@ public class Inventory {
     private List<Unit> units = new ArrayList<>();
     private List<Village> villages = new ArrayList<>();
 
-    private int gold = 0;
+    private int gold = 50;
     private int stone = 0;
 
     public Inventory(){

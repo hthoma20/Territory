@@ -64,15 +64,15 @@ public class Controller {
     }
 
     public void updateDisplay(GameState state){
-        //paint the canvas
         Platform.runLater(()-> {
+            //paint the canvas
             canvasPainter.paintSprites(state.getAllSprites());
-        });
 
-        //update the labels
-        Inventory inventory = this.player.getInventory();
-        stoneLabel.setText(""+inventory.getStone());
-        stoneLabel.setText(""+inventory.getGold());
+            //update the labels
+            Inventory inventory = this.player.getInventory();
+            stoneLabel.setText(""+inventory.getStone());
+            goldLabel.setText(""+inventory.getGold());
+        });
     }
 
     @FXML
