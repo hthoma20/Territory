@@ -10,11 +10,10 @@ import game.info.GameInfo;
 public abstract class Player {
     private LocalGame game;
 
-    private int index = -1;
+    protected int index = -1;
 
     protected GameColor color;
 
-    protected Inventory inventory = new Inventory();
 
     public void setGame(LocalGame game){
         this.game = game;
@@ -32,8 +31,8 @@ public abstract class Player {
         return this.color;
     }
 
-    public Inventory getInventory(){
-        return this.inventory;
+    public int getIndex() {
+        return index;
     }
 
     public void sendState(GameState state){

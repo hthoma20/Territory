@@ -69,7 +69,7 @@ public class Controller {
             canvasPainter.paintSprites(state.getAllSprites());
 
             //update the labels
-            Inventory inventory = this.player.getInventory();
+            Inventory inventory = state.getPlayerInventory(this.player);
             stoneLabel.setText(""+inventory.getStone());
             goldLabel.setText(""+inventory.getGold());
         });

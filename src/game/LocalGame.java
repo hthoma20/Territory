@@ -21,6 +21,7 @@ public class LocalGame {
     private boolean gameLoopRunning = false;
 
     private GameState state;
+    private Player[] players;
 
     private ActionProcessor actionProcessor;
 
@@ -30,12 +31,29 @@ public class LocalGame {
 
     public LocalGame(Player... players){
 
-        for(Player player : players){
-            player.setGame(this);
+        initPlayers(players);
+
+        this.state = new GameState(players.length);
+        this.actionProcessor = new ActionProcessor(this);
+    }
+
+    /**
+     * Initialize the game with the given players
+     * @param players the array of players in this game
+     */
+    private void initPlayers(Player[] players){
+        if(players.length > GameColor.values().length){
+            throw new RuntimeException("Too many players.");
         }
 
-        this.state = new GameState(players);
-        this.actionProcessor = new ActionProcessor(this);
+        this.players = players;
+
+        GameColor[] colors = GameColor.values();
+        for(int i = 0; i < players.length; i++){
+            this.players[i].setGame(this);
+            this.players[i].setIndex(i);
+            this.players[i].setColor(colors[i]);
+        }
     }
 
     /**
@@ -96,7 +114,7 @@ public class LocalGame {
 
     //send the state to all players
     private void sendStateToPlayers() {
-        for(Player player : this.state.getPlayers()){
+        for(Player player : this.players){
             player.sendState(this.state);
         }
     }

@@ -21,11 +21,11 @@ public class ActionProcessor {
     }
 
     public void processCreateVillageAction(CreateVillageAction action){
-        Inventory inventory = action.getPlayer().getInventory();
+        Inventory inventory = game.getState().getPlayerInventory(action.getPlayer());
 
         if(inventory.takeGold(Village.getGoldPrice())){
             Village village = new Village(action.getPlayer(), action.getX(), action.getY());
-            action.getPlayer().getInventory().addVillage(village);
+            inventory.addVillage(village);
         }
         else{
             action.getPlayer().sendInfo(new InsufficientFundsInfo());
