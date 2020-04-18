@@ -125,6 +125,21 @@ public class Inventory implements Copyable<Inventory>{
     }
 
     /**
+     * Substract the stone and return true if possible,
+     * otherwise return false
+     * @return whether or not the stone was taken, equivalently, whether or not
+     *          the player has sufficient funds
+     */
+    public boolean takeStone(int stone){
+        if(this.stone < stone){
+            return false;
+        }
+
+        this.stone -= stone;
+        return true;
+    }
+
+    /**
      * Add stone to the inventory, does not subtract
      * @param stone the amount of stone to add
      * @return whether or not the stone was added, equivalently

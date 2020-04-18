@@ -1,17 +1,23 @@
 package game.unit;
 
 import game.Copyable;
+import game.RNG;
+import game.action.PlaceStoneAction;
 import game.action.TickAction;
 import game.construction.BuildSlot;
 import game.construction.Buildable;
 import game.construction.MineSlot;
 import game.player.Player;
 
+import java.util.Arrays;
 import java.util.List;
 
 public class Builder extends Unit {
 
     private BuildSlot target;
+
+    //probability to build at each tick, if in range of target
+    private static double buildProbability = .05;
 
     public Builder(Player owner, double x, double y) {
         super(owner, x, y);
@@ -63,6 +69,10 @@ public class Builder extends Unit {
 
     @Override
     protected List<TickAction> atTarget() {
-        return null;
+        if(!RNG.withProbability(buildProbability)){
+            return null;
+        }
+
+        return Arrays.asList(new PlaceStoneAction(owner, target.getBuildable(), 5));
     }
 }

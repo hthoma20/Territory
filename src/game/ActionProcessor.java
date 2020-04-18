@@ -1,6 +1,7 @@
 package game;
 
 import game.action.*;
+import game.construction.Buildable;
 import game.construction.Post;
 import game.construction.Village;
 import game.info.InsufficientFundsInfo;
@@ -46,8 +47,9 @@ public class ActionProcessor {
         }
         else if(action instanceof GiveStoneAction){
             processGiveStoneAction((GiveStoneAction) action);
-        }
-        else{
+        } else if (action instanceof PlaceStoneAction){
+            processPlaceStoneAction((PlaceStoneAction)action);
+        } else {
             System.out.println("Unprocessed action " + action.getClass().getName());
         }
     }
@@ -146,5 +148,19 @@ public class ActionProcessor {
 
     private void processGiveStoneAction(GiveStoneAction action) {
         currentInventory.giveStone(action.getCount());
+    }
+
+    private void processPlaceStoneAction(PlaceStoneAction action){
+
+        //stone that we can add is limited by how much stone we have
+        int stoneToAdd = Math.min(currentInventory.getStone(), action.getStone());
+
+        if(stoneToAdd < 1){
+            return;
+        }
+
+        int stoneAdded = action.getBuildable().giveStone(action.getStone());
+
+        currentInventory.takeStone(stoneAdded);
     }
 }
