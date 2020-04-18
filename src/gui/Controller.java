@@ -111,6 +111,13 @@ public class Controller {
     @FXML
     public void trainBuilderButtonClicked(ActionEvent actionEvent) {
         System.out.println("Builder " + userDataInt(actionEvent));
+        int numMiners = userDataInt(actionEvent);
+        //we cannot train miners from no village
+        if(selectedVillageIndex == -1){
+            return;
+        }
+
+        player.takeAction(new TrainBuildersAction(this.player, selectedVillageIndex, numMiners));
     }
 
     @FXML

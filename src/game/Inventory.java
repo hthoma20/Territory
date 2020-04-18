@@ -82,6 +82,10 @@ public class Inventory implements Copyable<Inventory>{
         return posts;
     }
 
+    public Post getPost(int index){
+        return posts.get(index);
+    }
+
     public Unit getUnit(int index){
         return units.get(index);
     }

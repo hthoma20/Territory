@@ -25,9 +25,9 @@ public class GUIPlayer extends Player {
     public void setGame(LocalGame game){
         super.setGame(game);
 
-//        takeAction(new CreateVillageAction(this, 100, 50));
-//        takeAction(new TrainMinersAction(this, 0, 1));
-//        takeAction(new CreatePostAction(this, -100, -50));
+        takeAction(new CreateVillageAction(this, 100, 50));
+        takeAction(new TrainMinersAction(this, 0, 1));
+        takeAction(new CreatePostAction(this, -100, -50));
     }
 
     @Override

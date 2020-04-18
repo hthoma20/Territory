@@ -1,11 +1,12 @@
 package game.construction;
 
 import game.Copyable;
+import game.unit.Target;
 
 /**
  * Represents a location that a Miner can mine from
  */
-public class MineSlot implements Copyable<MineSlot> {
+public class MineSlot implements Copyable<MineSlot>, Target {
     private Mine mine;
     private double x, y;
 
@@ -35,10 +36,12 @@ public class MineSlot implements Copyable<MineSlot> {
         return mine;
     }
 
+    @Override
     public double getX() {
         return x;
     }
 
+    @Override
     public double getY() {
         return y;
     }

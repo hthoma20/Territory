@@ -5,6 +5,7 @@ import game.GameState;
 import game.construction.Mine;
 import game.construction.Post;
 import game.construction.Village;
+import game.unit.Builder;
 import game.unit.Miner;
 import javafx.scene.image.Image;
 
@@ -24,6 +25,7 @@ public class ImageStore {
 
         //Units
         loadImage(Miner.class, GameColor.PURPLE, "units/Miner_purple.png");
+        loadImage(Builder.class, GameColor.PURPLE, "units/Builder_purple.png");
 
         //Villages
         loadImage(Village.class, GameColor.PURPLE, "constructions/Village_purple.png");
@@ -36,7 +38,14 @@ public class ImageStore {
     }
 
     public Image imageFor(Sprite sprite, GameColor color){
-        return imageMap.get(new ClassColorPair(sprite.getClass(), color));
+        Image image = imageMap.get(new ClassColorPair(sprite.getClass(), color));
+
+        if(image == null){
+            throw new RuntimeException(
+                    String.format("Could not find image for %s %s", color, sprite.getClass().getName()));
+        }
+
+        return image;
     }
 
     private void loadImage(Class clazz, GameColor color, String imagePath){

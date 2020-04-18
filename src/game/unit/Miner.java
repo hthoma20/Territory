@@ -8,6 +8,7 @@ import game.action.TickAction;
 import game.construction.Mine;
 import game.construction.MineSlot;
 import game.player.Player;
+import game.sprite.Sprite;
 import javafx.geometry.Point2D;
 
 import java.util.ArrayList;
@@ -17,12 +18,6 @@ public class Miner extends Unit {
 
     private MineSlot target;
 
-    //movement per tick
-    private static float speed = 2;
-
-    //distance from target to mine
-    private static float range = 2;
-
     //probability to mine at each tick, if in range of target
     private static double mineProbability = .05;
 
@@ -30,10 +25,20 @@ public class Miner extends Unit {
         super(owner, x, y);
     }
 
+    @Override
+    protected Target getTarget() {
+        return target;
+    }
+
     public Miner(Miner src){
         super(src);
 
         this.target = src.target;
+    }
+
+    @Override
+    public Miner copy(){
+        return new Miner(this);
     }
 
     public void setTarget(MineSlot target){
@@ -47,29 +52,9 @@ public class Miner extends Unit {
 
     @Override
     public List<TickAction> tick() {
-        if(target == null){
-            return null;
-        }
-
         findTarget();
 
-        Point2D location = new Point2D(x, y);
-        Point2D destination = new Point2D(target.getX(), target.getY());
-
-        Point2D distance = destination.subtract(location);
-
-        //if we are at the target
-        if(distance.magnitude() <= range){
-            return mineTarget();
-        }
-
-        //otherwise we are not at the target, move towards it
-        Point2D velocity = distance.normalize().multiply(speed);
-
-        x += velocity.getX();
-        y += velocity.getY();
-
-        return null;
+        return super.tick();
     }
 
     private void findTarget(){
@@ -84,7 +69,8 @@ public class Miner extends Unit {
         }
     }
 
-    private List<TickAction> mineTarget(){
+    @Override
+    protected List<TickAction> atTarget(){
         //choose whether to mine (actually whether not to mine)
         if(!RNG.withProbability(mineProbability)){
             return null;

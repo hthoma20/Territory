@@ -1,6 +1,8 @@
 package game.construction;
 
-public interface Buildable {
+import game.unit.Target;
+
+public interface Buildable extends Target {
 
     /**
      * @return whether or not the object is done being built
