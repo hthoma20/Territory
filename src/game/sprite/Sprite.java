@@ -2,7 +2,10 @@ package game.sprite;
 
 import game.LocalGame;
 import game.Tickable;
+import game.action.TickAction;
 import javafx.scene.image.Image;
+
+import java.util.List;
 
 public abstract class Sprite implements Tickable {
 
@@ -39,5 +42,7 @@ public abstract class Sprite implements Tickable {
     }
 
     @Override
-    public void tick(){}
+    public List<TickAction> tick(){
+        return null;
+    }
 }

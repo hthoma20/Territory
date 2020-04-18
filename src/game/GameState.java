@@ -66,12 +66,13 @@ public class GameState implements Copyable<GameState> {
     public List<Sprite> getAllSprites(){
         List<Sprite> sprites = new ArrayList<>();
 
-        for(Inventory inventory : playerInventories){
-            sprites.addAll(inventory.getUnits());
-            sprites.addAll(inventory.getVillages());
-        }
-
         sprites.addAll(mines);
+
+        for(Inventory inventory : playerInventories){
+            sprites.addAll(inventory.getPosts());
+            sprites.addAll(inventory.getVillages());
+            sprites.addAll(inventory.getUnits());
+        }
 
         return sprites;
     }

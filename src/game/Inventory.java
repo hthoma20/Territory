@@ -1,5 +1,6 @@
 package game;
 
+import game.construction.Post;
 import game.construction.Village;
 import game.unit.Unit;
 
@@ -10,6 +11,7 @@ import java.util.List;
 public class Inventory implements Copyable<Inventory>{
     private List<Unit> units = new ArrayList<>();
     private List<Village> villages = new ArrayList<>();
+    private List<Post> posts = new ArrayList<>();
 
     private int gold = 50;
     private int stone = 0;
@@ -27,6 +29,11 @@ public class Inventory implements Copyable<Inventory>{
         this.villages = new ArrayList<>(src.villages.size());
         for(Village srcVillage : src.villages){
             this.villages.add(srcVillage.copy());
+        }
+
+        this.posts = new ArrayList<>(src.posts.size());
+        for(Post srcPost : src.posts){
+            this.posts.add(srcPost.copy());
         }
 
         this.gold = src.gold;
@@ -56,12 +63,23 @@ public class Inventory implements Copyable<Inventory>{
         village.setIndex(this.villages.size()-1);
     }
 
+    public void addPost(Post post){
+        this.posts.add(post);
+
+        //we just added this to the back of the list
+        post.setIndex(this.posts.size()-1);
+    }
+
     public List<Unit> getUnits(){
         return units;
     }
 
     public List<Village> getVillages(){
         return villages;
+    }
+
+    public List<Post> getPosts(){
+        return posts;
     }
 
     public Unit getUnit(int index){
@@ -84,6 +102,36 @@ public class Inventory implements Copyable<Inventory>{
         }
 
         this.gold -= gold;
+        return true;
+    }
+
+    /**
+     * Add gold to the inventory, does not subtract
+     * @param gold the amount of gold to add
+     * @return whether or not the gold was added, equivalently
+     *         whether the argument was non-negative
+     */
+    public boolean giveGold(int gold){
+        if(gold < 0){
+            return false;
+        }
+
+        this.gold += gold;
+        return true;
+    }
+
+    /**
+     * Add stone to the inventory, does not subtract
+     * @param stone the amount of stone to add
+     * @return whether or not the stone was added, equivalently
+     *         whether the argument was non-negative
+     */
+    public boolean giveStone(int stone){
+        if(stone < 0){
+            return false;
+        }
+
+        this.stone += stone;
         return true;
     }
 

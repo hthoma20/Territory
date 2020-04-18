@@ -2,6 +2,7 @@ package game.player;
 
 import game.*;
 import game.action.GameAction;
+import game.action.PlayerAction;
 import game.info.GameInfo;
 
 public abstract class Player implements Indexable {
@@ -44,7 +45,7 @@ public abstract class Player implements Indexable {
 
     protected abstract void receiveInfo(GameInfo info);
 
-    public void takeAction(GameAction action){
+    public void takeAction(PlayerAction action){
         this.game.receiveAction(action);
     }
 }

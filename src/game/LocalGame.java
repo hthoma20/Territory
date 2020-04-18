@@ -2,6 +2,8 @@ package game;
 
 
 import game.action.GameAction;
+import game.action.PlayerAction;
+import game.action.TickAction;
 import game.player.Player;
 
 import javax.swing.*;
@@ -79,7 +81,10 @@ public class LocalGame {
 
             //advance the game
             for (Tickable tickable : state.getAllTickables()) {
-                tickable.tick();
+                List<TickAction> actionsToTake = tickable.tick();
+                if(actionsToTake != null){
+                    actionQueue.addAll(actionsToTake);
+                }
             }
 
             //send the players the new state
@@ -117,7 +122,7 @@ public class LocalGame {
         }
     }
 
-    public void receiveAction(GameAction action){
+    public void receiveAction(PlayerAction action){
         actionQueue.add(action);
     }
 

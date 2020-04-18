@@ -3,6 +3,7 @@ package game.sprite;
 import game.GameColor;
 import game.GameState;
 import game.construction.Mine;
+import game.construction.Post;
 import game.construction.Village;
 import game.unit.Miner;
 import javafx.scene.image.Image;
@@ -21,8 +22,16 @@ public class ImageStore {
     private ImageStore(){
         this.imageMap = new HashMap<>();
 
+        //Units
         loadImage(Miner.class, GameColor.PURPLE, "units/Miner_purple.png");
+
+        //Villages
         loadImage(Village.class, GameColor.PURPLE, "constructions/Village_purple.png");
+
+        //Posts
+        loadImage(Post.class, GameColor.PURPLE, "constructions/Post_purple.png");
+
+        //Mines
         loadImage(Mine.class, null, "constructions/Mine.png");
     }
 

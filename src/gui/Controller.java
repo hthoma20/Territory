@@ -2,9 +2,7 @@ package gui;
 
 import game.GameState;
 import game.Inventory;
-import game.action.CreateVillageAction;
-import game.action.GameAction;
-import game.action.TrainMinersAction;
+import game.action.*;
 import game.construction.Village;
 import game.player.GUIPlayer;
 import game.sprite.Sprite;
@@ -183,7 +181,7 @@ public class Controller {
             return;
         }
 
-        GameAction action = null;
+        PlayerAction action = null;
 
         switch (currentInteractMode) {
             case CREATE_VILLAGE:
@@ -191,6 +189,8 @@ public class Controller {
                 action = new CreateVillageAction(this.player, gamePoint.getX(), gamePoint.getY());
                 break;
             case CREATE_POST:
+                System.out.println("Place Village");
+                action = new CreatePostAction(this.player, gamePoint.getX(), gamePoint.getY());
                 break;
             case SCROLL:
                 break;

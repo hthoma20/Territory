@@ -27,4 +27,12 @@ public class RNG {
     public static double randDouble(double upper){
         return random.nextDouble()*upper;
     }
+
+    /**
+     * @param probability the probability of true
+     * @return true with the given probability, false otherwise
+     */
+    public static boolean withProbability(double probability){
+        return random.nextDouble() < probability;
+    }
 }

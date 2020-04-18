@@ -1,8 +1,7 @@
 package game;
 
-import game.action.CreateVillageAction;
-import game.action.GameAction;
-import game.action.TrainMinersAction;
+import game.action.*;
+import game.construction.Post;
 import game.construction.Village;
 import game.info.InsufficientFundsInfo;
 import game.player.Player;
@@ -35,18 +34,38 @@ public class ActionProcessor {
         if(action instanceof CreateVillageAction){
             processCreateVillageAction((CreateVillageAction)action);
         }
+        else if(action instanceof CreatePostAction){
+            processCreatePostAction((CreatePostAction)action);
+        }
         else if(action instanceof TrainMinersAction){
             processTrainMinersAction((TrainMinersAction)action);
+        }
+        else if(action instanceof GiveGoldAction){
+            processGiveGoldAction((GiveGoldAction)action);
+        }
+        else if(action instanceof GiveStoneAction){
+            processGiveStoneAction((GiveStoneAction) action);
         }
         else{
             System.out.println("Unprocessed action " + action.getClass().getName());
         }
     }
 
+
     private void processCreateVillageAction(CreateVillageAction action){
         if(currentInventory.takeGold(Village.getGoldPrice())){
             Village village = new Village(player, action.getX(), action.getY());
             currentInventory.addVillage(village);
+        }
+        else{
+            player.sendInfo(new InsufficientFundsInfo());
+        }
+    }
+
+    private void processCreatePostAction(CreatePostAction action){
+        if(currentInventory.takeGold(Post.getGoldPrice())){
+            Post post = new Post(player, action.getX(), action.getY());
+            currentInventory.addPost(post);
         }
         else{
             player.sendInfo(new InsufficientFundsInfo());
@@ -76,10 +95,18 @@ public class ActionProcessor {
             double y = village.getY() + RNG.randDouble(-unitSpawnJitter, unitSpawnJitter);
 
             Miner newMiner = new Miner(player, x, y);
-            newMiner.setTarget(currentState.getMine(0));
+            newMiner.setTarget(currentState.getMine(0).getOpenMineSlot());
 
             newMiners.add(newMiner);
         }
         currentInventory.addUnits(newMiners);
+    }
+
+    private void processGiveGoldAction(GiveGoldAction action) {
+        currentInventory.giveGold(action.getCount());
+    }
+
+    private void processGiveStoneAction(GiveStoneAction action) {
+        currentInventory.giveStone(action.getCount());
     }
 }

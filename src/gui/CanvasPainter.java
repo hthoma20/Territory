@@ -2,6 +2,7 @@ package gui;
 
 import game.GameState;
 import game.Inventory;
+import game.construction.Buildable;
 import game.construction.Village;
 import game.sprite.Sprite;
 import javafx.geometry.Point2D;
@@ -61,9 +62,31 @@ public class CanvasPainter {
 
     private void paintSprites(Collection<Sprite> sprites){
         for(Sprite sprite : sprites){
-            Image image = sprite.getImage();
-            gc.drawImage(image, sprite.getX(), sprite.getY());
+            if(sprite instanceof Buildable){
+                paintBuildable(sprite);
+            }
+            else{
+                paintSprite(sprite);
+            }
+
         }
+    }
+
+    private void paintBuildable(Sprite sprite){
+        boolean complete = ((Buildable)sprite).isComplete();
+
+        if(!complete){
+            gc.setGlobalAlpha(.5);
+        }
+
+        paintSprite(sprite);
+
+        gc.setGlobalAlpha(1);
+    }
+
+    private void paintSprite(Sprite sprite){
+        Image image = sprite.getImage();
+        gc.drawImage(image, sprite.getX(), sprite.getY());
     }
 
     /**

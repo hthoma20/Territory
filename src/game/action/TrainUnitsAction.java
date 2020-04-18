@@ -2,7 +2,7 @@ package game.action;
 
 import game.player.Player;
 
-public class TrainUnitsAction extends GameAction {
+public class TrainUnitsAction extends PlayerAction {
 
     private int villageIndex;
     private int numUnits;
