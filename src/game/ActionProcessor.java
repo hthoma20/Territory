@@ -133,7 +133,7 @@ public class ActionProcessor {
 
         if(action instanceof TrainBuildersAction){
             Builder newBuilder = new Builder(player, x, y);
-            newBuilder.setTarget(currentInventory.getPost(0));
+            newBuilder.setTarget(currentInventory.getPost(0).getOpenBuildSlot());
             return newBuilder;
         }
 

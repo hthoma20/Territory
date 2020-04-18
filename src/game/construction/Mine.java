@@ -84,7 +84,7 @@ public class Mine extends ImageSprite implements Copyable<Mine>, Indexable {
         MineSlot minSlot = slots[0];
 
         for(MineSlot slot : slots){
-            if(slot.getMinerCount() < minSlot.getMinerCount()){
+            if(slot.getUnitCount() < minSlot.getUnitCount()){
                 minSlot = slot;
             }
         }

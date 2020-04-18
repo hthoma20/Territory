@@ -43,7 +43,7 @@ public class Miner extends Unit {
 
     public void setTarget(MineSlot target){
         this.target = target;
-        target.incMinerCount();
+        target.incUnitCount();
     }
 
     public static int getGoldPrice(){
@@ -61,9 +61,9 @@ public class Miner extends Unit {
         //should we switch targets?
         MineSlot newTarget = target.getMine().getOpenMineSlot();
 
-        if(newTarget.getMinerCount()+1 < target.getMinerCount()){ //plus one to account for this miner
-            target.decMinerCount();
-            newTarget.incMinerCount();
+        if(newTarget.getUnitCount()+1 < target.getUnitCount()){ //plus one to account for this miner
+            target.decUnitCount();
+            newTarget.incUnitCount();
 
             target = newTarget;
         }

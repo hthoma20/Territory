@@ -4,6 +4,7 @@ import game.GameState;
 import game.LocalGame;
 import game.action.CreatePostAction;
 import game.action.CreateVillageAction;
+import game.action.TrainBuildersAction;
 import game.action.TrainMinersAction;
 import game.info.GameInfo;
 import game.info.InsufficientFundsInfo;
@@ -28,6 +29,7 @@ public class GUIPlayer extends Player {
         takeAction(new CreateVillageAction(this, 100, 50));
         takeAction(new TrainMinersAction(this, 0, 1));
         takeAction(new CreatePostAction(this, -100, -50));
+        takeAction(new TrainBuildersAction(this, 0, 1));
     }
 
     @Override

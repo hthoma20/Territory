@@ -2,23 +2,25 @@ package game.unit;
 
 import game.Copyable;
 import game.action.TickAction;
+import game.construction.BuildSlot;
 import game.construction.Buildable;
+import game.construction.MineSlot;
 import game.player.Player;
 
 import java.util.List;
 
 public class Builder extends Unit {
 
-    private Buildable target;
+    private BuildSlot target;
 
     public Builder(Player owner, double x, double y) {
         super(owner, x, y);
     }
 
-    public Builder(Unit src) {
+    public Builder(Builder src) {
         super(src);
 
-        this.target = target;
+        this.target = src.target;
     }
 
     @Override
@@ -30,8 +32,28 @@ public class Builder extends Unit {
         return 10;
     }
 
-    public void setTarget(Buildable target){
+    public void setTarget(BuildSlot target){
         this.target = target;
+        target.incUnitCount();
+    }
+
+    @Override
+    public List<TickAction> tick(){
+        findTarget();
+
+        return super.tick();
+    }
+
+    private void findTarget(){
+        //should we switch targets?
+        BuildSlot newTarget = target.getBuildable().getOpenBuildSlot();
+
+        if(newTarget.getUnitCount()+1 < target.getUnitCount()){ //plus one to account for this miner
+            target.decUnitCount();
+            newTarget.incUnitCount();
+
+            target = newTarget;
+        }
     }
 
     @Override

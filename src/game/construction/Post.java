@@ -6,23 +6,17 @@ import game.Indexable;
 import game.player.Player;
 import game.sprite.ImageSprite;
 
-public class Post extends ImageSprite implements Copyable<Post>, Indexable, Buildable {
-
-    private Player owner;
+public class Post extends Buildable implements Indexable {
 
     private int index = -1;
 
-    private int stoneNeeded = 100;
-
     public Post(Player owner, double x, double y){
-        super(x, y);
-        this.owner = owner;
+        super(owner, x, y);
     }
 
     public Post(Post src){
         super(src);
 
-        this.owner = src.owner;
         this.index = src.index;
     }
 
@@ -46,26 +40,16 @@ public class Post extends ImageSprite implements Copyable<Post>, Indexable, Buil
     }
 
     @Override
-    public GameColor getColor() {
-        return owner.getColor();
+    protected BuildSlot[] initSlots() {
+        double width = getImage().getWidth();
+        double height = getImage().getHeight();
+
+        return new BuildSlot[]{
+            new BuildSlot(this, x, y),
+            new BuildSlot(this, x + width, y),
+            new BuildSlot(this, x, y + height),
+            new BuildSlot(this, x + width, y + height),
+        };
     }
 
-    @Override
-    public boolean isComplete() {
-        return stoneNeeded <= 0;
-    }
-
-    @Override
-    public int giveStone(int stone) {
-        //if they are giving more stone than we need, don't take it all
-        if(stone > this.stoneNeeded){
-            int prevNeeded = this.stoneNeeded;
-            this.stoneNeeded = 0;
-            return prevNeeded;
-        }
-
-        //otherwise take all they give
-        this.stoneNeeded -= stone;
-        return stone;
-    }
 }
