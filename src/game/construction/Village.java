@@ -53,4 +53,19 @@ public class Village extends ImageSprite implements Copyable<Village>, Indexable
     public int getPopulation() {
         return population;
     }
+
+    /**
+     * Subtract population and return true if possible,
+     * otherwise return false
+     * @param population the population to subtract
+     * @return whether the population was taken, equivalently whether there was a sufficient population
+     */
+    public boolean takePopulation(int population){
+        if(this.population < population){
+            return false;
+        }
+
+        this.population -= population;
+        return true;
+    }
 }

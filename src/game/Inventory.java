@@ -4,6 +4,7 @@ import game.construction.Village;
 import game.unit.Unit;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 public class Inventory implements Copyable<Inventory>{
@@ -42,6 +43,10 @@ public class Inventory implements Copyable<Inventory>{
 
         //we just added this to the back of the list
         unit.setIndex(this.units.size()-1);
+    }
+
+    public void addUnits(Collection<Unit> units){
+        this.units.addAll(units);
     }
 
     public void addVillage(Village village){

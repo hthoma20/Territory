@@ -4,6 +4,7 @@ import game.GameState;
 import game.Inventory;
 import game.action.CreateVillageAction;
 import game.action.GameAction;
+import game.action.TrainMinersAction;
 import game.construction.Village;
 import game.player.GUIPlayer;
 import game.sprite.Sprite;
@@ -99,7 +100,14 @@ public class Controller {
 
     @FXML
     public void trainMinerButtonClicked(ActionEvent actionEvent) {
-        System.out.println("Miner " + userDataInt(actionEvent));
+        int numMiners = userDataInt(actionEvent);
+        System.out.println("Miner " + numMiners);
+        //we cannot train miners from no village
+        if(selectedVillageIndex == -1){
+            return;
+        }
+
+        player.takeAction(new TrainMinersAction(this.player, selectedVillageIndex, numMiners));
     }
 
     @FXML

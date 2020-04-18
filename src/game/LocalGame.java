@@ -25,8 +25,6 @@ public class LocalGame {
 
     private ActionProcessor actionProcessor;
 
-    private Collection<Tickable> tickables = new ArrayList<Tickable>();
-
     private final List<GameAction> actionQueue = new ArrayList<>();
 
     public LocalGame(Player... players){
@@ -80,7 +78,7 @@ public class LocalGame {
             long tickStart = System.currentTimeMillis();
 
             //advance the game
-            for (Tickable tickable : this.tickables) {
+            for (Tickable tickable : state.getAllTickables()) {
                 tickable.tick();
             }
 

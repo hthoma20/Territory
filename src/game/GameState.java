@@ -57,6 +57,12 @@ public class GameState implements Copyable<GameState> {
         }
     }
 
+    public List<Tickable> getAllTickables(){
+        List<Tickable> tickables = new ArrayList<>();
+        tickables.addAll(getAllSprites());
+        return tickables;
+    }
+
     public List<Sprite> getAllSprites(){
         List<Sprite> sprites = new ArrayList<>();
 
@@ -85,5 +91,9 @@ public class GameState implements Copyable<GameState> {
 
     public Inventory[] getPlayerInventories(){
         return playerInventories;
+    }
+
+    public Mine getMine(int index){
+        return mines.get(index);
     }
 }

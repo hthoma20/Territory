@@ -1,9 +1,10 @@
 package game.sprite;
 
 import game.LocalGame;
+import game.Tickable;
 import javafx.scene.image.Image;
 
-public abstract class Sprite {
+public abstract class Sprite implements Tickable {
 
     private int id;
 
@@ -36,4 +37,7 @@ public abstract class Sprite {
     public int getId() {
         return id;
     }
+
+    @Override
+    public void tick(){}
 }
