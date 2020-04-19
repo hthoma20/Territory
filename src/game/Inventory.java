@@ -13,8 +13,8 @@ public class Inventory implements Copyable<Inventory>{
     private List<Village> villages = new ArrayList<>();
     private List<Post> posts = new ArrayList<>();
 
-    private int gold = 50;
-    private int stone = 0;
+    private int gold = 1000;
+    private int stone = 1000;
 
     public Inventory(){
 

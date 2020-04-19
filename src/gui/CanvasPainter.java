@@ -5,12 +5,15 @@ import game.Inventory;
 import game.construction.Buildable;
 import game.construction.Village;
 import game.sprite.Sprite;
+import game.unit.Unit;
 import javafx.geometry.Point2D;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
+import javafx.scene.transform.Affine;
+import javafx.scene.transform.Rotate;
 
 import javax.swing.*;
 import java.util.Collection;
@@ -85,8 +88,15 @@ public class CanvasPainter {
     }
 
     private void paintSprite(Sprite sprite){
+        gc.save();
+
         Image image = sprite.getImage();
+
+        gc.transform(new Affine(new Rotate(sprite.getRotation(), sprite.getX(), sprite.getY())));
+
         gc.drawImage(image, sprite.getX(), sprite.getY());
+
+        gc.restore();
     }
 
     /**

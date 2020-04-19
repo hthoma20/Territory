@@ -13,6 +13,8 @@ public abstract class Sprite implements Tickable {
 
     protected double x, y;
 
+    protected double rotation = 0;
+
     public Sprite(double x, double y){
         this.id = LocalGame.getUniqueId();
         this.x = x;
@@ -23,6 +25,7 @@ public abstract class Sprite implements Tickable {
         this.id = src.id;
         this.x = src.x;
         this.y = src.y;
+        this.rotation = src.rotation;
     }
 
     public abstract boolean containsPoint(double x, double y);
@@ -35,6 +38,10 @@ public abstract class Sprite implements Tickable {
 
     public double getY() {
         return y;
+    }
+
+    public double getRotation() {
+        return rotation;
     }
 
     public int getId() {

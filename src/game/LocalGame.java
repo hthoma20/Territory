@@ -18,7 +18,7 @@ import java.util.List;
 public class LocalGame {
     private static int nextId = 0;
 
-    private int tickSpeed = 25;
+    private int tickSpeed = 1000/40; // millis/fps
 
     private boolean gameLoopRunning = false;
 
