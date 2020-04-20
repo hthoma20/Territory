@@ -3,6 +3,7 @@ package game.sprite;
 import game.LocalGame;
 import game.Tickable;
 import game.action.TickAction;
+import javafx.geometry.Point2D;
 import javafx.scene.image.Image;
 
 import java.util.List;
@@ -51,5 +52,19 @@ public abstract class Sprite implements Tickable {
     @Override
     public List<TickAction> tick(){
         return null;
+    }
+
+    /**
+     * @param vector the vector to get the angle of
+     * @return the rotation angle represented by the given vector
+     */
+    public static double rotation(Point2D vector){
+        double rotation = vector.angle(1, 0);
+
+        if(vector.getY() < 0){
+            rotation = 360 - rotation;
+        }
+
+        return rotation;
     }
 }

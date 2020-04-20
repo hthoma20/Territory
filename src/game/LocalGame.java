@@ -96,6 +96,7 @@ public class LocalGame {
             //sleep for the duration of the tick time
             long tickEnd = System.currentTimeMillis();
             long sleepTime = tickStart + tickSpeed - tickEnd;
+
             if(sleepTime > 0){
                 sleep(sleepTime);
             }

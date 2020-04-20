@@ -2,13 +2,8 @@ package game.player;
 
 import game.GameState;
 import game.LocalGame;
-import game.action.CreatePostAction;
-import game.action.CreateVillageAction;
-import game.action.TrainBuildersAction;
-import game.action.TrainMinersAction;
+import game.action.*;
 import game.info.GameInfo;
-import game.info.InsufficientFundsInfo;
-import game.unit.Miner;
 import gui.Controller;
 
 public class GUIPlayer extends Player {
@@ -26,10 +21,10 @@ public class GUIPlayer extends Player {
     public void setGame(LocalGame game){
         super.setGame(game);
 
-        takeAction(new CreateVillageAction(this, 100, 50));
-        takeAction(new TrainMinersAction(this, 0, 1));
+
         takeAction(new CreatePostAction(this, -100, -50));
-        takeAction(new TrainBuildersAction(this, 0, 1));
+        takeAction(new CreatePostAction(this, 100, -50));
+        takeAction(new CreateVillageAction(this, 100, 100));
     }
 
     @Override
@@ -39,11 +34,6 @@ public class GUIPlayer extends Player {
 
     @Override
     public void receiveInfo(GameInfo info){
-        if(info instanceof InsufficientFundsInfo){
-            System.out.println("Insufficient funds");
-        }
-        else{
-            System.out.println("Unhandled info");
-        }
+        System.out.println(info);
     }
 }

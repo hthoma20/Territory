@@ -5,6 +5,7 @@ import game.GameState;
 import game.construction.Mine;
 import game.construction.Post;
 import game.construction.Village;
+import game.construction.WallSegment;
 import game.unit.Builder;
 import game.unit.Miner;
 import javafx.scene.image.Image;
@@ -33,30 +34,37 @@ public class ImageStore {
         //Posts
         loadImage(Post.class, GameColor.PURPLE, "constructions/Post_purple.png");
 
+        //Walls
+        loadImage(WallSegment.class, GameColor.PURPLE, "constructions/Wall_purple.png");
+
         //Mines
         loadImage(Mine.class, null, "constructions/Mine.png");
     }
 
-    public Image imageFor(Sprite sprite, GameColor color){
-        Image image = imageMap.get(new ClassColorPair(sprite.getClass(), color));
+    public Image imageFor(Class<? extends Sprite> clazz, GameColor color){
+        Image image = imageMap.get(new ClassColorPair(clazz, color));
 
         if(image == null){
             throw new RuntimeException(
-                    String.format("Could not find image for %s %s", color, sprite.getClass().getName()));
+                    String.format("Could not find image for %s %s", color, clazz.getName()));
         }
 
         return image;
     }
 
-    private void loadImage(Class clazz, GameColor color, String imagePath){
+    public Image imageFor(Sprite sprite, GameColor color){
+        return imageFor(sprite.getClass(), color);
+    }
+
+    private void loadImage(Class<? extends Sprite> clazz, GameColor color, String imagePath){
         this.imageMap.put(new ClassColorPair(clazz, color), new Image(imagePath));
     }
 
     private static class ClassColorPair{
-        Class clazz;
+        Class<? extends Sprite> clazz;
         GameColor color;
 
-        public ClassColorPair(Class clazz, GameColor color){
+        public ClassColorPair(Class<? extends Sprite> clazz, GameColor color){
             this.clazz = clazz;
             this.color = color;
         }

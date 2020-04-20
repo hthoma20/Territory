@@ -3,9 +3,12 @@ package gui;
 import game.GameState;
 import game.Inventory;
 import game.action.*;
+import game.construction.BuildProject;
+import game.construction.Post;
 import game.construction.Village;
 import game.player.GUIPlayer;
 import game.sprite.Sprite;
+import game.unit.Unit;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
@@ -18,6 +21,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.Pane;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -35,6 +39,8 @@ public class Controller {
     private InteractMode currentInteractMode;
     private double prevMouseX, prevMouseY;
     private int selectedVillageIndex = -1;
+    private int selectedPostIndex = -1;
+    private ArrayList<Integer> selectedUnitIndices = new ArrayList<>();
 
     private GUIPlayer player;
 
@@ -221,17 +227,70 @@ public class Controller {
             System.out.println("Multiple sprites clicked, only one handled");
         }
 
-        Sprite sprite = sprites.get(0);
+        Sprite sprite = sprites.get(sprites.size()-1);
 
         if(sprite instanceof Village){
+            deselectAll();
             selectedVillageIndex = ((Village) sprite).getIndex();
             System.out.println("Selected village " + selectedVillageIndex);
         }
+        else if(sprite instanceof Post){
+            postClicked((Post) sprite);
+        }
+        else if(sprite instanceof Unit){
+            unitClicked((Unit)sprite);
+        }
+    }
+
+    private void postClicked(Post post){
+        //if units are selected, send them here
+        if(selectedUnitIndices.size() > 0){
+            directBuildersTo(post);
+            deselectAll();
+        }
+        //if no post is selected, select this one
+        else if(selectedPostIndex == -1){
+            deselectAll();
+            selectedPostIndex = post.getIndex();
+            System.out.println("Selected post " + selectedPostIndex);
+        }
+        //if the selected post was clicked
+        else if(selectedPostIndex == post.getIndex()){
+            deselectAll();
+        }
+        //otherwise, build a wall between them
+        else{
+            System.out.println(String.format("Creating wall %d %d", selectedPostIndex, post.getIndex()));
+            this.player.takeAction(new CreateWallAction(player, selectedPostIndex, post.getIndex()));
+        }
+
+    }
+
+    /**
+     * Send the selected units to the given project
+     * @param project the project to send builders to
+     */
+    private void directBuildersTo(BuildProject project){
+        for(int builderIndex : selectedUnitIndices){
+            player.takeAction(new DirectBuilderAction(player, builderIndex, project));
+        }
+    }
+
+    private void unitClicked(Unit unit){
+        deselectNonUnits();
+        selectedUnitIndices.add(unit.getIndex());
     }
 
     //deselect all selected objects
     private void deselectAll(){
+        deselectNonUnits();
+        selectedUnitIndices.clear();
+    }
+
+    //deselect everything execpt for units
+    private void deselectNonUnits(){
         selectedVillageIndex = -1;
+        selectedPostIndex = -1;
     }
 
     public GameState getCurrentState() {
@@ -240,6 +299,14 @@ public class Controller {
 
     public int getSelectedVillageIndex() {
         return selectedVillageIndex;
+    }
+
+    public int getSelectedPostIndex() {
+        return selectedPostIndex;
+    }
+
+    public ArrayList<Integer> getSelectedUnitIndices() {
+        return selectedUnitIndices;
     }
 
     public GUIPlayer getPlayer() {

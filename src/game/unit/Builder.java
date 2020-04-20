@@ -4,6 +4,7 @@ import game.Copyable;
 import game.RNG;
 import game.action.PlaceStoneAction;
 import game.action.TickAction;
+import game.construction.BuildProject;
 import game.construction.BuildSlot;
 import game.construction.Buildable;
 import game.construction.MineSlot;
@@ -15,6 +16,8 @@ import java.util.List;
 public class Builder extends Unit {
 
     private BuildSlot target;
+
+    private BuildProject project;
 
     //probability to build at each tick, if in range of target
     private static double buildProbability = .05;
@@ -41,6 +44,12 @@ public class Builder extends Unit {
     public void setTarget(BuildSlot target){
         this.target = target;
         target.incUnitCount();
+    }
+
+    public void setProject(BuildProject project){
+        this.project = project;
+
+        setTarget(project.getOpenBuildSlot());
     }
 
     @Override

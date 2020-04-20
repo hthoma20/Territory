@@ -6,7 +6,7 @@ import game.Indexable;
 import game.player.Player;
 import game.sprite.ImageSprite;
 
-public class Post extends Buildable implements Indexable {
+public class Post extends Buildable implements Indexable, BuildProject {
 
     private int index = -1;
 

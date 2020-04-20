@@ -2,10 +2,12 @@ package game;
 
 
 import game.construction.Mine;
+import game.construction.Wall;
 import game.player.Player;
 import game.sprite.Sprite;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -69,6 +71,10 @@ public class GameState implements Copyable<GameState> {
         sprites.addAll(mines);
 
         for(Inventory inventory : playerInventories){
+            for(Wall wall : inventory.getWalls()){
+                sprites.addAll(Arrays.asList(wall.getSegments()));
+            }
+
             sprites.addAll(inventory.getPosts());
             sprites.addAll(inventory.getVillages());
             sprites.addAll(inventory.getUnits());

@@ -1,9 +1,12 @@
 package game;
 
 import game.action.*;
-import game.construction.Buildable;
+import game.construction.BuildProject;
 import game.construction.Post;
 import game.construction.Village;
+import game.construction.Wall;
+import game.info.IllegalActionInfo;
+import game.info.IllegalWallInfo;
 import game.info.InsufficientFundsInfo;
 import game.player.Player;
 import game.unit.Builder;
@@ -33,23 +36,36 @@ public class ActionProcessor {
         player = action.getPlayer();
         currentInventory = currentState.getPlayerInventory(player);
 
+        //Player actions
         if(action instanceof CreateVillageAction){
             processCreateVillageAction((CreateVillageAction)action);
         }
         else if(action instanceof CreatePostAction){
             processCreatePostAction((CreatePostAction)action);
         }
+        else if(action instanceof CreateWallAction){
+            processCreateWallAction((CreateWallAction)action);
+        }
         else if(action instanceof TrainUnitsAction){
             processTrainUnitsAction((TrainUnitsAction)action);
         }
+        else if(action instanceof DirectUnitAction){
+            processDirectUnitAction((DirectUnitAction)action);
+        }
+
+        //Tick actions
         else if(action instanceof GiveGoldAction){
             processGiveGoldAction((GiveGoldAction)action);
         }
         else if(action instanceof GiveStoneAction){
             processGiveStoneAction((GiveStoneAction) action);
-        } else if (action instanceof PlaceStoneAction){
+        }
+        else if (action instanceof PlaceStoneAction){
             processPlaceStoneAction((PlaceStoneAction)action);
-        } else {
+        }
+
+        //Unhandled action
+        else {
             System.out.println("Unprocessed action " + action.getClass().getName());
         }
     }
@@ -73,6 +89,32 @@ public class ActionProcessor {
         else{
             player.sendInfo(new InsufficientFundsInfo());
         }
+    }
+
+    private void processCreateWallAction(CreateWallAction action){
+
+        if(currentInventory.getGold() < Wall.getGoldPrice()){
+            player.sendInfo(new InsufficientFundsInfo());
+            return;
+        }
+
+        Post post1 = currentInventory.getPost(action.getPost1Index());
+        Post post2 = currentInventory.getPost(action.getPost2Index());
+
+        //posts must be complete to build walls on
+        if(!post1.isComplete() || !post2.isComplete()){
+            player.sendInfo(IllegalWallInfo.POST_NOT_BUILT);
+            return;
+        }
+
+        if(action.getPost1Index() == action.getPost2Index()){
+            player.sendInfo(IllegalWallInfo.DUPLICATE_POST);
+            return;
+        }
+
+        //if we get here, the wall is legal
+        Wall wall = new Wall(player, post1, post2);
+        currentInventory.addWall(wall);
     }
 
     private void processTrainUnitsAction(TrainUnitsAction action){
@@ -140,6 +182,42 @@ public class ActionProcessor {
         }
 
         throw new RuntimeException("Unknown unit type to create");
+    }
+
+    private void processDirectUnitAction(DirectUnitAction action){
+        Unit unit = currentInventory.getUnit(action.getUnitIndex());
+
+        if(action instanceof DirectBuilderAction){
+            processDirectBuilderAction((DirectBuilderAction)action);
+        }
+    }
+
+    private void processDirectBuilderAction(DirectBuilderAction action){
+        //unit must be a builder
+        if(!(currentInventory.getUnit(action.getUnitIndex()) instanceof Builder)){
+            player.sendInfo(new IllegalActionInfo("Direct builder but unit not builder"));
+            return;
+        }
+
+        Builder builder = (Builder)currentInventory.getUnit(action.getUnitIndex());
+
+        //find the project
+        BuildProject project = null;
+        Class<? extends BuildProject> projectType = action.getType();
+
+        if(projectType.equals(Wall.class)){
+            project = currentInventory.getWall(action.getTargetIndex());
+        }
+        else if(projectType.equals(Post.class)){
+            project = currentInventory.getPost(action.getTargetIndex());
+        }
+
+        if(project == null){
+            player.sendInfo(new IllegalActionInfo("Could not locate build project"));
+            return;
+        }
+
+        builder.setProject(project);
     }
 
     private void processGiveGoldAction(GiveGoldAction action) {

@@ -72,11 +72,7 @@ public abstract class Unit extends ImageSprite implements Copyable<Unit>, Indexa
         x += velocity.getX();
         y += velocity.getY();
 
-        this.rotation = velocity.angle(1, 0);
-
-        if(velocity.getY() < 0){
-            this.rotation = 360 - this.rotation;
-        }
+        this.rotation = Sprite.rotation(velocity);
 
         return null;
     }

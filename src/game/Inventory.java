@@ -2,6 +2,7 @@ package game;
 
 import game.construction.Post;
 import game.construction.Village;
+import game.construction.Wall;
 import game.unit.Unit;
 
 import java.util.ArrayList;
@@ -12,6 +13,7 @@ public class Inventory implements Copyable<Inventory>{
     private List<Unit> units = new ArrayList<>();
     private List<Village> villages = new ArrayList<>();
     private List<Post> posts = new ArrayList<>();
+    private List<Wall> walls = new ArrayList<>();
 
     private int gold = 1000;
     private int stone = 1000;
@@ -36,6 +38,11 @@ public class Inventory implements Copyable<Inventory>{
             this.posts.add(srcPost.copy());
         }
 
+        this.walls = new ArrayList<>(src.walls.size());
+        for(Wall srcWall : src.walls){
+            this.walls.add(srcWall.copy());
+        }
+
         this.gold = src.gold;
         this.stone = src.stone;
     }
@@ -53,7 +60,9 @@ public class Inventory implements Copyable<Inventory>{
     }
 
     public void addUnits(Collection<Unit> units){
-        this.units.addAll(units);
+        for(Unit unit : units){
+            addUnit(unit);
+        }
     }
 
     public void addVillage(Village village){
@@ -70,12 +79,27 @@ public class Inventory implements Copyable<Inventory>{
         post.setIndex(this.posts.size()-1);
     }
 
+    public void addWall(Wall wall){
+        this.walls.add(wall);
+
+        //we just added this to the back of the list
+        wall.setIndex(this.walls.size()-1);
+    }
+
     public List<Unit> getUnits(){
         return units;
     }
 
+    public Unit getUnit(int index){
+        return units.get(index);
+    }
+
     public List<Village> getVillages(){
         return villages;
+    }
+
+    public Village getVillage(int index){
+        return villages.get(index);
     }
 
     public List<Post> getPosts(){
@@ -86,12 +110,12 @@ public class Inventory implements Copyable<Inventory>{
         return posts.get(index);
     }
 
-    public Unit getUnit(int index){
-        return units.get(index);
+    public List<Wall> getWalls(){
+        return walls;
     }
 
-    public Village getVillage(int index){
-        return villages.get(index);
+    public Wall getWall(int index){
+        return walls.get(index);
     }
 
     /**

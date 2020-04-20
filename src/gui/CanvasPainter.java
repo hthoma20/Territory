@@ -16,6 +16,7 @@ import javafx.scene.transform.Affine;
 import javafx.scene.transform.Rotate;
 
 import javax.swing.*;
+import java.util.ArrayList;
 import java.util.Collection;
 
 public class CanvasPainter {
@@ -34,6 +35,10 @@ public class CanvasPainter {
     //current items for convienience
     private GameState currentState;
     private Inventory currentInventory;
+
+    //configurations for highlighting things
+    private double highlightMargin = 2;
+    private double highlightOpacity = .2;
 
     public CanvasPainter(Controller controller, Canvas canvas){
         this.controller = controller;
@@ -92,7 +97,10 @@ public class CanvasPainter {
 
         Image image = sprite.getImage();
 
-        gc.transform(new Affine(new Rotate(sprite.getRotation(), sprite.getX(), sprite.getY())));
+        double centerX = sprite.getX() + image.getWidth()/2;
+        double centerY = sprite.getY() + image.getHeight()/2;
+
+        gc.transform(new Affine(new Rotate(sprite.getRotation(), centerX, centerY)));
 
         gc.drawImage(image, sprite.getX(), sprite.getY());
 
@@ -103,24 +111,30 @@ public class CanvasPainter {
      * Highlight selected items
      */
     public void paintSelection(){
-        double highlightMargin = 2;
-        double highlightOpacity = .2;
 
-        //highlight selected village
         int villageIndex = controller.getSelectedVillageIndex();
-
-        if(villageIndex == -1){
-            return;
-        }
-
-        Village village = currentInventory.getVillage(villageIndex);
+        int postIndex = controller.getSelectedPostIndex();
+        ArrayList<Integer> unitIndices = controller.getSelectedUnitIndices();
 
         gc.setFill(new Color(0, 1, 0, highlightOpacity));
 
-        double x = village.getX() - highlightMargin;
-        double y = village.getY() - highlightMargin;
-        double width = village.getImage().getWidth() + 2*highlightMargin;
-        double height = village.getImage().getHeight() + 2*highlightMargin;
+        if(villageIndex != -1){
+            highlightSprite(currentInventory.getVillage(villageIndex));
+        }
+        if(postIndex != -1){
+            highlightSprite(currentInventory.getPost(postIndex));
+        }
+
+        for(int index : unitIndices){
+            highlightSprite(currentInventory.getUnit(index));
+        }
+    }
+
+    public void highlightSprite(Sprite sprite){
+        double x = sprite.getX() - highlightMargin;
+        double y = sprite.getY() - highlightMargin;
+        double width = sprite.getImage().getWidth() + 2*highlightMargin;
+        double height = sprite.getImage().getHeight() + 2*highlightMargin;
 
         gc.fillRect(x, y, width, height);
     }

@@ -38,17 +38,6 @@ public class Main extends Application {
         LocalGame game = new LocalGame(guiPlayer);
 
         game.start();
-
-        Point2D ref = new Point2D(1, 0);
-
-        System.out.println(ref.angle(1,1));
-        System.out.println(ref.angle(0,1));
-        System.out.println(ref.angle(-1,1));
-        System.out.println(ref.angle(-1,0));
-        System.out.println(ref.angle(-1,-1));
-        System.out.println(ref.angle(0,-1));
-        System.out.println(ref.angle(1,-1));
-        System.out.println(ref.angle(1,0));
     }
 
     private void exitApplication(WindowEvent windowEvent) {
