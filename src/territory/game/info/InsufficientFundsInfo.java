@@ -1,6 +1,8 @@
 package territory.game.info;
 
-public class InsufficientFundsInfo extends GameInfo {
+import java.io.Serializable;
+
+public class InsufficientFundsInfo extends GameInfo implements Serializable {
     public InsufficientFundsInfo() {
         super("Insufficient funds");
     }

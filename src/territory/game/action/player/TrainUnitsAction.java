@@ -1,14 +1,17 @@
-package territory.game.action;
+package territory.game.action.player;
 
+import territory.game.GameColor;
 import territory.game.player.Player;
 
-public class TrainUnitsAction extends PlayerAction {
+import java.io.Serializable;
+
+public class TrainUnitsAction extends PlayerAction implements Serializable {
 
     private int villageIndex;
     private int numUnits;
 
-    public TrainUnitsAction(Player player, int villageIndex, int numUnits) {
-        super(player);
+    public TrainUnitsAction(GameColor color, int villageIndex, int numUnits) {
+        super(color);
 
         this.villageIndex = villageIndex;
         this.numUnits = numUnits;

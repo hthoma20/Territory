@@ -1,6 +1,6 @@
 package territory.game;
 
-import territory.game.action.TickAction;
+import territory.game.action.tick.TickAction;
 
 import java.util.List;
 

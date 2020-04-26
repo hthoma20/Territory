@@ -3,17 +3,17 @@ package territory.game.unit;
 import territory.game.Copyable;
 import territory.game.GameColor;
 import territory.game.Indexable;
-import territory.game.action.TickAction;
-import territory.game.player.Player;
+import territory.game.action.tick.TickAction;
 import territory.game.sprite.ImageSprite;
 import territory.game.sprite.Sprite;
 import javafx.geometry.Point2D;
 
+import java.io.Serializable;
 import java.util.List;
 
-public abstract class Unit extends ImageSprite implements Copyable<Unit>, Indexable {
+public abstract class Unit extends ImageSprite implements Copyable<Unit>, Indexable, Serializable {
 
-    protected Player owner;
+    protected GameColor color;
 
     private int index = -1;
 
@@ -23,15 +23,15 @@ public abstract class Unit extends ImageSprite implements Copyable<Unit>, Indexa
     //distance from target to take action
     protected float range = 2;
 
-    public Unit(Player owner, double x, double y) {
+    public Unit(GameColor color, double x, double y) {
         super(x, y);
-        this.owner = owner;
+        this.color = color;
     }
 
     public Unit(Unit src){
         super(src);
 
-        this.owner = src.owner;
+        this.color = src.color;
         this.index = src.index;
         this.speed = src.speed;
         this.range = src.range;
@@ -79,7 +79,7 @@ public abstract class Unit extends ImageSprite implements Copyable<Unit>, Indexa
 
     @Override
     public GameColor getColor() {
-        return owner.getColor();
+        return color;
     }
 
     @Override

@@ -2,13 +2,14 @@ package territory.game.sprite;
 
 import territory.game.LocalGame;
 import territory.game.Tickable;
-import territory.game.action.TickAction;
+import territory.game.action.tick.TickAction;
 import javafx.geometry.Point2D;
 import javafx.scene.image.Image;
 
+import java.io.Serializable;
 import java.util.List;
 
-public abstract class Sprite implements Tickable {
+public abstract class Sprite implements Tickable, Serializable {
 
     private int id;
 

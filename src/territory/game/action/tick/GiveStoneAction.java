@@ -1,12 +1,13 @@
-package territory.game.action;
+package territory.game.action.tick;
 
+import territory.game.GameColor;
 import territory.game.player.Player;
 
 public class GiveStoneAction extends TickAction {
     private int count;
 
-    public GiveStoneAction(Player player, int count) {
-        super(player);
+    public GiveStoneAction(GameColor color, int count) {
+        super(color);
 
         this.count = count;
     }

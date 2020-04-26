@@ -6,7 +6,9 @@ import territory.game.Indexable;
 import territory.game.RNG;
 import territory.game.sprite.ImageSprite;
 
-public class Mine extends ImageSprite implements Copyable<Mine>, Indexable {
+import java.io.Serializable;
+
+public class Mine extends ImageSprite implements Copyable<Mine>, Indexable, Serializable {
 
     private int index = -1;
 

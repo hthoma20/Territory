@@ -1,6 +1,7 @@
 package territory.game.construction;
 
 import territory.game.Copyable;
+import territory.game.GameColor;
 import territory.game.Indexable;
 
 import territory.game.player.Player;
@@ -8,16 +9,18 @@ import territory.game.sprite.ImageStore;
 import territory.game.sprite.Sprite;
 import javafx.geometry.Point2D;
 
-public class Wall implements Copyable<Wall>, Indexable, BuildProject {
-    private Player owner;
+import java.io.Serializable;
+
+public class Wall implements Copyable<Wall>, Indexable, BuildProject, Serializable {
+    private GameColor color;
 
     private int index = -1;
 
     private Post post1, post2;
     private WallSegment[] segments;
 
-    public Wall(Player owner, Post post1, Post post2){
-        this.owner = owner;
+    public Wall(GameColor color, Post post1, Post post2){
+        this.color = color;
 
         this.post1 = post1;
         this.post2 = post2;
@@ -26,7 +29,7 @@ public class Wall implements Copyable<Wall>, Indexable, BuildProject {
     }
 
     public Wall(Wall src){
-        this.owner = src.owner;
+        this.color = src.color;
         this.index = src.index;
         this.post1 = src.post1;
         this.post2 = src.post2;
@@ -48,7 +51,7 @@ public class Wall implements Copyable<Wall>, Indexable, BuildProject {
 
         //compute distance between the two posts
         Point2D distance = p2.subtract(p1);
-        double segmentLength = ImageStore.store.imageFor(WallSegment.class, owner.getColor()).getWidth();
+        double segmentLength = ImageStore.store.imageFor(WallSegment.class, color).getWidth();
 
         //round up the number of segments needed
         int numSegments = (int)(distance.magnitude()/segmentLength + 1);
@@ -65,7 +68,7 @@ public class Wall implements Copyable<Wall>, Indexable, BuildProject {
         //initialize each segment
         for(int i = 0; i < segments.length; i++){
             Point2D segmentPoint = p1.add(distance.normalize().multiply(segmentLength*i));
-            segments[i] = new WallSegment(owner, segmentPoint.getX(), segmentPoint.getY(), rotation);
+            segments[i] = new WallSegment(color, segmentPoint.getX(), segmentPoint.getY(), rotation);
         }
     }
 

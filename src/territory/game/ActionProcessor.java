@@ -1,6 +1,10 @@
 package territory.game;
 
 import territory.game.action.*;
+import territory.game.action.player.*;
+import territory.game.action.tick.GiveGoldAction;
+import territory.game.action.tick.GiveStoneAction;
+import territory.game.action.tick.PlaceStoneAction;
 import territory.game.construction.BuildProject;
 import territory.game.construction.Post;
 import territory.game.construction.Village;
@@ -33,7 +37,7 @@ public class ActionProcessor {
 
     public void processAction(GameAction action){
         currentState = game.getState();
-        player = action.getPlayer();
+        player = game.getPlayer(action.getColor());
         currentInventory = currentState.getPlayerInventory(player);
 
         //Player actions
@@ -73,7 +77,7 @@ public class ActionProcessor {
 
     private void processCreateVillageAction(CreateVillageAction action){
         if(currentInventory.takeGold(Village.getGoldPrice())){
-            Village village = new Village(player, action.getX(), action.getY());
+            Village village = new Village(player.getColor(), action.getX(), action.getY());
             currentInventory.addVillage(village);
         }
         else{
@@ -83,7 +87,7 @@ public class ActionProcessor {
 
     private void processCreatePostAction(CreatePostAction action){
         if(currentInventory.takeGold(Post.getGoldPrice())){
-            Post post = new Post(player, action.getX(), action.getY());
+            Post post = new Post(player.getColor(), action.getX(), action.getY());
             currentInventory.addPost(post);
         }
         else{
@@ -113,7 +117,7 @@ public class ActionProcessor {
         }
 
         //if we get here, the wall is legal
-        Wall wall = new Wall(player, post1, post2);
+        Wall wall = new Wall(player.getColor(), post1, post2);
         currentInventory.addWall(wall);
     }
 

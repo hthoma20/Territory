@@ -1,12 +1,15 @@
-package territory.game.action;
+package territory.game.action.player;
 
+import territory.game.GameColor;
 import territory.game.player.Player;
 
-public class CreateWallAction extends PlayerAction {
+import java.io.Serializable;
+
+public class CreateWallAction extends PlayerAction implements Serializable {
     private int post1Index, post2Index;
 
-    public CreateWallAction(Player player, int post1Index, int post2Index) {
-        super(player);
+    public CreateWallAction(GameColor color, int post1Index, int post2Index) {
+        super(color);
         this.post1Index = post1Index;
         this.post2Index = post2Index;
     }

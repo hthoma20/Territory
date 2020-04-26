@@ -1,16 +1,17 @@
 package territory.game.unit;
 
 import territory.game.RNG;
-import territory.game.action.PlaceStoneAction;
-import territory.game.action.TickAction;
+import territory.game.action.tick.PlaceStoneAction;
+import territory.game.action.tick.TickAction;
 import territory.game.construction.BuildProject;
 import territory.game.construction.BuildSlot;
 import territory.game.player.Player;
 
+import java.io.Serializable;
 import java.util.Arrays;
 import java.util.List;
 
-public class Builder extends Unit {
+public class Builder extends Unit implements Serializable {
 
     private BuildSlot target;
 
@@ -20,7 +21,7 @@ public class Builder extends Unit {
     private static double buildProbability = .05;
 
     public Builder(Player owner, double x, double y) {
-        super(owner, x, y);
+        super(owner.getColor(), x, y);
     }
 
     public Builder(Builder src) {
@@ -79,6 +80,6 @@ public class Builder extends Unit {
             return null;
         }
 
-        return Arrays.asList(new PlaceStoneAction(owner, target.getBuildable(), 5));
+        return Arrays.asList(new PlaceStoneAction(color, target.getBuildable(), 5));
     }
 }

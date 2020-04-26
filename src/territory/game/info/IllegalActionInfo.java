@@ -1,6 +1,8 @@
 package territory.game.info;
 
-public class IllegalActionInfo extends GameInfo {
+import java.io.Serializable;
+
+public class IllegalActionInfo extends GameInfo implements Serializable {
     public IllegalActionInfo(String message) {
         super(message);
     }

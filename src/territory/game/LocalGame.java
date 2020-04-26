@@ -2,8 +2,9 @@ package territory.game;
 
 
 import territory.game.action.GameAction;
-import territory.game.action.PlayerAction;
-import territory.game.action.TickAction;
+import territory.game.action.player.PlayerAction;
+import territory.game.action.tick.TickAction;
+import territory.game.info.PlayerSetupInfo;
 import territory.game.player.Player;
 
 import java.util.ArrayList;
@@ -49,8 +50,7 @@ public class LocalGame implements Game {
         GameColor[] colors = GameColor.values();
         for(int i = 0; i < players.length; i++){
             this.players[i].setGame(this);
-            this.players[i].setIndex(i);
-            this.players[i].setColor(colors[i]);
+            this.players[i].sendInfo(new PlayerSetupInfo(i, colors[i]));
         }
     }
 
@@ -143,5 +143,16 @@ public class LocalGame implements Game {
 
     public GameState getState() {
         return state;
+    }
+
+    public Player getPlayer(GameColor color) {
+        Player player = players[color.ordinal()];
+
+        if(player.getColor() != color){
+            throw new RuntimeException(
+                    String.format("Player in position %d doesn't have color %s.", color.ordinal(), color));
+        }
+
+        return player;
     }
 }

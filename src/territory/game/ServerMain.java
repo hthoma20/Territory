@@ -1,4 +1,4 @@
-package territory;
+package territory.game;
 
 import territory.game.LocalGame;
 import territory.game.player.RemotePlayer;
@@ -9,7 +9,10 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 
-public class SeverMain extends Application {
+public class ServerMain extends Application {
+
+    public static final String HOST = "localhost";
+    public static final int PORT = 1014;
 
     public static void main(String[] args){
         launch(args);
@@ -17,19 +20,12 @@ public class SeverMain extends Application {
 
     @Override
     public void start(Stage stage) throws Exception {
-        Socket socket = null;
 
-        try {
-            ServerSocket serverSocket = new ServerSocket(RemotePlayer.GAME_PORT);
-            System.out.println("Listening...");
-            socket = serverSocket.accept();
-        }
-        catch (IOException e) {
-            e.printStackTrace();
-            return;
-        }
+        RemotePlayer player = new RemotePlayer(PORT);
 
-        RemotePlayer player = new RemotePlayer(socket);
+        System.out.println("Connecting...");
+        player.connect();
+        System.out.println("Connected.");
 
         LocalGame game = new LocalGame(player);
 

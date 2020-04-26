@@ -6,22 +6,24 @@ import territory.game.Indexable;
 import territory.game.player.Player;
 import territory.game.sprite.ImageSprite;
 
-public class Village extends ImageSprite implements Copyable<Village>, Indexable {
+import java.io.Serializable;
 
-    private Player owner;
+public class Village extends ImageSprite implements Copyable<Village>, Indexable, Serializable {
+
+    private GameColor color;
 
     private int population = 10;
 
     private int index = -1;
 
-    public Village(Player owner, double x, double y){
+    public Village(GameColor color, double x, double y){
         super(x, y);
-        this.owner = owner;
+        this.color = color;
     }
 
     public Village(Village src){
         super(src);
-        this.owner = src.owner;
+        this.color = src.color;
         this.index = src.index;
         this.population = src.population;
     }
@@ -33,7 +35,7 @@ public class Village extends ImageSprite implements Copyable<Village>, Indexable
 
     @Override
     public GameColor getColor() {
-        return owner.getColor();
+        return color;
     }
 
     public static int getGoldPrice(){

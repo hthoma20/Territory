@@ -1,50 +1,45 @@
 package territory.game;
 
-import territory.game.action.PlayerAction;
+import territory.game.action.player.PlayerAction;
+import territory.game.info.GameInfo;
 import territory.game.player.GUIPlayer;
-import territory.game.player.RemotePlayer;
-
-import java.io.IOException;
-import java.net.Socket;
-import java.util.Scanner;
 
 public class RemoteGame implements Game {
 
     private GUIPlayer localPlayer;
 
-    private Socket socket;
+    private SocketConnection connection;
 
-    public RemoteGame(GUIPlayer localPlayer){
+    public RemoteGame(GUIPlayer localPlayer, String host, int port){
         this.localPlayer = localPlayer;
+        this.connection = SocketConnection.createClient(host, port, this::receiveObjectFromServer);
+
+        localPlayer.setGame(this);
+    }
+
+    private void receiveObjectFromServer(Object object){
+        if(object instanceof GameState){
+            localPlayer.sendState((GameState) object);
+        }
+        else if(object instanceof GameInfo){
+            localPlayer.sendInfo((GameInfo) object);
+        }
+        else{
+            System.err.println("Unexpected object received");
+        }
     }
 
     @Override
     public void receiveAction(PlayerAction action) {
-
+        connection.sendMessage(action);
     }
 
     @Override
     public void start(){
-        try {
-            this.socket = new Socket(RemotePlayer.GAME_ADDRESS, RemotePlayer.GAME_PORT);
-        }
-        catch (IOException e) {
-            throw new RuntimeException("Couldn't initialize server socket in Remote Game", e);
-        }
+        boolean connected = connection.connect();
 
-        new Thread(this::listenForState).start();
-    }
-
-    private void listenForState(){
-        try (Scanner scanner = new Scanner(socket.getInputStream())) {
-            while(!scanner.hasNext()){
-                String string = scanner.next();
-                System.out.println(string);
-            }
+        if(!connected){
+            throw new GameNotStartedException("Couldn't establish connection to remote game");
         }
-        catch (IOException e) {
-            e.printStackTrace();
-        }
-
     }
 }

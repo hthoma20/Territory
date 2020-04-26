@@ -1,12 +1,15 @@
 package territory.game.construction;
 
+import territory.game.GameColor;
 import territory.game.player.Player;
 
-public class WallSegment extends Buildable {
+import java.io.Serializable;
+
+public class WallSegment extends Buildable implements Serializable {
 
 
-    public WallSegment(Player owner, double x, double y, double rotation) {
-        super(owner, x, y);
+    public WallSegment(GameColor color, double x, double y, double rotation) {
+        super(color, x, y);
 
         this.rotation = rotation;
     }

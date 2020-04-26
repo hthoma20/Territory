@@ -3,7 +3,9 @@ package territory.game.construction;
 import territory.game.Copyable;
 import territory.game.unit.Target;
 
-public abstract class Slot implements Copyable<Slot>, Target {
+import java.io.Serializable;
+
+public abstract class Slot implements Copyable<Slot>, Target, Serializable {
     private double x, y;
 
     private int unitCount = 0;

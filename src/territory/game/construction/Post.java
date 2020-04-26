@@ -1,14 +1,17 @@
 package territory.game.construction;
 
+import territory.game.GameColor;
 import territory.game.Indexable;
 import territory.game.player.Player;
 
-public class Post extends Buildable implements Indexable, BuildProject {
+import java.io.Serializable;
+
+public class Post extends Buildable implements Indexable, BuildProject, Serializable {
 
     private int index = -1;
 
-    public Post(Player owner, double x, double y){
-        super(owner, x, y);
+    public Post(GameColor color, double x, double y){
+        super(color, x, y);
     }
 
     public Post(Post src){

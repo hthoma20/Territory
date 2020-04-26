@@ -3,7 +3,9 @@ package territory.game.sprite;
 import territory.game.GameColor;
 import javafx.scene.image.Image;
 
-public abstract class ImageSprite extends Sprite {
+import java.io.Serializable;
+
+public abstract class ImageSprite extends Sprite implements Serializable {
 
     public ImageSprite(double x, double y) {
         super(x, y);

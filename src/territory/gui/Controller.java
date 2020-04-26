@@ -2,7 +2,7 @@ package territory.gui;
 
 import territory.game.GameState;
 import territory.game.Inventory;
-import territory.game.action.*;
+import territory.game.action.player.*;
 import territory.game.construction.BuildProject;
 import territory.game.construction.Post;
 import territory.game.construction.Village;
@@ -110,7 +110,7 @@ public class Controller {
             return;
         }
 
-        player.takeAction(new TrainMinersAction(this.player, selectedVillageIndex, numMiners));
+        player.takeAction(new TrainMinersAction(this.player.getColor(), selectedVillageIndex, numMiners));
     }
 
     @FXML
@@ -122,7 +122,7 @@ public class Controller {
             return;
         }
 
-        player.takeAction(new TrainBuildersAction(this.player, selectedVillageIndex, numMiners));
+        player.takeAction(new TrainBuildersAction(this.player.getColor(), selectedVillageIndex, numMiners));
     }
 
     @FXML
@@ -198,11 +198,11 @@ public class Controller {
         switch (currentInteractMode) {
             case CREATE_VILLAGE:
                 System.out.println("Place Village");
-                action = new CreateVillageAction(this.player, gamePoint.getX(), gamePoint.getY());
+                action = new CreateVillageAction(this.player.getColor(), gamePoint.getX(), gamePoint.getY());
                 break;
             case CREATE_POST:
                 System.out.println("Place Village");
-                action = new CreatePostAction(this.player, gamePoint.getX(), gamePoint.getY());
+                action = new CreatePostAction(this.player.getColor(), gamePoint.getX(), gamePoint.getY());
                 break;
             case SCROLL:
                 break;
@@ -260,7 +260,7 @@ public class Controller {
         //otherwise, build a wall between them
         else{
             System.out.println(String.format("Creating wall %d %d", selectedPostIndex, post.getIndex()));
-            this.player.takeAction(new CreateWallAction(player, selectedPostIndex, post.getIndex()));
+            this.player.takeAction(new CreateWallAction(player.getColor(), selectedPostIndex, post.getIndex()));
         }
 
     }
@@ -271,7 +271,7 @@ public class Controller {
      */
     private void directBuildersTo(BuildProject project){
         for(int builderIndex : selectedUnitIndices){
-            player.takeAction(new DirectBuilderAction(player, builderIndex, project));
+            player.takeAction(new DirectBuilderAction(player.getColor(), builderIndex, project));
         }
     }
 

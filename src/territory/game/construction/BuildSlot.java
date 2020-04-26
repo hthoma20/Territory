@@ -1,9 +1,11 @@
 package territory.game.construction;
 
+import java.io.Serializable;
+
 /**
  * Represents a location that a Miner can mine from
  */
-public class BuildSlot extends Slot {
+public class BuildSlot extends Slot implements Serializable {
     private Buildable buildable;
 
     public BuildSlot(Buildable buildable, double x, double y){

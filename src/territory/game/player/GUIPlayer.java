@@ -1,9 +1,11 @@
 package territory.game.player;
 
+import territory.game.Game;
 import territory.game.GameState;
-import territory.game.LocalGame;
-import territory.game.action.*;
+import territory.game.action.player.CreatePostAction;
+import territory.game.action.player.CreateVillageAction;
 import territory.game.info.GameInfo;
+import territory.game.info.PlayerSetupInfo;
 import territory.gui.Controller;
 
 public class GUIPlayer extends Player {
@@ -18,13 +20,8 @@ public class GUIPlayer extends Player {
      * Take initial actions
      */
     @Override
-    public void setGame(LocalGame game){
+    public void setGame(Game game){
         super.setGame(game);
-
-
-        takeAction(new CreatePostAction(this, -100, -50));
-        takeAction(new CreatePostAction(this, 100, -50));
-        takeAction(new CreateVillageAction(this, 100, 100));
     }
 
     @Override
@@ -35,5 +32,16 @@ public class GUIPlayer extends Player {
     @Override
     public void receiveInfo(GameInfo info){
         System.out.println(info);
+
+        //the game is setup so take initial actions
+        if(info instanceof PlayerSetupInfo){
+            takeInitialActions();
+        }
+    }
+
+    private void takeInitialActions(){
+        takeAction(new CreateVillageAction(this.color, 100, 100));
+        takeAction(new CreatePostAction(this.color, -100, -50));
+        takeAction(new CreatePostAction(this.color, 100, -50));
     }
 }

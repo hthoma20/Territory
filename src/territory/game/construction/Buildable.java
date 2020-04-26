@@ -5,18 +5,20 @@ import territory.game.GameColor;
 import territory.game.player.Player;
 import territory.game.sprite.ImageSprite;
 
-public abstract class Buildable extends ImageSprite implements Copyable<Buildable> {
+import java.io.Serializable;
 
-    protected Player owner;
+public abstract class Buildable extends ImageSprite implements Copyable<Buildable>, Serializable {
+
+    protected GameColor color;
 
     private BuildSlot[] slots;
 
     protected int stoneNeeded = 100;
 
-    public Buildable(Player owner, double x, double y) {
+    public Buildable(GameColor color, double x, double y) {
         super(x, y);
 
-        this.owner = owner;
+        this.color = color;
 
         this.slots = initSlots();
     }
@@ -24,7 +26,7 @@ public abstract class Buildable extends ImageSprite implements Copyable<Buildabl
     public Buildable(Buildable src) {
         super(src);
 
-        this.owner = src.owner;
+        this.color = src.color;
 
         this.slots = new BuildSlot[src.slots.length];
         for(int i = 0; i < src.slots.length; i++){
@@ -61,7 +63,7 @@ public abstract class Buildable extends ImageSprite implements Copyable<Buildabl
 
     @Override
     public GameColor getColor() {
-        return owner.getColor();
+        return color;
     }
 
     protected abstract BuildSlot[] initSlots();

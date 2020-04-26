@@ -1,5 +1,9 @@
 package territory.gui;
 
+import javafx.scene.text.Text;
+import javafx.scene.text.TextFlow;
+import territory.game.GameNotStartedException;
+import territory.game.ServerMain;
 import territory.game.RemoteGame;
 import territory.game.player.GUIPlayer;
 import javafx.application.Application;
@@ -33,9 +37,20 @@ public class RemoteMain extends Application {
 
         GUIPlayer guiPlayer = new GUIPlayer(controller);
 
-        RemoteGame game = new RemoteGame(guiPlayer);
+        RemoteGame game = new RemoteGame(guiPlayer, ServerMain.HOST, ServerMain.PORT);
 
-        game.start();
+        try {
+            //give the server time
+            Thread.sleep(1000);
+            game.start();
+        }
+        catch(GameNotStartedException exc){
+            primaryStage.setScene(errorScene(exc));
+        }
+    }
+
+    private Scene errorScene(Exception error){
+        return new Scene(new TextFlow(new Text(error.toString())));
     }
 
     private void exitApplication(WindowEvent windowEvent) {

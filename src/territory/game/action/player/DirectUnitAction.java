@@ -1,15 +1,18 @@
-package territory.game.action;
+package territory.game.action.player;
 
+import territory.game.GameColor;
 import territory.game.player.Player;
 
-public class DirectUnitAction extends PlayerAction {
+import java.io.Serializable;
+
+public class DirectUnitAction extends PlayerAction implements Serializable {
     private int unitIndex;
 
     //this will be interpreted based on what kind of target it is
     private int targetIndex;
 
-    public DirectUnitAction(Player player, int unitIndex, int targetIndex) {
-        super(player);
+    public DirectUnitAction(GameColor color, int unitIndex, int targetIndex) {
+        super(color);
         this.unitIndex = unitIndex;
         this.targetIndex = targetIndex;
     }

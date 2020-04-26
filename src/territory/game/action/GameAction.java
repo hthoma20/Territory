@@ -1,16 +1,19 @@
 package territory.game.action;
 
+import territory.game.GameColor;
 import territory.game.player.Player;
 
-public abstract class GameAction {
-    //the player who is taking the action
-    private Player player;
+import java.io.Serializable;
 
-    public GameAction(Player player){
-        this.player = player;
+public abstract class GameAction implements Serializable {
+    //the color of the player who is taking the action
+    private GameColor color;
+
+    public GameAction(GameColor color){
+        this.color = color;
     }
 
-    public Player getPlayer(){
-        return player;
+    public GameColor getColor(){
+        return color;
     }
 }

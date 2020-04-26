@@ -1,18 +1,21 @@
 package territory.game.player;
 
 import territory.game.*;
-import territory.game.action.PlayerAction;
+import territory.game.action.player.PlayerAction;
 import territory.game.info.GameInfo;
+import territory.game.info.PlayerSetupInfo;
 
-public abstract class Player implements Indexable {
-    private LocalGame game;
+import java.io.Serializable;
+
+public abstract class Player implements Indexable, Serializable {
+    private Game game;
 
     protected int index = -1;
 
     protected GameColor color;
 
 
-    public void setGame(LocalGame game){
+    public void setGame(Game game){
         this.game = game;
     }
 
@@ -37,6 +40,11 @@ public abstract class Player implements Indexable {
     }
 
     public void sendInfo(GameInfo info){
+        if(info instanceof PlayerSetupInfo){
+            this.index = ((PlayerSetupInfo) info).getIndex();
+            this.color = ((PlayerSetupInfo) info).getColor();
+        }
+
         new Thread(() -> this.receiveInfo(info)).start();
     }
 

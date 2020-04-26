@@ -1,40 +1,40 @@
 package territory.game.player;
 
 import territory.game.GameState;
+import territory.game.SocketConnection;
+import territory.game.action.player.PlayerAction;
 import territory.game.info.GameInfo;
 
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.net.Socket;
 
 public class RemotePlayer extends Player {
 
-    public static final String GAME_ADDRESS = "localhost";
-    public static final int GAME_PORT = 3400;
 
-    private Socket socket;
+    private SocketConnection connection;
 
-    private PrintWriter writer;
+    public RemotePlayer(int port){
+        this.connection = SocketConnection.createServer(port, this::receiveObjectFromClient);
+    }
 
-    public RemotePlayer(Socket socket){
-        this.socket = socket;
-        try {
-            this.writer = new PrintWriter(socket.getOutputStream());
-        } catch (IOException e) {
-            throw new RuntimeException("Failed to open printwriter in Remote Player", e);
+    public boolean connect(){
+        return connection.connect();
+    }
+
+    private void receiveObjectFromClient(Object object){
+        if(object instanceof PlayerAction){
+            takeAction((PlayerAction) object);
+        }
+        else{
+            System.err.println("Unexpected object received from client");
         }
     }
 
-
     @Override
     protected void receiveState(GameState state) {
-        System.out.println("Sending state.");
-        writer.println("Here's a state");
-        System.out.println("Sent the state.");
+        connection.sendMessage(state);
     }
 
     @Override
     protected void receiveInfo(GameInfo info) {
-
+        connection.sendMessage(info);
     }
 }

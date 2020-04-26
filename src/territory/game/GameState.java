@@ -6,14 +6,16 @@ import territory.game.construction.Wall;
 import territory.game.player.Player;
 import territory.game.sprite.Sprite;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class GameState implements Copyable<GameState> {
+public class GameState implements Copyable<GameState>, Serializable {
+
     private int numPlayers;
-    private Inventory[] playerInventories;
+    private List<Inventory> playerInventories;
     private List<Mine> mines;
 
     public GameState(int numPlayers){
@@ -25,9 +27,9 @@ public class GameState implements Copyable<GameState> {
     public GameState(GameState src){
         this.numPlayers = src.numPlayers;
 
-        this.playerInventories = new Inventory[src.playerInventories.length];
-        for(int i = 0; i < playerInventories.length; i++){
-            this.playerInventories[i] = src.playerInventories[i].copy();
+        this.playerInventories = new ArrayList<>(src.playerInventories.size());
+        for(Inventory inventory : src.playerInventories){
+            this.playerInventories.add(inventory.copy());
         }
 
         this.mines = new ArrayList<>(src.mines.size());
@@ -42,10 +44,10 @@ public class GameState implements Copyable<GameState> {
     }
 
     private void initInventories(){
-        playerInventories = new Inventory[this.numPlayers];
+        this.playerInventories = new ArrayList<>(this.numPlayers);
 
-        for(int i = 0; i < playerInventories.length; i++){
-            playerInventories[i] = new Inventory();
+        for(int i = 0; i < numPlayers; i++){
+            playerInventories.add(new Inventory());
         }
     }
 
@@ -89,14 +91,14 @@ public class GameState implements Copyable<GameState> {
     }
 
     public Inventory getPlayerInventory(int playerIndex){
-        return playerInventories[playerIndex];
+        return playerInventories.get(playerIndex);
     }
 
     public Inventory getPlayerInventory(Player player){
         return getPlayerInventory(player.getIndex());
     }
 
-    public Inventory[] getPlayerInventories(){
+    public List<Inventory> getPlayerInventories(){
         return playerInventories;
     }
 

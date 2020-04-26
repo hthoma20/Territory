@@ -5,11 +5,12 @@ import territory.game.construction.Village;
 import territory.game.construction.Wall;
 import territory.game.unit.Unit;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-public class Inventory implements Copyable<Inventory>{
+public class Inventory implements Copyable<Inventory>, Serializable {
     private List<Unit> units = new ArrayList<>();
     private List<Village> villages = new ArrayList<>();
     private List<Post> posts = new ArrayList<>();

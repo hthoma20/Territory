@@ -1,17 +1,18 @@
 package territory.game.unit;
 
 import territory.game.RNG;
-import territory.game.action.GiveGoldAction;
-import territory.game.action.GiveStoneAction;
-import territory.game.action.TickAction;
+import territory.game.action.tick.GiveGoldAction;
+import territory.game.action.tick.GiveStoneAction;
+import territory.game.action.tick.TickAction;
 import territory.game.construction.Mine;
 import territory.game.construction.MineSlot;
 import territory.game.player.Player;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Miner extends Unit {
+public class Miner extends Unit implements Serializable {
 
     private MineSlot target;
 
@@ -19,7 +20,7 @@ public class Miner extends Unit {
     private static double mineProbability = .05;
 
     public Miner(Player owner, double x, double y) {
-        super(owner, x, y);
+        super(owner.getColor(), x, y);
     }
 
     @Override
@@ -81,10 +82,10 @@ public class Miner extends Unit {
         int stone = mine.getStone();
 
         if(gold > 0){
-            actions.add(new GiveGoldAction(owner, gold));
+            actions.add(new GiveGoldAction(color, gold));
         }
         if(stone > 0){
-            actions.add(new GiveStoneAction(owner, stone));
+            actions.add(new GiveStoneAction(color, stone));
         }
 
         if(actions.size() > 0){

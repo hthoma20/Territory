@@ -1,6 +1,8 @@
 package territory.game.info;
 
-public class GameInfo {
+import java.io.Serializable;
+
+public class GameInfo implements Serializable {
     private String message;
 
     public GameInfo(String message){
