@@ -6,7 +6,7 @@ import territory.game.player.Player;
 
 import java.io.Serializable;
 
-public class Post extends Buildable implements Indexable, BuildProject, Serializable {
+public class Post extends Buildable implements Indexable, Serializable {
 
     private int index = -1;
 

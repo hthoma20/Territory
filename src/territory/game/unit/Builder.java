@@ -4,7 +4,6 @@ import territory.game.RNG;
 import territory.game.action.tick.PlaceStoneAction;
 import territory.game.action.tick.TickAction;
 import territory.game.construction.BuildProject;
-import territory.game.construction.BuildSlot;
 import territory.game.player.Player;
 
 import java.io.Serializable;
@@ -12,8 +11,6 @@ import java.util.Arrays;
 import java.util.List;
 
 public class Builder extends Unit implements Serializable {
-
-    private BuildSlot target;
 
     private BuildProject project;
 
@@ -27,7 +24,12 @@ public class Builder extends Unit implements Serializable {
     public Builder(Builder src) {
         super(src);
 
-        this.target = src.target;
+        if(src.project == null){
+            this.project = null;
+        }
+        else{
+            this.project = src.project.copy();
+        }
     }
 
     @Override
@@ -39,39 +41,21 @@ public class Builder extends Unit implements Serializable {
         return 10;
     }
 
-    public void setTarget(BuildSlot target){
-        this.target = target;
-        target.incUnitCount();
-    }
-
     public void setProject(BuildProject project){
-        this.project = project;
-
-        setTarget(project.getOpenBuildSlot());
-    }
-
-    @Override
-    public List<TickAction> tick(){
-        findTarget();
-
-        return super.tick();
-    }
-
-    private void findTarget(){
-        //should we switch targets?
-        BuildSlot newTarget = target.getBuildable().getOpenBuildSlot();
-
-        if(newTarget.getUnitCount()+1 < target.getUnitCount()){ //plus one to account for this miner
-            target.decUnitCount();
-            newTarget.incUnitCount();
-
-            target = newTarget;
+        if(this.project != null){
+            this.project.removeBuilder(this);
         }
+
+        this.project = project;
+        project.addBuilder(this);
     }
 
     @Override
     protected Target getTarget(){
-        return this.target;
+        if(project == null){
+            return null;
+        }
+        return project.getBuildSlot(this);
     }
 
     @Override
@@ -80,6 +64,6 @@ public class Builder extends Unit implements Serializable {
             return null;
         }
 
-        return Arrays.asList(new PlaceStoneAction(color, target.getBuildable(), 5));
+        return Arrays.asList(new PlaceStoneAction(color, project.getBuildable(this), 5));
     }
 }

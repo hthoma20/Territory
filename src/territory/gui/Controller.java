@@ -3,9 +3,7 @@ package territory.gui;
 import territory.game.GameState;
 import territory.game.Inventory;
 import territory.game.action.player.*;
-import territory.game.construction.BuildProject;
-import territory.game.construction.Post;
-import territory.game.construction.Village;
+import territory.game.construction.*;
 import territory.game.player.GUIPlayer;
 import territory.game.sprite.Sprite;
 import territory.game.unit.Unit;
@@ -201,7 +199,7 @@ public class Controller {
                 action = new CreateVillageAction(this.player.getColor(), gamePoint.getX(), gamePoint.getY());
                 break;
             case CREATE_POST:
-                System.out.println("Place Village");
+                System.out.println("Place Post");
                 action = new CreatePostAction(this.player.getColor(), gamePoint.getX(), gamePoint.getY());
                 break;
             case SCROLL:
@@ -236,6 +234,9 @@ public class Controller {
         else if(sprite instanceof Post){
             postClicked((Post) sprite);
         }
+        else if(sprite instanceof WallSegment){
+            wallClicked((WallSegment) sprite);
+        }
         else if(sprite instanceof Unit){
             unitClicked((Unit)sprite);
         }
@@ -244,7 +245,7 @@ public class Controller {
     private void postClicked(Post post){
         //if units are selected, send them here
         if(selectedUnitIndices.size() > 0){
-            directBuildersTo(post);
+            directBuildersTo(post.getIndex(), BuildType.POST);
             deselectAll();
         }
         //if no post is selected, select this one
@@ -262,16 +263,24 @@ public class Controller {
             System.out.println(String.format("Creating wall %d %d", selectedPostIndex, post.getIndex()));
             this.player.takeAction(new CreateWallAction(player.getColor(), selectedPostIndex, post.getIndex()));
         }
+    }
 
+    private void wallClicked(WallSegment wallSegment){
+        //if units are selected, send them here
+        if(selectedUnitIndices.size() > 0){
+            directBuildersTo(wallSegment.getWall().getIndex(), BuildType.WALL);
+            deselectAll();
+        }
     }
 
     /**
      * Send the selected units to the given project
-     * @param project the project to send builders to
+     * @param index the index of the project to send builders to
+     * @param type the type of build that this is
      */
-    private void directBuildersTo(BuildProject project){
+    private void directBuildersTo(int index, BuildType type){
         for(int builderIndex : selectedUnitIndices){
-            player.takeAction(new DirectBuilderAction(player.getColor(), builderIndex, project));
+            player.takeAction(new DirectBuilderAction(player.getColor(), builderIndex, index, type));
         }
     }
 

@@ -5,10 +5,7 @@ import territory.game.action.player.*;
 import territory.game.action.tick.GiveGoldAction;
 import territory.game.action.tick.GiveStoneAction;
 import territory.game.action.tick.PlaceStoneAction;
-import territory.game.construction.BuildProject;
-import territory.game.construction.Post;
-import territory.game.construction.Village;
-import territory.game.construction.Wall;
+import territory.game.construction.*;
 import territory.game.info.IllegalActionInfo;
 import territory.game.info.IllegalWallInfo;
 import territory.game.info.InsufficientFundsInfo;
@@ -23,7 +20,7 @@ import java.util.List;
 
 public class ActionProcessor {
     //max distance units will spawn from their village
-    private int unitSpawnJitter = 7;
+    private int unitSpawnJitter = 50;
 
     private LocalGame game;
 
@@ -181,7 +178,6 @@ public class ActionProcessor {
 
         if(action instanceof TrainBuildersAction){
             Builder newBuilder = new Builder(player, x, y);
-            newBuilder.setTarget(currentInventory.getPost(0).getOpenBuildSlot());
             return newBuilder;
         }
 
@@ -207,18 +203,19 @@ public class ActionProcessor {
 
         //find the project
         BuildProject project = null;
-        Class<? extends BuildProject> projectType = action.getType();
+        BuildType projectType = action.getType();
 
-        if(projectType.equals(Wall.class)){
-            project = currentInventory.getWall(action.getTargetIndex());
-        }
-        else if(projectType.equals(Post.class)){
-            project = currentInventory.getPost(action.getTargetIndex());
-        }
-
-        if(project == null){
-            player.sendInfo(new IllegalActionInfo("Could not locate build project"));
-            return;
+        switch(projectType){
+            case WALL:
+                Wall wall = currentInventory.getWall(action.getTargetIndex());
+                project = new BuildProject(wall);
+                break;
+            case POST:
+                Post post = currentInventory.getPost(action.getTargetIndex());
+                project = new BuildProject(post);
+                break;
+            default:
+                System.err.println("Unknown build type in action processor");
         }
 
         builder.setProject(project);

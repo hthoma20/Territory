@@ -4,14 +4,13 @@ import territory.game.Copyable;
 import territory.game.GameColor;
 import territory.game.Indexable;
 
-import territory.game.player.Player;
 import territory.game.sprite.ImageStore;
 import territory.game.sprite.Sprite;
 import javafx.geometry.Point2D;
 
 import java.io.Serializable;
 
-public class Wall implements Copyable<Wall>, Indexable, BuildProject, Serializable {
+public class Wall implements Copyable<Wall>, Indexable, Serializable {
     private GameColor color;
 
     private int index = -1;
@@ -68,7 +67,7 @@ public class Wall implements Copyable<Wall>, Indexable, BuildProject, Serializab
         //initialize each segment
         for(int i = 0; i < segments.length; i++){
             Point2D segmentPoint = p1.add(distance.normalize().multiply(segmentLength*i));
-            segments[i] = new WallSegment(color, segmentPoint.getX(), segmentPoint.getY(), rotation);
+            segments[i] = new WallSegment(this, segmentPoint.getX(), segmentPoint.getY(), rotation);
         }
     }
 
@@ -90,7 +89,10 @@ public class Wall implements Copyable<Wall>, Indexable, BuildProject, Serializab
         return segments;
     }
 
-    @Override
+    public GameColor getColor(){
+        return this.color;
+    }
+
     public boolean isComplete() {
         for(WallSegment segment : segments){
             if(!segment.isComplete()){
@@ -99,20 +101,5 @@ public class Wall implements Copyable<Wall>, Indexable, BuildProject, Serializab
         }
 
         return true;
-    }
-
-    @Override
-    public BuildSlot getOpenBuildSlot(){
-        BuildSlot minSlot = segments[0].getOpenBuildSlot();
-
-        for(int i = 1; i < segments.length; i++){
-            BuildSlot slot = segments[i].getOpenBuildSlot();
-
-            if(slot.getUnitCount() < minSlot.getUnitCount()){
-                minSlot = slot;
-            }
-        }
-
-        return minSlot;
     }
 }
