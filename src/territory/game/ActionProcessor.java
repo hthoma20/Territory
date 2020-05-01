@@ -172,7 +172,6 @@ public class ActionProcessor {
     private Unit createNewUnit(TrainUnitsAction action, double x, double y){
         if(action instanceof TrainMinersAction){
             Miner newMiner = new Miner(player, x, y);
-            newMiner.setTarget(currentState.getMine(0).getOpenMineSlot());
             return newMiner;
         }
 
@@ -189,6 +188,9 @@ public class ActionProcessor {
 
         if(action instanceof DirectBuilderAction){
             processDirectBuilderAction((DirectBuilderAction)action);
+        }
+        else if(action instanceof DirectMinerAction){
+            processDirectMinerAction((DirectMinerAction)action);
         }
     }
 
@@ -219,6 +221,19 @@ public class ActionProcessor {
         }
 
         builder.setProject(project);
+    }
+
+    private void processDirectMinerAction(DirectMinerAction action){
+        Unit unit = currentInventory.getUnit(action.getUnitIndex());
+
+        if( !(unit instanceof Miner)){
+            player.sendInfo(new IllegalActionInfo("Direct miner but unit not miner"));
+            return;
+        }
+
+        Miner miner = (Miner)unit;
+        Mine mine = currentState.getMine(action.getTargetIndex());
+        miner.setTarget(mine.getOpenMineSlot());
     }
 
     private void processGiveGoldAction(GiveGoldAction action) {

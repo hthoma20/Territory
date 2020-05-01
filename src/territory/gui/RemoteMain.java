@@ -3,6 +3,7 @@ package territory.gui;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
 import territory.game.GameNotStartedException;
+import territory.game.LocalGame;
 import territory.game.ServerMain;
 import territory.game.RemoteGame;
 import territory.game.player.GUIPlayer;
@@ -13,8 +14,12 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
+import territory.game.player.RemotePlayer;
 
 public class RemoteMain extends Application {
+
+    public static final String HOST = "localhost";
+    public static final int PORT = 1014;
 
     private double initialWidth = 605, initialHeight = 405;
 
@@ -37,16 +42,36 @@ public class RemoteMain extends Application {
 
         GUIPlayer guiPlayer = new GUIPlayer(controller);
 
-        RemoteGame game = new RemoteGame(guiPlayer, ServerMain.HOST, ServerMain.PORT);
+        //start the server
+        new Thread(this::startServer).start();
 
+        //give the server time to start
+        Thread.sleep(500);
+
+        //start the client
         try {
-            //give the server time
-            Thread.sleep(1000);
-            game.start();
+            startClient(guiPlayer);
         }
         catch(GameNotStartedException exc){
             primaryStage.setScene(errorScene(exc));
         }
+    }
+
+    private void  startServer(){
+        RemotePlayer player = new RemotePlayer(PORT);
+
+        System.out.println("Connecting...");
+        player.connect();
+        System.out.println("Connected.");
+
+        LocalGame game = new LocalGame(player);
+
+        game.start();
+    }
+
+    private void startClient(GUIPlayer guiPlayer){
+        RemoteGame game = new RemoteGame(guiPlayer, HOST, PORT);
+        game.start();
     }
 
     private Scene errorScene(Exception error){

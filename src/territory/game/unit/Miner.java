@@ -50,7 +50,9 @@ public class Miner extends Unit implements Serializable {
 
     @Override
     public List<TickAction> tick() {
-        findTarget();
+        if(target != null) {
+            findTarget();
+        }
 
         return super.tick();
     }

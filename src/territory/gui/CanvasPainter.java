@@ -12,6 +12,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 import javafx.scene.transform.Affine;
 import javafx.scene.transform.Rotate;
+import territory.gui.selection.Selection;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -109,21 +110,23 @@ public class CanvasPainter {
      */
     public void paintSelection(){
 
-        int villageIndex = controller.getSelectedVillageIndex();
-        int postIndex = controller.getSelectedPostIndex();
-        ArrayList<Integer> unitIndices = controller.getSelectedUnitIndices();
-
         gc.setFill(new Color(0, 1, 0, highlightOpacity));
 
-        if(villageIndex != -1){
-            highlightSprite(currentInventory.getVillage(villageIndex));
-        }
-        if(postIndex != -1){
-            highlightSprite(currentInventory.getPost(postIndex));
-        }
-
-        for(int index : unitIndices){
-            highlightSprite(currentInventory.getUnit(index));
+        Selection selection = controller.getCurrentSelection();
+        switch(selection.getType()){
+            case NONE:
+                return;
+            case VILLAGE:
+                highlightSprite(currentInventory.getVillage(selection.getIndex()));
+                return;
+            case POST:
+                highlightSprite(currentInventory.getPost(selection.getIndex()));
+                return;
+            case UNITS:
+                for(int index : selection.getIndices()){
+                    highlightSprite(currentInventory.getUnit(index));
+                }
+                return;
         }
     }
 

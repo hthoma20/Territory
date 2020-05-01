@@ -18,6 +18,7 @@ import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.Pane;
+import territory.gui.selection.Selection;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,9 +36,8 @@ public class Controller {
 
     private InteractMode currentInteractMode;
     private double prevMouseX, prevMouseY;
-    private int selectedVillageIndex = -1;
-    private int selectedPostIndex = -1;
-    private ArrayList<Integer> selectedUnitIndices = new ArrayList<>();
+
+    private Selection currentSelection = new Selection();
 
     private GUIPlayer player;
 
@@ -90,11 +90,11 @@ public class Controller {
         stoneLabel.setText(""+inventory.getStone());
         goldLabel.setText(""+inventory.getGold());
 
-        if(selectedVillageIndex == -1){
+        if(currentSelection.getType() != Selection.Type.VILLAGE){
             populationLabel.setText("No village selected");
         }
         else{
-            int villagePopulation = inventory.getVillage(selectedVillageIndex).getPopulation();
+            int villagePopulation = inventory.getVillage(currentSelection.getIndex()).getPopulation();
             populationLabel.setText(String.format("Population: %d", villagePopulation));
         }
     }
@@ -104,11 +104,11 @@ public class Controller {
         int numMiners = userDataInt(actionEvent);
         System.out.println("Miner " + numMiners);
         //we cannot train miners from no village
-        if(selectedVillageIndex == -1){
+        if(currentSelection.getType() != Selection.Type.VILLAGE){
             return;
         }
 
-        player.takeAction(new TrainMinersAction(this.player.getColor(), selectedVillageIndex, numMiners));
+        player.takeAction(new TrainMinersAction(this.player.getColor(), currentSelection.getIndex(), numMiners));
     }
 
     @FXML
@@ -116,11 +116,11 @@ public class Controller {
         System.out.println("Builder " + userDataInt(actionEvent));
         int numMiners = userDataInt(actionEvent);
         //we cannot train miners from no village
-        if(selectedVillageIndex == -1){
+        if(currentSelection.getType() != Selection.Type.VILLAGE){
             return;
         }
 
-        player.takeAction(new TrainBuildersAction(this.player.getColor(), selectedVillageIndex, numMiners));
+        player.takeAction(new TrainBuildersAction(this.player.getColor(), currentSelection.getIndex(), numMiners));
     }
 
     @FXML
@@ -227,9 +227,11 @@ public class Controller {
         Sprite sprite = sprites.get(sprites.size()-1);
 
         if(sprite instanceof Village){
-            deselectAll();
-            selectedVillageIndex = ((Village) sprite).getIndex();
-            System.out.println("Selected village " + selectedVillageIndex);
+            currentSelection.select((Village)sprite);
+            System.out.println("Selected village " + ((Village) sprite).getIndex());
+        }
+        else if(sprite instanceof Mine){
+            mineClicked((Mine)sprite);
         }
         else if(sprite instanceof Post){
             postClicked((Post) sprite);
@@ -244,32 +246,42 @@ public class Controller {
 
     private void postClicked(Post post){
         //if units are selected, send them here
-        if(selectedUnitIndices.size() > 0){
+        if(currentSelection.getType() == Selection.Type.UNITS){
             directBuildersTo(post.getIndex(), BuildType.POST);
-            deselectAll();
+            currentSelection.clear();
         }
         //if no post is selected, select this one
-        else if(selectedPostIndex == -1){
-            deselectAll();
-            selectedPostIndex = post.getIndex();
-            System.out.println("Selected post " + selectedPostIndex);
+        else if(currentSelection.getType() != Selection.Type.POST){
+            currentSelection.select(post);
+            System.out.println("Selected post " + post.getIndex());
         }
+
+        //if we get this far, the selection is a post
+
         //if the selected post was clicked
-        else if(selectedPostIndex == post.getIndex()){
-            deselectAll();
+        else if(currentSelection.contains(post)){
+            currentSelection.clear();
         }
         //otherwise, build a wall between them
         else{
-            System.out.println(String.format("Creating wall %d %d", selectedPostIndex, post.getIndex()));
-            this.player.takeAction(new CreateWallAction(player.getColor(), selectedPostIndex, post.getIndex()));
+            System.out.println(String.format("Creating wall %d %d", currentSelection.getIndex(), post.getIndex()));
+            this.player.takeAction(new CreateWallAction(player.getColor(), currentSelection.getIndex(), post.getIndex()));
         }
     }
 
     private void wallClicked(WallSegment wallSegment){
         //if units are selected, send them here
-        if(selectedUnitIndices.size() > 0){
+        if(currentSelection.getType() == Selection.Type.UNITS){
             directBuildersTo(wallSegment.getWall().getIndex(), BuildType.WALL);
-            deselectAll();
+            currentSelection.clear();
+        }
+    }
+
+    private void mineClicked(Mine mine){
+        //if units are selected, send them here
+        if(currentSelection.getType() == Selection.Type.UNITS){
+            directMinersTo(mine.getIndex());
+            currentSelection.clear();
         }
     }
 
@@ -279,42 +291,31 @@ public class Controller {
      * @param type the type of build that this is
      */
     private void directBuildersTo(int index, BuildType type){
-        for(int builderIndex : selectedUnitIndices){
+        for(int builderIndex : currentSelection.getIndices()){
             player.takeAction(new DirectBuilderAction(player.getColor(), builderIndex, index, type));
         }
     }
 
+    /**
+     * Send the selected units to the given mine
+     * @param index the index of the mine to send miners to
+     */
+    private void directMinersTo(int index){
+        for(int minerIndex : currentSelection.getIndices()){
+            player.takeAction(new DirectMinerAction(player.getColor(), minerIndex, index));
+        }
+    }
+
     private void unitClicked(Unit unit){
-        deselectNonUnits();
-        selectedUnitIndices.add(unit.getIndex());
-    }
-
-    //deselect all selected objects
-    private void deselectAll(){
-        deselectNonUnits();
-        selectedUnitIndices.clear();
-    }
-
-    //deselect everything execpt for units
-    private void deselectNonUnits(){
-        selectedVillageIndex = -1;
-        selectedPostIndex = -1;
+        currentSelection.select(unit);
     }
 
     public GameState getCurrentState() {
         return currentState;
     }
 
-    public int getSelectedVillageIndex() {
-        return selectedVillageIndex;
-    }
-
-    public int getSelectedPostIndex() {
-        return selectedPostIndex;
-    }
-
-    public ArrayList<Integer> getSelectedUnitIndices() {
-        return selectedUnitIndices;
+    public Selection getCurrentSelection(){
+        return currentSelection;
     }
 
     public GUIPlayer getPlayer() {
