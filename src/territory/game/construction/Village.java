@@ -3,16 +3,23 @@ package territory.game.construction;
 import territory.game.Copyable;
 import territory.game.GameColor;
 import territory.game.Indexable;
+import territory.game.action.tick.TickAction;
 import territory.game.player.Player;
 import territory.game.sprite.ImageSprite;
 
 import java.io.Serializable;
+import java.util.List;
 
 public class Village extends ImageSprite implements Copyable<Village>, Indexable, Serializable {
 
     private GameColor color;
 
     private int population = 10;
+
+    //how many ticks per spawn
+    private int spawnRate = 80;
+    //how many ticks until spawn
+    private int timeToSpawn = spawnRate;
 
     private int index = -1;
 
@@ -31,6 +38,18 @@ public class Village extends ImageSprite implements Copyable<Village>, Indexable
     @Override
     public Village copy(){
         return new Village(this);
+    }
+
+    @Override
+    public List<TickAction> tick(){
+
+        timeToSpawn--;
+        if(timeToSpawn < 1){
+            population++;
+            timeToSpawn = spawnRate;
+        }
+
+        return null;
     }
 
     @Override
