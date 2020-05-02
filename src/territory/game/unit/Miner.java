@@ -40,6 +40,10 @@ public class Miner extends Unit implements Serializable {
     }
 
     public void setTarget(MineSlot target){
+        if(this.target != null){
+            this.target.decUnitCount();
+        }
+
         this.target = target;
         target.incUnitCount();
     }
@@ -94,5 +98,14 @@ public class Miner extends Unit implements Serializable {
             return actions;
         }
         return null;
+    }
+
+    @Override
+    public void kill(){
+        if(target == null){
+            return;
+        }
+
+        target.decUnitCount();
     }
 }

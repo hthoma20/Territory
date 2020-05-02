@@ -21,13 +21,18 @@ public class ServerMain extends Application {
     @Override
     public void start(Stage stage) throws Exception {
 
-        RemotePlayer player = new RemotePlayer(PORT);
+        RemotePlayer player1 = new RemotePlayer(PORT);
 
-        System.out.println("Connecting...");
-        player.connect();
-        System.out.println("Connected.");
+        System.out.println("Connecting 1...");
+        player1.connect();
+        System.out.println("Connected 1.");
 
-        LocalGame game = new LocalGame(player);
+        RemotePlayer player2 = new RemotePlayer(PORT+1);
+        System.out.println("Connecting 2...");
+        player2.connect();
+        System.out.println("Connected 2.");
+
+        LocalGame game = new LocalGame(player1, player2);
 
         game.start();
     }

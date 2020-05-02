@@ -8,6 +8,7 @@ import territory.game.construction.WallSegment;
 import territory.game.unit.Builder;
 import territory.game.unit.Miner;
 import javafx.scene.image.Image;
+import territory.game.unit.Soldier;
 
 import java.util.HashMap;
 import java.util.Objects;
@@ -25,16 +26,22 @@ public class ImageStore {
 
         //Units
         loadImage(Miner.class, GameColor.PURPLE, "units/Miner_purple.png");
+        loadImage(Miner.class, GameColor.GREEN, "units/Miner_green.png");
         loadImage(Builder.class, GameColor.PURPLE, "units/Builder_purple.png");
+        loadImage(Builder.class, GameColor.GREEN, "units/Builder_green.png");
+        loadImage(Soldier.class, GameColor.PURPLE, "units/Soldier_purple.png");
 
         //Villages
         loadImage(Village.class, GameColor.PURPLE, "constructions/Village_purple.png");
+        loadImage(Village.class, GameColor.GREEN, "constructions/Village_green.png");
 
         //Posts
         loadImage(Post.class, GameColor.PURPLE, "constructions/Post_purple.png");
+        loadImage(Post.class, GameColor.GREEN, "constructions/Post_green.png");
 
         //Walls
         loadImage(WallSegment.class, GameColor.PURPLE, "constructions/Wall_purple.png");
+        loadImage(WallSegment.class, GameColor.GREEN, "constructions/Wall_green.png");
 
         //Mines
         loadImage(Mine.class, null, "constructions/Mine.png");

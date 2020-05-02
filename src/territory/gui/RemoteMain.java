@@ -6,6 +6,7 @@ import territory.game.GameNotStartedException;
 import territory.game.LocalGame;
 import territory.game.ServerMain;
 import territory.game.RemoteGame;
+import territory.game.player.ComputerPlayer;
 import territory.game.player.GUIPlayer;
 import javafx.application.Application;
 import javafx.application.Platform;
@@ -64,7 +65,9 @@ public class RemoteMain extends Application {
         player.connect();
         System.out.println("Connected.");
 
-        LocalGame game = new LocalGame(player);
+        ComputerPlayer player2 = new ComputerPlayer();
+
+        LocalGame game = new LocalGame(player, player2);
 
         game.start();
     }

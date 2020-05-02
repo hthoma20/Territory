@@ -12,9 +12,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 import javafx.scene.transform.Affine;
 import javafx.scene.transform.Rotate;
-import territory.gui.selection.Selection;
 
-import java.util.ArrayList;
 import java.util.Collection;
 
 public class CanvasPainter {

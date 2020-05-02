@@ -1,5 +1,6 @@
 package territory.gui;
 
+import territory.game.GameColor;
 import territory.game.GameState;
 import territory.game.Inventory;
 import territory.game.action.player.*;
@@ -18,10 +19,9 @@ import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.Pane;
-import territory.gui.selection.Selection;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 public class Controller {
     @FXML private Pane canvasPane;
@@ -114,18 +114,25 @@ public class Controller {
     @FXML
     public void trainBuilderButtonClicked(ActionEvent actionEvent) {
         System.out.println("Builder " + userDataInt(actionEvent));
-        int numMiners = userDataInt(actionEvent);
-        //we cannot train miners from no village
+        int numBuilders = userDataInt(actionEvent);
+        //we cannot train builders from no village
         if(currentSelection.getType() != Selection.Type.VILLAGE){
             return;
         }
 
-        player.takeAction(new TrainBuildersAction(this.player.getColor(), currentSelection.getIndex(), numMiners));
+        player.takeAction(new TrainBuildersAction(this.player.getColor(), currentSelection.getIndex(), numBuilders));
     }
 
     @FXML
     public void trainSoldierButtonClicked(ActionEvent actionEvent) {
         System.out.println("Soldier " + userDataInt(actionEvent));
+        int numSoldiers = userDataInt(actionEvent);
+        //we cannot train soldiers from no village
+        if(currentSelection.getType() != Selection.Type.VILLAGE){
+            return;
+        }
+
+        player.takeAction(new TrainSoldiersAction(this.player.getColor(), currentSelection.getIndex(), numSoldiers));
     }
 
     @FXML
@@ -227,8 +234,7 @@ public class Controller {
         Sprite sprite = sprites.get(sprites.size()-1);
 
         if(sprite instanceof Village){
-            currentSelection.select((Village)sprite);
-            System.out.println("Selected village " + ((Village) sprite).getIndex());
+            villageClicked((Village)sprite);
         }
         else if(sprite instanceof Mine){
             mineClicked((Mine)sprite);
@@ -244,7 +250,20 @@ public class Controller {
         }
     }
 
+    private void villageClicked(Village village){
+        if(village.getColor() != player.getColor()){
+            return;
+        }
+
+        currentSelection.select((Village)village);
+        System.out.println("Selected village " + ((Village) village).getIndex());
+    }
+
     private void postClicked(Post post){
+        if(post.getColor() != player.getColor()){
+            return;
+        }
+
         //if units are selected, send them here
         if(currentSelection.getType() == Selection.Type.UNITS){
             directBuildersTo(post.getIndex(), BuildType.POST);
@@ -270,6 +289,10 @@ public class Controller {
     }
 
     private void wallClicked(WallSegment wallSegment){
+        if(wallSegment.getColor() != player.getColor()){
+            return;
+        }
+
         //if units are selected, send them here
         if(currentSelection.getType() == Selection.Type.UNITS){
             directBuildersTo(wallSegment.getWall().getIndex(), BuildType.WALL);
@@ -306,8 +329,40 @@ public class Controller {
         }
     }
 
+    /**
+     * Send the selected units to the given mine
+     * @param index the index of the unit to send the soldiers to
+     */
+    private void directSoldiersTo(GameColor color, int index){
+        for(int soldierIndex : currentSelection.getIndices()){
+            player.takeAction(new DirectSoldierAction(player.getColor(), soldierIndex, color, index));
+        }
+    }
+
+    /**
+     * Call to indicate that a unit was lost
+     * @param unitIndex the index of the lost unit
+     */
+    public void lostUnit(int unitIndex){
+        //we only care if this unit was selected
+        if(currentSelection.getType() != Selection.Type.UNITS){
+            return;
+        }
+
+        currentSelection.lostUnit(unitIndex);
+    }
+
     private void unitClicked(Unit unit){
-        currentSelection.select(unit);
+        //if this is our player, select it
+        if(unit.getColor() == player.getColor()) {
+            currentSelection.select(unit);
+            return;
+        }
+
+        //otherwise if units are selected, send them there
+        if(currentSelection.getType() == Selection.Type.UNITS) {
+            directSoldiersTo(unit.getColor(), unit.getIndex());
+        }
     }
 
     public GameState getCurrentState() {

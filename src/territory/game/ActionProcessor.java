@@ -2,6 +2,7 @@ package territory.game;
 
 import territory.game.action.*;
 import territory.game.action.player.*;
+import territory.game.action.tick.DealDamageAction;
 import territory.game.action.tick.GiveGoldAction;
 import territory.game.action.tick.GiveStoneAction;
 import territory.game.action.tick.PlaceStoneAction;
@@ -9,9 +10,11 @@ import territory.game.construction.*;
 import territory.game.info.IllegalActionInfo;
 import territory.game.info.IllegalWallInfo;
 import territory.game.info.InsufficientFundsInfo;
+import territory.game.info.LostUnitInfo;
 import territory.game.player.Player;
 import territory.game.unit.Builder;
 import territory.game.unit.Miner;
+import territory.game.unit.Soldier;
 import territory.game.unit.Unit;
 
 
@@ -61,8 +64,11 @@ public class ActionProcessor {
         else if(action instanceof GiveStoneAction){
             processGiveStoneAction((GiveStoneAction) action);
         }
-        else if (action instanceof PlaceStoneAction){
+        else if(action instanceof PlaceStoneAction){
             processPlaceStoneAction((PlaceStoneAction)action);
+        }
+        else if(action instanceof DealDamageAction){
+            processDealDamageAction((DealDamageAction)action);
         }
 
         //Unhandled action
@@ -160,6 +166,9 @@ public class ActionProcessor {
         if(action instanceof TrainBuildersAction){
             return Builder.getGoldPrice();
         }
+        if(action instanceof TrainSoldiersAction){
+            return Soldier.getGoldPrice();
+        }
 
         throw new RuntimeException("Unknown unit price");
     }
@@ -180,6 +189,10 @@ public class ActionProcessor {
             return newBuilder;
         }
 
+        if(action instanceof TrainSoldiersAction){
+            return new Soldier(player, x, y);
+        }
+
         throw new RuntimeException("Unknown unit type to create");
     }
 
@@ -191,6 +204,12 @@ public class ActionProcessor {
         }
         else if(action instanceof DirectMinerAction){
             processDirectMinerAction((DirectMinerAction)action);
+        }
+        else if(action instanceof DirectSoldierAction){
+            processDirectSoldierAction((DirectSoldierAction)action);
+        }
+        else{
+            System.err.println("Unknown direct unit action");
         }
     }
 
@@ -236,6 +255,21 @@ public class ActionProcessor {
         miner.setTarget(mine.getOpenMineSlot());
     }
 
+    private void processDirectSoldierAction(DirectSoldierAction action){
+        Unit unit = currentInventory.getUnit(action.getUnitIndex());
+
+        if( !(unit instanceof Soldier)){
+            player.sendInfo(new IllegalActionInfo("Direct soldier but unit not soldier"));
+            return;
+        }
+
+        Soldier soldier = (Soldier)unit;
+        Unit target = currentState.getPlayerInventory(game.getPlayer(action.getTargetColor()))
+                        .getUnit(action.getTargetIndex());
+
+        soldier.setTarget(target);
+    }
+
     private void processGiveGoldAction(GiveGoldAction action) {
         currentInventory.giveGold(action.getCount());
     }
@@ -256,5 +290,21 @@ public class ActionProcessor {
         int stoneAdded = action.getBuildable().giveStone(action.getStone());
 
         currentInventory.takeStone(stoneAdded);
+    }
+
+    private void processDealDamageAction(DealDamageAction action){
+        Unit unit = action.getTarget();
+        unit.dealDamage(action.getDamage());
+
+        if(unit.getHealth() <= 0) {
+            unit.kill();
+
+            //update player's inventory to reflect unit killed
+            Player unitOwner = game.getPlayer(unit.getColor());
+            Inventory inventory = currentState.getPlayerInventory(unitOwner);
+            inventory.removeUnit(unit);
+
+            unitOwner.sendInfo(new LostUnitInfo(unit.getIndex()));
+        }
     }
 }

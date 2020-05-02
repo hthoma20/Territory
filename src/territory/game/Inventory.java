@@ -66,6 +66,15 @@ public class Inventory implements Copyable<Inventory>, Serializable {
         }
     }
 
+    public void removeUnit(Unit unit){
+        units.remove(unit);
+
+        //update indices
+        for(int i = 0; i < units.size(); i++){
+            units.get(i).setIndex(i);
+        }
+    }
+
     public void addVillage(Village village){
         this.villages.add(village);
 

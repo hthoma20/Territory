@@ -11,7 +11,8 @@ import javafx.geometry.Point2D;
 import java.io.Serializable;
 import java.util.List;
 
-public abstract class Unit extends ImageSprite implements Copyable<Unit>, Indexable, Serializable {
+public abstract class Unit extends ImageSprite
+                            implements Copyable<Unit>, Indexable, Target, Serializable {
 
     protected GameColor color;
 
@@ -19,9 +20,9 @@ public abstract class Unit extends ImageSprite implements Copyable<Unit>, Indexa
 
     //movement per tick
     protected float speed = 2;
-
     //distance from target to take action
     protected float range = 2;
+    protected int health = 10;
 
     public Unit(GameColor color, double x, double y) {
         super(x, y);
@@ -42,6 +43,9 @@ public abstract class Unit extends ImageSprite implements Copyable<Unit>, Indexa
 
     //called when we are at the target
     protected abstract List<TickAction> atTarget();
+
+    //called when the unit is killed
+    public abstract void kill();
 
     /**
      * Move toward target, or call atTarget if the target is in range
@@ -90,5 +94,13 @@ public abstract class Unit extends ImageSprite implements Copyable<Unit>, Indexa
     @Override
     public int getIndex(){
         return this.index;
+    }
+
+    public void dealDamage(int damage){
+        health -= damage;
+    }
+
+    public int getHealth() {
+        return health;
     }
 }

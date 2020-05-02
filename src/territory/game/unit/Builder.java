@@ -66,4 +66,9 @@ public class Builder extends Unit implements Serializable {
 
         return Arrays.asList(new PlaceStoneAction(color, project.getBuildable(this), 5));
     }
+
+    @Override
+    public void kill(){
+        this.project.removeBuilder(this);
+    }
 }

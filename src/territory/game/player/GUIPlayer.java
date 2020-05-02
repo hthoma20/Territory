@@ -5,6 +5,7 @@ import territory.game.GameState;
 import territory.game.action.player.CreatePostAction;
 import territory.game.action.player.CreateVillageAction;
 import territory.game.info.GameInfo;
+import territory.game.info.LostUnitInfo;
 import territory.game.info.PlayerSetupInfo;
 import territory.gui.Controller;
 
@@ -36,6 +37,9 @@ public class GUIPlayer extends Player {
         //the game is setup so take initial actions
         if(info instanceof PlayerSetupInfo){
             takeInitialActions();
+        }
+        else if(info instanceof LostUnitInfo){
+            controller.lostUnit(((LostUnitInfo) info).getUnitIndex());
         }
     }
 

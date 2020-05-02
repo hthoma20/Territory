@@ -1,4 +1,4 @@
-package territory.gui.selection;
+package territory.gui;
 
 import territory.game.Indexable;
 import territory.game.construction.Post;
@@ -84,6 +84,14 @@ public class Selection {
 
     public Set<Integer> getIndices(){
         return selectedIndices;
+    }
+
+    /**
+     * Called to indicate that a unit was lost
+     * @param index the index of the lost unit
+     */
+    public void lostUnit(int index){
+
     }
 
     /**
