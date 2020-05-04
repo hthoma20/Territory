@@ -1,7 +1,6 @@
 package territory.gui;
 
-import territory.game.GameState;
-import territory.game.Inventory;
+import territory.game.*;
 import territory.game.construction.Buildable;
 import territory.game.sprite.Sprite;
 import javafx.geometry.Point2D;
@@ -14,6 +13,9 @@ import javafx.scene.transform.Affine;
 import javafx.scene.transform.Rotate;
 
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class CanvasPainter {
     //coordinates of center of board
@@ -35,6 +37,11 @@ public class CanvasPainter {
     //configurations for highlighting things
     private double highlightMargin = 2;
     private double highlightOpacity = .2;
+
+    private HashMap<GameColor, Paint> territoryPaint = new HashMap<GameColor, Paint>(){{
+        put(GameColor.PURPLE, Color.rgb(147, 11, 232, .7));
+        put(GameColor.GREEN, Color.rgb(4, 147, 47, .7));
+    }};
 
     public CanvasPainter(Controller controller, Canvas canvas){
         this.controller = controller;
@@ -58,6 +65,7 @@ public class CanvasPainter {
         gc.save();
         this.transformCanvas();
 
+        paintTerritories(currentState.getPlayerTerritories());
         paintSprites(currentState.getAllSprites());
         paintSelection();
 
@@ -106,7 +114,7 @@ public class CanvasPainter {
     /**
      * Highlight selected items
      */
-    public void paintSelection(){
+    private void paintSelection(){
 
         gc.setFill(new Color(0, 1, 0, highlightOpacity));
 
@@ -128,13 +136,22 @@ public class CanvasPainter {
         }
     }
 
-    public void highlightSprite(Sprite sprite){
+    private void highlightSprite(Sprite sprite){
         double x = sprite.getX() - highlightMargin;
         double y = sprite.getY() - highlightMargin;
         double width = sprite.getImage().getWidth() + 2*highlightMargin;
         double height = sprite.getImage().getHeight() + 2*highlightMargin;
 
         gc.fillRect(x, y, width, height);
+    }
+
+    private void paintTerritories(List<TerritoryList> allTerritories){
+        for(TerritoryList territories : allTerritories){
+            for(Territory territory : territories){
+                gc.setFill(territoryPaint.get(territory.getColor()));
+                gc.fillPolygon(territory.getXPoints(), territory.getYPoints(), territory.getNumPoints());
+            }
+        }
     }
 
     /**

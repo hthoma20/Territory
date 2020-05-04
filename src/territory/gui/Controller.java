@@ -285,6 +285,7 @@ public class Controller {
         else{
             System.out.println(String.format("Creating wall %d %d", currentSelection.getIndex(), post.getIndex()));
             this.player.takeAction(new CreateWallAction(player.getColor(), currentSelection.getIndex(), post.getIndex()));
+            currentSelection.clear();
         }
     }
 

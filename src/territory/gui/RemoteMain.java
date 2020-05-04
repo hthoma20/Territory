@@ -67,7 +67,7 @@ public class RemoteMain extends Application {
 
         ComputerPlayer player2 = new ComputerPlayer();
 
-        LocalGame game = new LocalGame(player, player2);
+        LocalGame game = new LocalGame(player);
 
         game.start();
     }

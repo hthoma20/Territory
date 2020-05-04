@@ -15,6 +15,7 @@ public class JoinerMain {
         HttpServer server = HttpServer.create(new InetSocketAddress(PORT), 0);
 
         server.createContext("/games", new GetObjectHttpHandler(joiner::handleGetGameRequest));
+
         server.start();
         System.out.println("Started on port: " + PORT);
     }

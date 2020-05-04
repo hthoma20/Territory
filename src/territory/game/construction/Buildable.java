@@ -13,7 +13,7 @@ public abstract class Buildable extends ImageSprite implements Copyable<Buildabl
 
     private BuildSlot[] slots;
 
-    protected int stoneNeeded = 100;
+    protected int stoneNeeded = 0;
 
     public Buildable(GameColor color, double x, double y) {
         super(x, y);

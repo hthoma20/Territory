@@ -2,10 +2,7 @@ package territory.game;
 
 import territory.game.action.*;
 import territory.game.action.player.*;
-import territory.game.action.tick.DealDamageAction;
-import territory.game.action.tick.GiveGoldAction;
-import territory.game.action.tick.GiveStoneAction;
-import territory.game.action.tick.PlaceStoneAction;
+import territory.game.action.tick.*;
 import territory.game.construction.*;
 import territory.game.info.IllegalActionInfo;
 import territory.game.info.IllegalWallInfo;
@@ -69,6 +66,9 @@ public class ActionProcessor {
         }
         else if(action instanceof DealDamageAction){
             processDealDamageAction((DealDamageAction)action);
+        }
+        else if(action instanceof CheckTerritoryAction){
+            processCheckTerritoryAction((CheckTerritoryAction)action);
         }
 
         //Unhandled action
@@ -306,5 +306,10 @@ public class ActionProcessor {
 
             unitOwner.sendInfo(new LostUnitInfo(unit.getIndex()));
         }
+    }
+
+    private void processCheckTerritoryAction(CheckTerritoryAction action){
+        TerritoryList territories = Territory.fromWalls(currentInventory.getWalls());
+        currentState.setPlayerTerritories(player.getIndex(), territories);
     }
 }

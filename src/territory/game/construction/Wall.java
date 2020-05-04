@@ -4,19 +4,27 @@ import territory.game.Copyable;
 import territory.game.GameColor;
 import territory.game.Indexable;
 
+import territory.game.Tickable;
+import territory.game.action.tick.CheckTerritoryAction;
+import territory.game.action.tick.TickAction;
 import territory.game.sprite.ImageStore;
 import territory.game.sprite.Sprite;
 import javafx.geometry.Point2D;
 
 import java.io.Serializable;
+import java.util.Arrays;
+import java.util.List;
 
-public class Wall implements Copyable<Wall>, Indexable, Serializable {
+public class Wall implements Tickable, Copyable<Wall>, Indexable, Serializable {
     private GameColor color;
 
     private int index = -1;
 
     private Post post1, post2;
     private WallSegment[] segments;
+
+    //whether this wall was complete before this tick
+    private boolean wasComplete = false;
 
     public Wall(GameColor color, Post post1, Post post2){
         this.color = color;
@@ -93,6 +101,14 @@ public class Wall implements Copyable<Wall>, Indexable, Serializable {
         return this.color;
     }
 
+    public Post getPost1() {
+        return post1;
+    }
+
+    public Post getPost2() {
+        return post2;
+    }
+
     public boolean isComplete() {
         for(WallSegment segment : segments){
             if(!segment.isComplete()){
@@ -101,5 +117,19 @@ public class Wall implements Copyable<Wall>, Indexable, Serializable {
         }
 
         return true;
+    }
+
+    @Override
+    public List<TickAction> tick(){
+        if(wasComplete){
+            return null;
+        }
+
+        if(isComplete()){
+            wasComplete = true;
+            return Arrays.asList(new CheckTerritoryAction(this.color));
+        }
+
+        return null;
     }
 }
