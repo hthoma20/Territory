@@ -1,5 +1,6 @@
 package territory.gui;
 
+import javafx.geometry.Point2D;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
 import territory.game.GameNotStartedException;
@@ -16,6 +17,7 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import territory.game.player.RemotePlayer;
+import territory.game.sprite.Sprite;
 
 public class RemoteMain extends Application {
 
@@ -56,6 +58,16 @@ public class RemoteMain extends Application {
         catch(GameNotStartedException exc){
             primaryStage.setScene(errorScene(exc));
         }
+
+        Point2D A = new Point2D(0,-1);
+        Point2D B = new Point2D(1,0);
+        Point2D C = new Point2D(0,1);
+        Point2D D = new Point2D(-1,0);
+
+        System.out.println("A to B: " + Sprite.rotation(A.subtract(B)));
+        System.out.println("B to A: " + Sprite.rotation(B.subtract(A)));
+        System.out.println("B to C: " + Sprite.rotation(B.subtract(C)));
+        System.out.println("A to C: " + Sprite.rotation(A.subtract(C)));
     }
 
     private void  startServer(){

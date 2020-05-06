@@ -45,20 +45,20 @@ public class GUIPlayer extends Player {
     }
 
     private void takeInitialActions(){
-        takeAction(new CreateVillageAction(this.color, 100, 100));
-        takeAction(new CreatePostAction(this.color, 0, 50));
+
+        takeAction(new CreatePostAction(this.color, 0, 100));
+        takeAction(new CreatePostAction(this.color, -50, 50));
         takeAction(new CreatePostAction(this.color, 50, 0));
-        takeAction(new CreatePostAction(this.color, 100, 50));
         takeAction(new CreatePostAction(this.color, 150, 50));
-        takeAction(new CreatePostAction(this.color, 200, 0));
-        takeAction(new CreatePostAction(this.color, 250, 50));
+        takeAction(new CreatePostAction(this.color, 100, 100));
+        takeAction(new CreatePostAction(this.color, 50, 50));
 
         takeAction(new CreateWallAction(this.color, 0, 1));
         takeAction(new CreateWallAction(this.color, 1, 2));
-        takeAction(new CreateWallAction(this.color, 2, 0));
-
+        takeAction(new CreateWallAction(this.color, 2, 3));
         takeAction(new CreateWallAction(this.color, 3, 4));
+        takeAction(new CreateWallAction(this.color, 4, 0));
+
         takeAction(new CreateWallAction(this.color, 4, 5));
-        takeAction(new CreateWallAction(this.color, 5, 3));
     }
 }

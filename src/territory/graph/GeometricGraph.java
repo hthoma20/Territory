@@ -189,6 +189,8 @@ public class GeometricGraph {
 	 * @return the perimeter of this graph
 	 */
 	public List<GeometricGraphNode> perimeter(){
+		nameNodes();
+
 		//sort neighbors by angle
 		for(GeometricGraphNode node : nodes){
 			node.sortNeighbors();
@@ -215,6 +217,15 @@ public class GeometricGraph {
 		}
 
 		return perimeter;
+	}
+
+	public void nameNodes(){
+		nodes.sort(Comparator.comparingDouble(n -> n.getX()));
+
+		char name = 'A';
+		for(GeometricGraphNode node : nodes){
+			node.setName(name++);
+		}
 	}
 
 	public int size(){

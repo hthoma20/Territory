@@ -8,6 +8,8 @@ import java.util.*;
 public class GeometricGraphNode {
 	
 	private double x, y;
+
+	private String name = "";
 	
 	private List<GeometricGraphNode> neighbors = new ArrayList<>();
 	
@@ -40,11 +42,11 @@ public class GeometricGraphNode {
 		HashMap<GeometricGraphNode, Double> angles = new HashMap<>(neighbors.size());
 
 		for(GeometricGraphNode neighbor : neighbors){
-			Point2D vector = new Point2D(x, y).subtract(neighbor.x, neighbor.y);
+			Point2D vector = new Point2D(neighbor.x, neighbor.y).subtract(this.x, this.y);
 			angles.put(neighbor, Sprite.rotation(vector));
 		}
 
-		Collections.sort(neighbors, Comparator.comparingDouble(angles::get));
+		neighbors.sort(Comparator.comparingDouble(angles::get));
 	}
 
 	public double getX() {
@@ -55,8 +57,16 @@ public class GeometricGraphNode {
 		return y;
 	}
 
+	public void setName(char name){
+		this.name = Character.toString(name);
+	}
+
+	public void setName(String name){
+		this.name = name;
+	}
+
 	@Override
 	public String toString(){
-		return String.format("(%.2f, %.2f)", x, y);
+		return String.format("%s (%.2f, %.2f)", name, x, y);
 	}
 }
