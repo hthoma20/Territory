@@ -114,9 +114,29 @@ public class ActionProcessor {
             return;
         }
 
+        //cannot build wall on single post
         if(action.getPost1Index() == action.getPost2Index()){
             player.sendInfo(IllegalWallInfo.DUPLICATE_POST);
             return;
+        }
+
+        //cannot build wall intersecting current wall
+        for(Wall existingWall : currentInventory.getWalls()){
+
+            boolean post1Matches = existingWall.containsPost(post1);
+            boolean post2Matches = existingWall.containsPost(post2);
+
+            //if this wall matches the new wall
+            if(post1Matches && post2Matches){
+                player.sendInfo(IllegalWallInfo.DUPLICATE_WALL);
+                return;
+            }
+
+            //if this wall intersects the new wall
+            if(!post1Matches && !post2Matches && existingWall.intersects(post1, post2)){
+                player.sendInfo(IllegalWallInfo.INTERSECTION);
+                return;
+            }
         }
 
         //if we get here, the wall is legal

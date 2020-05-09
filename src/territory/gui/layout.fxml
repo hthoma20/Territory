@@ -28,6 +28,8 @@
             <Label fx:id="stoneLabel" text="25" GridPane.columnIndex="1" GridPane.rowIndex="0" />
             <Label text="Gold:" GridPane.columnIndex="0" GridPane.rowIndex="1" />
             <Label fx:id="goldLabel" text="0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+            <Label text="Territory:" GridPane.columnIndex="0" GridPane.rowIndex="2" />
+            <Label fx:id="territoryLabel" text="0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
         </GridPane>
 
         <!-- Train units -->

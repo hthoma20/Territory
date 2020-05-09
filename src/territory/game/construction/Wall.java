@@ -1,5 +1,8 @@
 package territory.game.construction;
 
+import javafx.scene.shape.Line;
+import javafx.scene.shape.Path;
+import javafx.scene.shape.Shape;
 import territory.game.Copyable;
 import territory.game.GameColor;
 import territory.game.Indexable;
@@ -11,6 +14,7 @@ import territory.game.sprite.ImageStore;
 import territory.game.sprite.Sprite;
 import javafx.geometry.Point2D;
 
+import java.awt.geom.Line2D;
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.List;
@@ -107,6 +111,26 @@ public class Wall implements Tickable, Copyable<Wall>, Indexable, Serializable {
 
     public Post getPost2() {
         return post2;
+    }
+
+    /**
+     * @param post the post to check for
+     * @return whether the given post is one of this wall's posts
+     */
+    public boolean containsPost(Post post){
+        return post == post1 || post == post2;
+    }
+
+    /**
+     * @param p1 the start of the given line segment
+     * @param p2 the end of the given line segment
+     * @return whether this wall intersects the given line segment
+     */
+    public boolean intersects(Post p1, Post p2){
+        Line2D thisWall = new Line2D.Double(this.post1.getX(), this.post1.getY(), this.post2.getX(), this.post2.getY());
+        Line2D newWall = new Line2D.Double(p1.getX(), p1.getY(), p2.getX(), p2.getY());
+
+        return thisWall.intersectsLine(newWall);
     }
 
     public boolean isComplete() {

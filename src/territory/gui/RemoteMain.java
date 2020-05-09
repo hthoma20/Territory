@@ -1,6 +1,8 @@
 package territory.gui;
 
 import javafx.geometry.Point2D;
+import javafx.scene.shape.Line;
+import javafx.scene.shape.Shape;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
 import territory.game.GameNotStartedException;
@@ -27,7 +29,7 @@ public class RemoteMain extends Application {
     private double initialWidth = 605, initialHeight = 405;
 
     @Override
-    public void start(Stage primaryStage) throws Exception{
+    public void start(Stage primaryStage) throws Exception {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("layout.fxml"));
 
         Parent root = loader.load();
@@ -58,16 +60,6 @@ public class RemoteMain extends Application {
         catch(GameNotStartedException exc){
             primaryStage.setScene(errorScene(exc));
         }
-
-        Point2D A = new Point2D(0,-1);
-        Point2D B = new Point2D(1,0);
-        Point2D C = new Point2D(0,1);
-        Point2D D = new Point2D(-1,0);
-
-        System.out.println("A to B: " + Sprite.rotation(A.subtract(B)));
-        System.out.println("B to A: " + Sprite.rotation(B.subtract(A)));
-        System.out.println("B to C: " + Sprite.rotation(B.subtract(C)));
-        System.out.println("A to C: " + Sprite.rotation(A.subtract(C)));
     }
 
     private void  startServer(){

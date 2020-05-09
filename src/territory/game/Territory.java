@@ -183,7 +183,20 @@ public class Territory implements Copyable<Territory>, Serializable {
     }
 
     public double area(){
-        return 0;
+        /*
+         * Implementation of this algorithm:
+         * https://www.mathopenref.com/coordpolygonarea2.html
+         */
+
+        double area = 0;
+        int j = getNumPoints()-1;
+
+        for (int i = 0; i < getNumPoints(); i++){
+            area += (xPoints[i]+xPoints[j]) * (yPoints[i]-yPoints[j]);
+            j = i;  //j is previous vertex to i
+        }
+
+        return area/2;
     }
 
     public GameColor getColor() {

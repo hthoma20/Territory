@@ -36,6 +36,10 @@ public class RemoteGame implements Game {
 
     @Override
     public void start(){
+        System.out.println("Remote game -- nothing to start.");
+    }
+
+    public void connect(){
         boolean connected = connection.connect();
 
         if(!connected){

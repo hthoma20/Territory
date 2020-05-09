@@ -3,6 +3,7 @@ package territory.gui;
 import territory.game.GameColor;
 import territory.game.GameState;
 import territory.game.Inventory;
+import territory.game.TerritoryList;
 import territory.game.action.player.*;
 import territory.game.construction.*;
 import territory.game.player.GUIPlayer;
@@ -29,6 +30,7 @@ public class Controller {
     @FXML private Label populationLabel;
     @FXML private Label stoneLabel;
     @FXML private Label goldLabel;
+    @FXML private Label territoryLabel;
 
     private CanvasPainter canvasPainter;
 
@@ -87,8 +89,10 @@ public class Controller {
     private void updateLabels(){
         //update the labels
         Inventory inventory = currentState.getPlayerInventory(this.player);
+        TerritoryList territories = currentState.getPlayerTerritories(this.player.getIndex());
         stoneLabel.setText(""+inventory.getStone());
         goldLabel.setText(""+inventory.getGold());
+        territoryLabel.setText(String.format("%,d", (int)(territories.area()/1000)));
 
         if(currentSelection.getType() != Selection.Type.VILLAGE){
             populationLabel.setText("No village selected");

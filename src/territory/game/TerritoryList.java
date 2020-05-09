@@ -1,10 +1,7 @@
 package territory.game;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 public class TerritoryList implements Copyable<TerritoryList>, Iterable<Territory>, Serializable {
     private List<Territory> territories = new ArrayList<>();
@@ -43,6 +40,15 @@ public class TerritoryList implements Copyable<TerritoryList>, Iterable<Territor
 
     public void add(Territory territory){
         this.territories.add(territory);
+    }
+
+    public double area(){
+        double area = 0;
+        for(Territory territory : territories){
+            area += territory.area();
+        }
+
+        return area;
     }
 
     @Override

@@ -132,6 +132,10 @@ public class GameState implements Copyable<GameState>, Serializable {
         return playerTerritories;
     }
 
+    public TerritoryList getPlayerTerritories(int index){
+        return playerTerritories.get(index);
+    }
+
     public void setPlayerTerritories(int index, TerritoryList territories){
         playerTerritories.set(index, territories);
     }
