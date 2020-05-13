@@ -1,6 +1,7 @@
 package territory.game.player;
 
 import territory.game.Game;
+import territory.game.GameColor;
 import territory.game.GameState;
 import territory.game.action.player.CreatePostAction;
 import territory.game.action.player.CreateVillageAction;
@@ -37,7 +38,7 @@ public class GUIPlayer extends Player {
 
         //the game is setup so take initial actions
         if(info instanceof PlayerSetupInfo){
-            takeInitialActions();
+            //takeInitialActions();
         }
         else if(info instanceof LostUnitInfo){
             controller.lostUnit(((LostUnitInfo) info).getUnitIndex());
@@ -46,12 +47,14 @@ public class GUIPlayer extends Player {
 
     private void takeInitialActions(){
 
-        takeAction(new CreatePostAction(this.color, 0, 100));
-        takeAction(new CreatePostAction(this.color, -50, 50));
-        takeAction(new CreatePostAction(this.color, 50, 0));
-        takeAction(new CreatePostAction(this.color, 150, 50));
-        takeAction(new CreatePostAction(this.color, 100, 100));
-        takeAction(new CreatePostAction(this.color, 50, 50));
+        int offset = color == GameColor.PURPLE ? 0 : 200;
+
+        takeAction(new CreatePostAction(this.color, 0 + offset, 100));
+        takeAction(new CreatePostAction(this.color, -50  + offset, 50));
+        takeAction(new CreatePostAction(this.color, 50 + offset, 0));
+        takeAction(new CreatePostAction(this.color, 150 + offset, 50));
+        takeAction(new CreatePostAction(this.color, 100 + offset, 100));
+        takeAction(new CreatePostAction(this.color, 50 + offset, 50));
 
         takeAction(new CreateWallAction(this.color, 0, 1));
         takeAction(new CreateWallAction(this.color, 1, 2));

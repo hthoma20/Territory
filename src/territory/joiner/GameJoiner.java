@@ -1,6 +1,8 @@
 package territory.joiner;
 
 import com.sun.net.httpserver.HttpExchange;
+import territory.game.info.GameStartedInfo;
+import territory.game.player.Player;
 import territory.game.player.RemotePlayer;
 
 import java.io.InputStream;
@@ -67,6 +69,10 @@ public class GameJoiner {
         }
 
         room.startGame();
+
+        for(Player player : room.getPlayers()){
+            player.sendInfo(new GameStartedInfo(String.format("Game in room %d started", roomId)));
+        }
 
         return null;
     }

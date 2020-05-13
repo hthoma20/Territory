@@ -2,13 +2,17 @@ package territory.game;
 
 import territory.game.action.player.PlayerAction;
 import territory.game.info.GameInfo;
+import territory.game.info.JoinInfo;
 import territory.game.player.GUIPlayer;
+import territory.joiner.JoinInfoListener;
 
 public class RemoteGame implements Game {
 
     private GUIPlayer localPlayer;
 
     private SocketConnection connection;
+
+    private JoinInfoListener joinInfoListener;
 
     public RemoteGame(GUIPlayer localPlayer, String host, int port){
         this.localPlayer = localPlayer;
@@ -23,10 +27,18 @@ public class RemoteGame implements Game {
         }
         else if(object instanceof GameInfo){
             localPlayer.sendInfo((GameInfo) object);
+
+            if(object instanceof JoinInfo && joinInfoListener != null){
+                joinInfoListener.receiveJoinInfo((JoinInfo) object);
+            }
         }
         else{
             System.err.println("Unexpected object received");
         }
+    }
+
+    public void setJoinInfoListener(JoinInfoListener joinInfoListener){
+        this.joinInfoListener = joinInfoListener;
     }
 
     @Override
