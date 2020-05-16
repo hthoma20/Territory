@@ -47,6 +47,8 @@ public class Controller {
 
     private Point2D patrolAreaCenter = null;
 
+    private Point2D mousePoint;
+
     private GUIPlayer player;
 
     public void init(Scene scene){
@@ -62,6 +64,9 @@ public class Controller {
         canvas.setOnScroll(this::handleCanvasScroll);
         canvas.setOnMouseDragged(this::handleCanvasDragged);
         canvas.setOnMousePressed(this::handleCanvasMousePressed);
+        canvas.setOnMouseMoved(e -> {
+            mousePoint = canvasPainter.canvasPointToGamePoint(e.getX(), e.getY());
+        });
     }
 
     public void setPlayer(GUIPlayer player){
@@ -408,5 +413,13 @@ public class Controller {
 
     public GUIPlayer getPlayer() {
         return player;
+    }
+
+    public Point2D getPatrolAreaCenter() {
+        return patrolAreaCenter;
+    }
+
+    public Point2D getMousePoint() {
+        return mousePoint;
     }
 }

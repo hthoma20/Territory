@@ -167,4 +167,8 @@ public class GameState implements Copyable<GameState>, Serializable {
     public Mine getMine(int index){
         return mines.get(index);
     }
+
+    public GameColor[] colorsInUse(){
+        return Arrays.copyOf(GameColor.values(), numPlayers);
+    }
 }

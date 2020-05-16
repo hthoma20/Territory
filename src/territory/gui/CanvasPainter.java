@@ -70,6 +70,7 @@ public class CanvasPainter {
         paintTerritories(currentState.getPlayerTerritories());
         paintSprites(currentState.getAllSprites());
         paintSelection();
+        paintPatrolArea();
 
         gc.restore();
     }
@@ -145,6 +146,18 @@ public class CanvasPainter {
                 }
                 return;
         }
+    }
+
+    private void paintPatrolArea(){
+        Point2D patrolCenter = controller.getPatrolAreaCenter();
+
+        if(patrolCenter == null){
+            return;
+        }
+
+        double rad = patrolCenter.distance(controller.getMousePoint());
+        gc.setStroke(Color.DARKOLIVEGREEN);
+        strokeCircle(patrolCenter.getX(), patrolCenter.getY(), rad);
     }
 
     private void strokeCircle(double x, double y, double radius){

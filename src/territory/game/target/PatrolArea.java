@@ -186,7 +186,7 @@ public class PatrolArea implements Tickable, Copyable<PatrolArea>, Serializable 
     private List<Unit> findEnemyUnitsInArea(GameState state){
         ArrayList<Unit> allEnemies = new ArrayList<>();
 
-        for(GameColor color : GameColor.values()){
+        for(GameColor color : state.colorsInUse()){
             if(color == this.color){
                 continue;
             }
