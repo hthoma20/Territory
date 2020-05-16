@@ -1,13 +1,9 @@
 package territory.gui;
 
-import javafx.geometry.Point2D;
-import javafx.scene.shape.Line;
-import javafx.scene.shape.Shape;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
 import territory.game.GameNotStartedException;
 import territory.game.LocalGame;
-import territory.game.ServerMain;
 import territory.game.RemoteGame;
 import territory.game.player.ComputerPlayer;
 import territory.game.player.GUIPlayer;
@@ -19,7 +15,6 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import territory.game.player.RemotePlayer;
-import territory.game.sprite.Sprite;
 
 public class RemoteMain extends Application {
 
@@ -39,11 +34,12 @@ public class RemoteMain extends Application {
         //exit on close
         primaryStage.setOnCloseRequest(this::exitApplication);
 
-        primaryStage.setScene(new Scene(root, initialWidth, initialHeight));
+        Scene scene = new Scene(root, initialWidth, initialHeight);
+        primaryStage.setScene(scene);
         primaryStage.show();
 
         Controller controller = loader.getController();
-        controller.init();
+        controller.init(scene);
 
         GUIPlayer guiPlayer = new GUIPlayer(controller);
 

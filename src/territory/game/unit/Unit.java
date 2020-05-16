@@ -2,11 +2,13 @@ package territory.game.unit;
 
 import territory.game.Copyable;
 import territory.game.GameColor;
+import territory.game.GameState;
 import territory.game.Indexable;
 import territory.game.action.tick.TickAction;
 import territory.game.sprite.ImageSprite;
 import territory.game.sprite.Sprite;
 import javafx.geometry.Point2D;
+import territory.game.target.Target;
 
 import java.io.Serializable;
 import java.util.List;
@@ -51,9 +53,10 @@ public abstract class Unit extends ImageSprite
      * Move toward target, or call atTarget if the target is in range
      * @return a list of TickActions to be taken if the Unit is at its target
      *          or null if they are not
+     * @param currentState
      */
     @Override
-    public List<TickAction> tick(){
+    public List<TickAction> tick(GameState currentState){
         Target target = this.getTarget();
 
         if(target == null){

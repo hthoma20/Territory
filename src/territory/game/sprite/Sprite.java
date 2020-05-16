@@ -1,5 +1,6 @@
 package territory.game.sprite;
 
+import territory.game.GameState;
 import territory.game.LocalGame;
 import territory.game.Tickable;
 import territory.game.action.tick.TickAction;
@@ -51,7 +52,7 @@ public abstract class Sprite implements Tickable, Serializable {
     }
 
     @Override
-    public List<TickAction> tick(){
+    public List<TickAction> tick(GameState currentState){
         return null;
     }
 

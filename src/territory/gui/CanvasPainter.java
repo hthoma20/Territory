@@ -1,7 +1,7 @@
 package territory.gui;
 
 import territory.game.*;
-import territory.game.construction.Buildable;
+import territory.game.target.Buildable;
 import territory.game.sprite.Sprite;
 import javafx.geometry.Point2D;
 import javafx.scene.canvas.Canvas;
@@ -11,11 +11,13 @@ import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 import javafx.scene.transform.Affine;
 import javafx.scene.transform.Rotate;
+import territory.game.target.PatrolArea;
+import territory.game.unit.Soldier;
+import territory.game.unit.Unit;
 
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class CanvasPainter {
     //coordinates of center of board
@@ -130,10 +132,23 @@ public class CanvasPainter {
                 return;
             case UNITS:
                 for(int index : selection.getIndices()){
-                    highlightSprite(currentInventory.getUnit(index));
+                    Unit unit = currentInventory.getUnit(index);
+
+                    highlightSprite(unit);
+
+                    if(unit instanceof Soldier){
+                        PatrolArea area = ((Soldier) unit).getPatrolArea();
+                        if(area != null){
+                            strokeCircle(area.getX(), area.getY(), area.getRadius());
+                        }
+                    }
                 }
                 return;
         }
+    }
+
+    private void strokeCircle(double x, double y, double radius){
+        gc.strokeOval(x - radius, y - radius, 2*radius, 2*radius);
     }
 
     private void highlightSprite(Sprite sprite){

@@ -51,7 +51,7 @@ public class JoinerMain extends Application {
         primaryStage.show();
 
         Controller gameController = mainLayoutLoader.getController();
-        gameController.init();
+        gameController.init(gameScene);
 
         GUIPlayer guiPlayer = new GUIPlayer(gameController);
 
@@ -61,7 +61,9 @@ public class JoinerMain extends Application {
 
         joinController.onGameStart( game -> {
             System.out.println("Starting game");
-            primaryStage.setScene(gameScene);
+            Platform.runLater(() -> {
+                primaryStage.setScene(gameScene);
+            });
         });
 
         joinController.start();

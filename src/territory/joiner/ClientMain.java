@@ -45,7 +45,7 @@ public class ClientMain extends Application {
         primaryStage.show();
 
         Controller gameController = mainLayoutLoader.getController();
-        gameController.init();
+        gameController.init(gameScene);
 
         GUIPlayer guiPlayer = new GUIPlayer(gameController);
 

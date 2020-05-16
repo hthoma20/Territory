@@ -36,12 +36,12 @@ public class ImageStore {
         loadImage(Village.class, GameColor.GREEN, "constructions/Village_green.png");
 
         //Posts
-        loadImage(Post.class, GameColor.PURPLE, "constructions/Post_purple.png");
-        loadImage(Post.class, GameColor.GREEN, "constructions/Post_green.png");
+        loadImage(Post.class, GameColor.PURPLE, "constructions/Post_green.png");
+        loadImage(Post.class, GameColor.GREEN, "constructions/Post_purple.png");
 
         //Walls
-        loadImage(WallSegment.class, GameColor.PURPLE, "constructions/Wall_purple.png");
-        loadImage(WallSegment.class, GameColor.GREEN, "constructions/Wall_green.png");
+        loadImage(WallSegment.class, GameColor.PURPLE, "constructions/Wall.png");
+        loadImage(WallSegment.class, GameColor.GREEN, "constructions/Wall.png");
 
         //Mines
         loadImage(Mine.class, null, "constructions/Mine.png");

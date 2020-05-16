@@ -1,13 +1,7 @@
 package territory.game.construction;
 
-import javafx.scene.shape.Line;
-import javafx.scene.shape.Path;
-import javafx.scene.shape.Shape;
-import territory.game.Copyable;
-import territory.game.GameColor;
-import territory.game.Indexable;
+import territory.game.*;
 
-import territory.game.Tickable;
 import territory.game.action.tick.CheckTerritoryAction;
 import territory.game.action.tick.TickAction;
 import territory.game.sprite.ImageStore;
@@ -49,6 +43,8 @@ public class Wall implements Tickable, Copyable<Wall>, Indexable, Serializable {
         for(int i = 0; i < src.segments.length; i++){
             this.segments[i] = src.segments[i].copy();
         }
+
+        this.wasComplete = src.wasComplete;
     }
 
     @Override
@@ -60,12 +56,17 @@ public class Wall implements Tickable, Copyable<Wall>, Indexable, Serializable {
         Point2D p1 = new Point2D(post1.getX(), post1.getY());
         Point2D p2 = new Point2D(post2.getX(), post2.getY());
 
+
         //compute distance between the two posts
         Point2D distance = p2.subtract(p1);
         double segmentLength = ImageStore.store.imageFor(WallSegment.class, color).getWidth();
 
-        //round up the number of segments needed
-        int numSegments = (int)(distance.magnitude()/segmentLength + 1);
+        //round down the number of segments needed
+        double postDiameter = ImageStore.store.imageFor(Post.class, color).getWidth();
+        double wallLength = distance.magnitude() - postDiameter;
+        int numSegments = (int)(wallLength/segmentLength);
+
+        System.out.println(wallLength);
 
         //create the segments array
         segments = new WallSegment[numSegments];
@@ -76,9 +77,12 @@ public class Wall implements Tickable, Copyable<Wall>, Indexable, Serializable {
         //find the rotation of each segment
         double rotation = Sprite.rotation(distance);
 
+        //find the start point for the wall
+        Point2D start = p1.add(normalDistance.multiply(postDiameter/2));
+
         //initialize each segment
         for(int i = 0; i < segments.length; i++){
-            Point2D segmentPoint = p1.add(distance.normalize().multiply(segmentLength*i));
+            Point2D segmentPoint = start.add(normalDistance.multiply(segmentLength*i));
             segments[i] = new WallSegment(this, segmentPoint.getX(), segmentPoint.getY(), rotation);
         }
     }
@@ -144,7 +148,7 @@ public class Wall implements Tickable, Copyable<Wall>, Indexable, Serializable {
     }
 
     @Override
-    public List<TickAction> tick(){
+    public List<TickAction> tick(GameState currentState){
         if(wasComplete){
             return null;
         }

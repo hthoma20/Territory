@@ -9,6 +9,8 @@ import territory.game.info.IllegalWallInfo;
 import territory.game.info.InsufficientFundsInfo;
 import territory.game.info.LostUnitInfo;
 import territory.game.player.Player;
+import territory.game.target.BuildProject;
+import territory.game.target.BuildType;
 import territory.game.unit.Builder;
 import territory.game.unit.Miner;
 import territory.game.unit.Soldier;
@@ -284,10 +286,7 @@ public class ActionProcessor {
         }
 
         Soldier soldier = (Soldier)unit;
-        Unit target = currentState.getPlayerInventory(game.getPlayer(action.getTargetColor()))
-                        .getUnit(action.getTargetIndex());
-
-        soldier.setTarget(target);
+        soldier.setPatrolArea(action.getPatrolArea());
     }
 
     private void processGiveGoldAction(GiveGoldAction action) {

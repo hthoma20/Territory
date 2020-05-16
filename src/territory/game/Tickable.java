@@ -10,6 +10,7 @@ public interface Tickable {
      *
      * @return a queue of actions to be taken at the end of this tick
      *          or null if no actions need to be taken
+     * @param currentState the state of the game
      */
-    List<TickAction> tick();
+    List<TickAction> tick(GameState currentState);
 }

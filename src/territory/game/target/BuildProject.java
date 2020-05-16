@@ -1,8 +1,8 @@
-package territory.game.construction;
+package territory.game.target;
 
 import territory.game.Copyable;
+import territory.game.construction.Wall;
 import territory.game.unit.Builder;
-import territory.game.unit.Target;
 
 import java.io.Serializable;
 import java.util.*;

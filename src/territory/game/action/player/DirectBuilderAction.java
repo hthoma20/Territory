@@ -1,8 +1,7 @@
 package territory.game.action.player;
 
 import territory.game.GameColor;
-import territory.game.construction.BuildProject;
-import territory.game.construction.BuildType;
+import territory.game.target.BuildType;
 
 import java.io.Serializable;
 

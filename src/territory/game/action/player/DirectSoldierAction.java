@@ -1,6 +1,7 @@
 package territory.game.action.player;
 
 import territory.game.GameColor;
+import territory.game.target.PatrolArea;
 
 import java.io.Serializable;
 
@@ -8,13 +9,15 @@ public class DirectSoldierAction extends DirectUnitAction implements Serializabl
 
     private GameColor targetColor;
 
-    public DirectSoldierAction(GameColor color, int unitIndex, GameColor targetColor, int targetIndex) {
-        super(color, unitIndex, targetIndex);
+    private PatrolArea patrolArea;
 
-        this.targetColor = targetColor;
+    public DirectSoldierAction(GameColor color, int unitIndex, PatrolArea patrolArea) {
+        super(color, unitIndex, -1);
+
+        this.patrolArea = patrolArea;
     }
 
-    public GameColor getTargetColor() {
-        return targetColor;
+    public PatrolArea getPatrolArea() {
+        return patrolArea;
     }
 }

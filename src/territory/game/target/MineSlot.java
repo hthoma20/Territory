@@ -1,4 +1,6 @@
-package territory.game.construction;
+package territory.game.target;
+
+import territory.game.construction.Mine;
 
 import java.io.Serializable;
 

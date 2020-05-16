@@ -71,6 +71,8 @@
                     GridPane.columnIndex="0" GridPane.rowIndex="1" />
             <Button text="Place Post" onAction="#placePostButtonClicked"
                     GridPane.columnIndex="0" GridPane.rowIndex="2" />
+            <Button text="Direct Soldier" onAction="#directSoldierButtonClicked"
+                    GridPane.columnIndex="0" GridPane.rowIndex="3" />
 
         </GridPane>
 

@@ -5,6 +5,7 @@ import territory.game.GameColor;
 import territory.game.Indexable;
 import territory.game.RNG;
 import territory.game.sprite.ImageSprite;
+import territory.game.target.MineSlot;
 
 import java.io.Serializable;
 
@@ -16,7 +17,6 @@ public class Mine extends ImageSprite implements Copyable<Mine>, Indexable, Seri
 
     public Mine(double x, double y){
         super(x, y);
-
         initSlots();
     }
 

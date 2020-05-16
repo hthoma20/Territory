@@ -1,8 +1,7 @@
 package territory.game.action.tick;
 
 import territory.game.GameColor;
-import territory.game.construction.Buildable;
-import territory.game.player.Player;
+import territory.game.target.Buildable;
 
 public class PlaceStoneAction extends TickAction {
     private Buildable buildable;

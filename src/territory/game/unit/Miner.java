@@ -1,12 +1,14 @@
 package territory.game.unit;
 
+import territory.game.GameState;
 import territory.game.RNG;
 import territory.game.action.tick.GiveGoldAction;
 import territory.game.action.tick.GiveStoneAction;
 import territory.game.action.tick.TickAction;
 import territory.game.construction.Mine;
-import territory.game.construction.MineSlot;
+import territory.game.target.MineSlot;
 import territory.game.player.Player;
+import territory.game.target.Target;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -53,12 +55,12 @@ public class Miner extends Unit implements Serializable {
     }
 
     @Override
-    public List<TickAction> tick() {
+    public List<TickAction> tick(GameState currentState) {
         if(target != null) {
             findTarget();
         }
 
-        return super.tick();
+        return super.tick(currentState);
     }
 
     private void findTarget(){

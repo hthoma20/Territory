@@ -1,4 +1,4 @@
-package territory.game.construction;
+package territory.game.target;
 
 import java.io.Serializable;
 

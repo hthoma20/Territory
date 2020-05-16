@@ -1,8 +1,7 @@
-package territory.game.construction;
+package territory.game.target;
 
 import territory.game.Copyable;
 import territory.game.GameColor;
-import territory.game.player.Player;
 import territory.game.sprite.ImageSprite;
 
 import java.io.Serializable;

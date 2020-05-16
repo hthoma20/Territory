@@ -13,6 +13,7 @@ import territory.game.player.GUIPlayer;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.net.HttpURLConnection;
+import java.net.SocketException;
 import java.net.URL;
 import java.util.List;
 import java.util.function.Consumer;
@@ -25,6 +26,8 @@ public class JoinController {
 
     private String remoteHost;
     private int remotePort;
+
+    private static int requestCount = 0;
 
     private GUIPlayer player;
 
@@ -123,10 +126,15 @@ public class JoinController {
 
         connection.connect();
 
-        ObjectInputStream in = new ObjectInputStream(connection.getInputStream());
-        Object obj = in.readObject();
+        Object obj = null;
 
-        in.close();
+        try(ObjectInputStream in = new ObjectInputStream(connection.getInputStream())){
+            obj = in.readObject();
+        }
+//        catch(SocketException ignored){
+//            ignored.printStackTrace();
+//        }
+
         connection.disconnect();
 
         return obj;

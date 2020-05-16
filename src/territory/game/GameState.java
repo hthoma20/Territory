@@ -5,11 +5,12 @@ import territory.game.construction.Mine;
 import territory.game.construction.Wall;
 import territory.game.player.Player;
 import territory.game.sprite.Sprite;
+import territory.game.target.PatrolArea;
+import territory.game.unit.Soldier;
+import territory.game.unit.Unit;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class GameState implements Copyable<GameState>, Serializable {
@@ -21,6 +22,7 @@ public class GameState implements Copyable<GameState>, Serializable {
 
     public GameState(int numPlayers){
         this.numPlayers = numPlayers;
+
         initInventories();
         initTerritories();
         initMines();
@@ -69,7 +71,7 @@ public class GameState implements Copyable<GameState>, Serializable {
     private void initMines(){
         this.mines = new ArrayList<>();
 
-        mines.add(new Mine(0, 0));
+        mines.add(new Mine(0,0));
 
         for(int i = 0; i < mines.size(); i++){
             mines.get(i).setIndex(i);
@@ -80,6 +82,7 @@ public class GameState implements Copyable<GameState>, Serializable {
         List<Tickable> tickables = new ArrayList<>();
         tickables.addAll(getAllSprites());
         tickables.addAll(getAllWalls());
+        tickables.addAll(getAllPatrolAreas());
         return tickables;
     }
 
@@ -111,6 +114,23 @@ public class GameState implements Copyable<GameState>, Serializable {
         return walls;
     }
 
+    public Set<PatrolArea> getAllPatrolAreas(){
+        HashSet<PatrolArea> patrolAreas = new HashSet<>();
+
+        for(Inventory inventory : playerInventories){
+            for(Unit unit : inventory.getUnits()){
+                if(unit instanceof Soldier){
+                    PatrolArea area = ((Soldier) unit).getPatrolArea();
+                    if(area != null){
+                        patrolAreas.add(area);
+                    }
+                }
+            }
+        }
+
+        return patrolAreas;
+    }
+
     public List<Sprite> getSpritesContaining(double x, double y){
         return getAllSprites().stream().filter(sprite -> sprite.containsPoint(x, y))
                 .collect(Collectors.toList());
@@ -122,6 +142,10 @@ public class GameState implements Copyable<GameState>, Serializable {
 
     public Inventory getPlayerInventory(Player player){
         return getPlayerInventory(player.getIndex());
+    }
+
+    public Inventory getPlayerInventory(GameColor color){
+        return getPlayerInventory(color.ordinal());
     }
 
     public List<Inventory> getPlayerInventories(){

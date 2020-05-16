@@ -1,6 +1,8 @@
 package territory.game.info;
 
-public class GameStartedInfo extends JoinInfo {
+import java.io.Serializable;
+
+public class GameStartedInfo extends JoinInfo implements Serializable {
     public GameStartedInfo(String message) {
         super(message);
     }

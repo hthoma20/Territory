@@ -4,10 +4,10 @@ package territory.game;
 import territory.game.action.GameAction;
 import territory.game.action.player.PlayerAction;
 import territory.game.action.tick.TickAction;
-import territory.game.info.GameStartedInfo;
 import territory.game.info.PlayerSetupInfo;
 import territory.game.player.Player;
 
+import java.rmi.ServerError;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -35,6 +35,7 @@ public class LocalGame implements Game {
 
         this.state = new GameState(players.length);
         this.actionProcessor = new ActionProcessor(this);
+
     }
 
     /**
@@ -80,7 +81,7 @@ public class LocalGame implements Game {
 
             //advance the territory.game
             for (Tickable tickable : state.getAllTickables()) {
-                List<TickAction> actionsToTake = tickable.tick();
+                List<TickAction> actionsToTake = tickable.tick(state);
                 if(actionsToTake != null){
                     actionQueue.addAll(actionsToTake);
                 }
@@ -99,6 +100,8 @@ public class LocalGame implements Game {
             if(sleepTime > 0){
                 sleep(sleepTime);
             }
+
+            assertInvariants();
         }
     }
 
@@ -155,5 +158,29 @@ public class LocalGame implements Game {
         }
 
         return player;
+    }
+
+
+    private void assertInvariants(){
+        if(!colorsMatchPlayers()){
+            System.out.println("Player colors don't line up with indices");
+            System.exit(1);
+        }
+    }
+
+    private boolean colorsMatchPlayers(){
+        int index = 0;
+        for(GameColor color : GameColor.values()){
+
+            if(index++ >= players.length){
+                break;
+            }
+
+            if(getPlayer(color).getColor() != color){
+                return false;
+            }
+        }
+
+        return true;
     }
 }

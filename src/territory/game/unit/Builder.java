@@ -3,8 +3,9 @@ package territory.game.unit;
 import territory.game.RNG;
 import territory.game.action.tick.PlaceStoneAction;
 import territory.game.action.tick.TickAction;
-import territory.game.construction.BuildProject;
+import territory.game.target.BuildProject;
 import territory.game.player.Player;
+import territory.game.target.Target;
 
 import java.io.Serializable;
 import java.util.Arrays;

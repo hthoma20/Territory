@@ -35,7 +35,8 @@ public class HttpObjectHandler implements HttpHandler {
         if(in != null) {
             try {
                 requestObject = in.readObject();
-            } catch (ClassNotFoundException e) {
+            }
+            catch (ClassNotFoundException e) {
                 e.printStackTrace();
             }
         }

@@ -68,11 +68,15 @@ public class GameJoiner {
             throw new JoinerException(String.format("No Room with id %d", roomId));
         }
 
+        System.out.println("Game joiner starting game");
+
         room.startGame();
 
         for(Player player : room.getPlayers()){
             player.sendInfo(new GameStartedInfo(String.format("Game in room %d started", roomId)));
         }
+
+        System.out.println("Sent start game info to players");
 
         return null;
     }

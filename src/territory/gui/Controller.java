@@ -1,5 +1,6 @@
 package territory.gui;
 
+import javafx.scene.Scene;
 import territory.game.GameColor;
 import territory.game.GameState;
 import territory.game.Inventory;
@@ -8,6 +9,8 @@ import territory.game.action.player.*;
 import territory.game.construction.*;
 import territory.game.player.GUIPlayer;
 import territory.game.sprite.Sprite;
+import territory.game.target.BuildType;
+import territory.game.target.PatrolArea;
 import territory.game.unit.Unit;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
@@ -22,7 +25,6 @@ import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.Pane;
 
 import java.util.List;
-import java.util.Set;
 
 public class Controller {
     @FXML private Pane canvasPane;
@@ -31,6 +33,8 @@ public class Controller {
     @FXML private Label stoneLabel;
     @FXML private Label goldLabel;
     @FXML private Label territoryLabel;
+
+    private Scene scene;
 
     private CanvasPainter canvasPainter;
 
@@ -41,9 +45,13 @@ public class Controller {
 
     private Selection currentSelection = new Selection();
 
+    private Point2D patrolAreaCenter = null;
+
     private GUIPlayer player;
 
-    public void init(){
+    public void init(Scene scene){
+        this.scene = scene;
+
         //resize the canvas with its pane
         this.canvas.widthProperty().bind(canvasPane.widthProperty());
         this.canvas.heightProperty().bind(canvasPane.heightProperty());
@@ -152,6 +160,12 @@ public class Controller {
     }
 
     @FXML
+    public void directSoldierButtonClicked(ActionEvent actionEvent){
+        System.out.println("Direct Soldier Mode");
+        this.currentInteractMode = InteractMode.DIRECT_SOLDIER;
+    }
+
+    @FXML
     public void scrollModeButtonClicked(ActionEvent actionEvent) {
         System.out.println("Scroll Mode");
         this.currentInteractMode = InteractMode.SCROLL;
@@ -186,7 +200,7 @@ public class Controller {
     }
 
     private void handleCanvasMouseClick(MouseEvent e){
-        //find the point that was clicked in the territory.game
+        //find the point that was clicked in the territory game
         Point2D gamePoint = canvasPainter.canvasPointToGamePoint(e.getX(), e.getY());
 
         //first check if something was clicked
@@ -214,6 +228,9 @@ public class Controller {
                 action = new CreatePostAction(this.player.getColor(), gamePoint.getX(), gamePoint.getY());
                 break;
             case SCROLL:
+                break;
+            case DIRECT_SOLDIER:
+                directSoldier(gamePoint);
                 break;
             default:
                 System.out.println(String.format("Unhandled interact mode %s", currentInteractMode));
@@ -313,6 +330,21 @@ public class Controller {
         }
     }
 
+    private void directSoldier(Point2D point){
+        if(patrolAreaCenter == null){
+            patrolAreaCenter = point;
+        }
+        else{
+            double radius = patrolAreaCenter.distance(point);
+            PatrolArea patrolArea =
+                    new PatrolArea(this.player.getColor(), patrolAreaCenter.getX(), patrolAreaCenter.getY(), radius);
+            directSoldiersTo(patrolArea);
+            currentSelection.clear();
+            patrolAreaCenter = null;
+        }
+
+    }
+
     /**
      * Send the selected units to the given project
      * @param index the index of the project to send builders to
@@ -336,11 +368,11 @@ public class Controller {
 
     /**
      * Send the selected units to the given mine
-     * @param index the index of the unit to send the soldiers to
+     * @param patrolArea the area to patrol
      */
-    private void directSoldiersTo(GameColor color, int index){
+    private void directSoldiersTo(PatrolArea patrolArea){
         for(int soldierIndex : currentSelection.getIndices()){
-            player.takeAction(new DirectSoldierAction(player.getColor(), soldierIndex, color, index));
+            player.takeAction(new DirectSoldierAction(player.getColor(), soldierIndex, patrolArea));
         }
     }
 
@@ -361,12 +393,8 @@ public class Controller {
         //if this is our player, select it
         if(unit.getColor() == player.getColor()) {
             currentSelection.select(unit);
-            return;
-        }
 
-        //otherwise if units are selected, send them there
-        if(currentSelection.getType() == Selection.Type.UNITS) {
-            directSoldiersTo(unit.getColor(), unit.getIndex());
+
         }
     }
 

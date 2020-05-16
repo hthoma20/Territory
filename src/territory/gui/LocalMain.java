@@ -26,11 +26,12 @@ public class LocalMain extends Application {
         //exit on close
         primaryStage.setOnCloseRequest(this::exitApplication);
 
-        primaryStage.setScene(new Scene(root, initialWidth, initialHeight));
+        Scene scene = new Scene(root, initialWidth, initialHeight);
+        primaryStage.setScene(scene);
         primaryStage.show();
 
         Controller controller = loader.getController();
-        controller.init();
+        controller.init(scene);
 
         Player guiPlayer = new GUIPlayer(controller);
 

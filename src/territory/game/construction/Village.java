@@ -2,9 +2,9 @@ package territory.game.construction;
 
 import territory.game.Copyable;
 import territory.game.GameColor;
+import territory.game.GameState;
 import territory.game.Indexable;
 import territory.game.action.tick.TickAction;
-import territory.game.player.Player;
 import territory.game.sprite.ImageSprite;
 
 import java.io.Serializable;
@@ -41,7 +41,7 @@ public class Village extends ImageSprite implements Copyable<Village>, Indexable
     }
 
     @Override
-    public List<TickAction> tick(){
+    public List<TickAction> tick(GameState currentState){
 
         timeToSpawn--;
         if(timeToSpawn < 1){

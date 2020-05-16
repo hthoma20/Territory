@@ -1,7 +1,6 @@
 package territory.game.action.tick;
 
 import territory.game.GameColor;
-import territory.game.construction.Buildable;
 import territory.game.unit.Unit;
 
 public class DealDamageAction extends TickAction {
