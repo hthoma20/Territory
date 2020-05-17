@@ -53,38 +53,57 @@ public class Wall implements Tickable, Copyable<Wall>, Indexable, Serializable {
     }
 
     private void initWallSegments(){
-        Point2D p1 = new Point2D(post1.getX(), post1.getY());
-        Point2D p2 = new Point2D(post2.getX(), post2.getY());
 
+        //find the points on the edges of the posts
+        double postRadius = ImageStore.store.imageFor(Post.class, this.color).getWidth()/2;
+        Point2D post1Point = new Point2D(post1.getX() + postRadius, post1.getY() + postRadius);
+        Point2D post2Point = new Point2D(post2.getX() + postRadius, post2.getY() + postRadius);
 
-        //compute distance between the two posts
-        Point2D distance = p2.subtract(p1);
-        double segmentLength = ImageStore.store.imageFor(WallSegment.class, color).getWidth();
-
-        //round down the number of segments needed
-        double postDiameter = ImageStore.store.imageFor(Post.class, color).getWidth();
-        double wallLength = distance.magnitude() - postDiameter;
-        int numSegments = (int)(wallLength/segmentLength);
-
-        System.out.println(wallLength);
-
-        //create the segments array
-        segments = new WallSegment[numSegments];
-
-        //normalize the distance vector for use in the initilization loop
-        Point2D normalDistance = distance.normalize();
-
-        //find the rotation of each segment
-        double rotation = Sprite.rotation(distance);
-
-        //find the start point for the wall
-        Point2D start = p1.add(normalDistance.multiply(postDiameter/2));
-
-        //initialize each segment
-        for(int i = 0; i < segments.length; i++){
-            Point2D segmentPoint = start.add(normalDistance.multiply(segmentLength*i));
-            segments[i] = new WallSegment(this, segmentPoint.getX(), segmentPoint.getY(), rotation);
+        if(post1Point.getY() > post2Point.getY()){
+            Point2D temp = post1Point;
+            post1Point = post2Point;
+            post2Point = temp;
         }
+
+        Point2D normalDistance = post2Point.subtract(post1Point).normalize();
+        Point2D p1 = post1Point.add(normalDistance.multiply(postRadius));
+        Point2D p2 = post1Point.add(normalDistance.multiply(post1Point.subtract(post2Point).magnitude() - postRadius));
+
+        Point2D distanceVector = p2.subtract(p1);
+        double distance = distanceVector.magnitude();
+
+        //compute the number of segments
+        double segmentLength = ImageStore.store.imageFor(WallSegment.class, this.color).getWidth();
+        int numSegments = (int)(distance/segmentLength);
+
+        //compute spacing
+        // there is a space on both side of each segment, so there are numSegments+1 spaces, so
+        // numSegments*segmentLength + (numSegments+1)*spacing = distance
+        double spacing = (distance - numSegments*segmentLength)/(numSegments+1);
+
+        //create the segments
+        this.segments = new WallSegment[numSegments];
+
+        //compute rotation of walls
+        double rotation = Sprite.rotation(distanceVector);
+
+        //find the placement of each segment
+        //the for loop iterates distance from p1
+        double start = spacing;
+        double step = spacing + segmentLength;
+        double stop = distance - step;
+        int index = 0;
+        for(double d = start; d <= stop+.001; d += step){
+
+            Point2D distanceFromP1 = normalDistance.multiply(d);
+            Point2D segmentPoint = p1.add(distanceFromP1);
+
+            WallSegment wallSegment = new WallSegment(this, segmentPoint.getX(), segmentPoint.getY(), rotation);
+            segments[index] = wallSegment;
+            index++;
+        }
+
+        System.out.printf("Created wall with %d segments", segments.length);
     }
 
     @Override

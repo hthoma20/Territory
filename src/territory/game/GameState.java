@@ -92,11 +92,12 @@ public class GameState implements Copyable<GameState>, Serializable {
         sprites.addAll(mines);
 
         for(Inventory inventory : playerInventories){
+            sprites.addAll(inventory.getPosts());
+
             for(Wall wall : inventory.getWalls()){
                 sprites.addAll(Arrays.asList(wall.getSegments()));
             }
 
-            sprites.addAll(inventory.getPosts());
             sprites.addAll(inventory.getVillages());
             sprites.addAll(inventory.getUnits());
         }

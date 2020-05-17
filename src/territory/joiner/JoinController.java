@@ -43,7 +43,6 @@ public class JoinController {
         List<GameRoom> rooms = (List<GameRoom>) remoteRequest("/games");
 
         GameRoom room = rooms.get(0);
-        System.out.println(room);
 
         displayGameRooms(rooms);
     }

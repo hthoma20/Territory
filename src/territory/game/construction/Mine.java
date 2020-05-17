@@ -1,5 +1,6 @@
 package territory.game.construction;
 
+import javafx.geometry.Point2D;
 import territory.game.Copyable;
 import territory.game.GameColor;
 import territory.game.Indexable;
@@ -40,12 +41,18 @@ public class Mine extends ImageSprite implements Copyable<Mine>, Indexable, Seri
         double width = getImage().getWidth();
         double height = getImage().getHeight();
 
-        slots = new MineSlot[]{
-                new MineSlot(this, x, y),
-                new MineSlot(this, x + width, y),
-                new MineSlot(this, x, y + height),
-                new MineSlot(this, x + width, y + height),
+        Point2D[] slotPoints = new Point2D[]{
+                new Point2D(17, 10),
+                new Point2D(57, 22),
+                new Point2D(53,51),
+                new Point2D(19,53)
         };
+
+        slots = new MineSlot[slotPoints.length];
+        for(int i = 0; i < slots.length; i++){
+            Point2D slotPoint = slotPoints[i];
+            slots[i] = new MineSlot(this, x + slotPoint.getX(), y + slotPoint.getY());
+        }
     }
 
     /**

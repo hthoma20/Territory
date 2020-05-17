@@ -1,4 +1,4 @@
-package territory.gui;
+package territory;
 
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
@@ -15,6 +15,7 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import territory.game.player.RemotePlayer;
+import territory.gui.Controller;
 
 public class RemoteMain extends Application {
 

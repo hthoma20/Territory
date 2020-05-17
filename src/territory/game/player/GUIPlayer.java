@@ -54,5 +54,8 @@ public class GUIPlayer extends Player {
 
         takeAction(new CreateVillageAction(color, -100, 100));
         takeAction(new TrainSoldiersAction(color, 0, 5));
+
+        takeAction(new CreatePostAction(color, 50, 50));
+        takeAction(new CreatePostAction(color, 150,150));
     }
 }

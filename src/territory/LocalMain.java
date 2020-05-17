@@ -1,4 +1,4 @@
-package territory.gui;
+package territory;
 
 import territory.game.player.GUIPlayer;
 import territory.game.LocalGame;
@@ -10,6 +10,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
+import territory.gui.Controller;
 
 public class LocalMain extends Application {
 

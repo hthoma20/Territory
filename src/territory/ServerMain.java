@@ -1,4 +1,4 @@
-package territory.joiner;
+package territory;
 
 import com.sun.net.httpserver.HttpServer;
 import territory.game.LocalGame;

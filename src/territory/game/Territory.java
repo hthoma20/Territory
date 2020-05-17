@@ -3,6 +3,7 @@ package territory.game;
 import territory.game.GameColor;
 import territory.game.construction.Post;
 import territory.game.construction.Wall;
+import territory.game.sprite.ImageStore;
 import territory.graph.GeometricGraph;
 import territory.graph.GeometricGraphNode;
 
@@ -175,8 +176,9 @@ public class Territory implements Copyable<Territory>, Serializable {
 
         HashMap<Post, GeometricGraphNode> mapping = new HashMap<>();
 
+        double postRadius = ImageStore.store.imageFor(Post.class, walls.get(0).getColor()).getWidth()/2;
         for(Post post : posts){
-            mapping.put(post, new GeometricGraphNode(post.getX(), post.getY()));
+            mapping.put(post, new GeometricGraphNode(post.getX() + postRadius, post.getY() + postRadius));
         }
 
         return mapping;
