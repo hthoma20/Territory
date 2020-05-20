@@ -6,11 +6,12 @@ import territory.game.GameColor;
 import territory.game.Indexable;
 import territory.game.RNG;
 import territory.game.sprite.ImageSprite;
+import territory.game.sprite.ImageStore;
 import territory.game.target.MineSlot;
 
 import java.io.Serializable;
 
-public class Mine extends ImageSprite implements Copyable<Mine>, Indexable, Serializable {
+public class Mine extends ImageSprite implements Construction, Copyable<Mine>, Indexable, Serializable {
 
     private int index = -1;
 
@@ -83,6 +84,11 @@ public class Mine extends ImageSprite implements Copyable<Mine>, Indexable, Seri
     @Override
     public GameColor getColor() {
         return null;
+    }
+
+    @Override
+    public double getBuildZoneRadius(){
+        return ImageStore.store.imageFor(this, null).getWidth();
     }
 
     /**

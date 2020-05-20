@@ -1,13 +1,11 @@
 package territory.game;
 
+import javafx.geometry.Point2D;
 import territory.game.action.*;
 import territory.game.action.player.*;
 import territory.game.action.tick.*;
 import territory.game.construction.*;
-import territory.game.info.IllegalActionInfo;
-import territory.game.info.IllegalWallInfo;
-import territory.game.info.InsufficientFundsInfo;
-import territory.game.info.LostUnitInfo;
+import territory.game.info.*;
 import territory.game.player.Player;
 import territory.game.target.BuildProject;
 import territory.game.target.BuildType;
@@ -79,7 +77,6 @@ public class ActionProcessor {
         }
     }
 
-
     private void processCreateVillageAction(CreateVillageAction action){
         if(currentInventory.takeGold(Village.getGoldPrice())){
             Village village = new Village(player.getColor(), action.getX(), action.getY());
@@ -91,13 +88,21 @@ public class ActionProcessor {
     }
 
     private void processCreatePostAction(CreatePostAction action){
-        if(currentInventory.takeGold(Post.getGoldPrice())){
-            Post post = new Post(player.getColor(), action.getX(), action.getY());
-            currentInventory.addPost(post);
-        }
-        else{
+        int goldPrice = Post.getGoldPrice();
+
+        if(currentInventory.getGold() < goldPrice){
             player.sendInfo(new InsufficientFundsInfo());
+            return;
         }
+
+        if(!isValidConstruction(action.getX(), action.getY())) {
+            player.sendInfo(new IllegalConstructionInfo());
+            return;
+        }
+
+        currentInventory.takeGold(goldPrice);
+        Post post = new Post(player.getColor(), action.getX(), action.getY());
+        currentInventory.addPost(post);
     }
 
     private void processCreateWallAction(CreateWallAction action){
@@ -144,6 +149,24 @@ public class ActionProcessor {
         //if we get here, the wall is legal
         Wall wall = new Wall(player.getColor(), post1, post2);
         currentInventory.addWall(wall);
+    }
+
+    /**
+     * @param x the x-coord of the new construction
+     * @param y the y-coord of the new construction
+     * @return whether it is legal to build a new construction at the given coordinate
+     */
+    private boolean isValidConstruction(double x, double y){
+        Point2D point = new Point2D(x, y);
+
+        for(Construction construction : currentState.getAllConstructions()){
+            //if the point is too close to the construction
+            if(point.distance(construction.getX(), construction.getY()) < construction.getBuildZoneRadius()){
+                return false;
+            }
+        }
+
+        return true;
     }
 
     private void processTrainUnitsAction(TrainUnitsAction action){

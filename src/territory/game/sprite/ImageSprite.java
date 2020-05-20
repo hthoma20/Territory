@@ -3,6 +3,7 @@ package territory.game.sprite;
 import territory.game.GameColor;
 import javafx.scene.image.Image;
 
+import javafx.geometry.Point2D;
 import java.io.Serializable;
 
 public abstract class ImageSprite extends Sprite implements Serializable {
@@ -28,6 +29,11 @@ public abstract class ImageSprite extends Sprite implements Serializable {
     @Override
     public Image getImage(){
         return ImageStore.store.imageFor(this, getColor());
+    }
+
+    @Override
+    public double distanceFrom(double x, double y){
+        return new Point2D(this.x, this.y).distance(x, y);
     }
 
     public abstract GameColor getColor();

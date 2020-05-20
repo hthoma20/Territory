@@ -1,8 +1,10 @@
 package territory.game;
 
 
+import territory.game.construction.Construction;
 import territory.game.construction.Mine;
 import territory.game.construction.Wall;
+import territory.game.construction.WallSegment;
 import territory.game.player.Player;
 import territory.game.sprite.Sprite;
 import territory.game.target.PatrolArea;
@@ -90,19 +92,40 @@ public class GameState implements Copyable<GameState>, Serializable {
         List<Sprite> sprites = new ArrayList<>();
 
         sprites.addAll(mines);
+        sprites.addAll(getAllWallSegments());
 
         for(Inventory inventory : playerInventories){
             sprites.addAll(inventory.getPosts());
-
-            for(Wall wall : inventory.getWalls()){
-                sprites.addAll(Arrays.asList(wall.getSegments()));
-            }
 
             sprites.addAll(inventory.getVillages());
             sprites.addAll(inventory.getUnits());
         }
 
         return sprites;
+    }
+
+    public List<Construction> getAllConstructions(){
+        List<Construction> constructions = new ArrayList<>();
+
+        constructions.addAll(mines);
+        constructions.addAll(getAllWallSegments());
+
+        for(Inventory inventory : playerInventories){
+            constructions.addAll(inventory.getPosts());
+            constructions.addAll(inventory.getVillages());
+        }
+
+        return constructions;
+    }
+
+    public List<WallSegment> getAllWallSegments(){
+        ArrayList<WallSegment> segments = new ArrayList<>();
+
+        for(Wall wall : getAllWalls()){
+            segments.addAll(Arrays.asList(wall.getSegments()));
+        }
+
+        return segments;
     }
 
     public List<Wall> getAllWalls(){

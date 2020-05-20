@@ -6,11 +6,12 @@ import territory.game.GameState;
 import territory.game.Indexable;
 import territory.game.action.tick.TickAction;
 import territory.game.sprite.ImageSprite;
+import territory.game.sprite.ImageStore;
 
 import java.io.Serializable;
 import java.util.List;
 
-public class Village extends ImageSprite implements Copyable<Village>, Indexable, Serializable {
+public class Village extends ImageSprite implements Construction, Copyable<Village>, Indexable, Serializable {
 
     private GameColor color;
 
@@ -55,6 +56,11 @@ public class Village extends ImageSprite implements Copyable<Village>, Indexable
     @Override
     public GameColor getColor() {
         return color;
+    }
+
+    @Override
+    public double getBuildZoneRadius(){
+        return ImageStore.store.imageFor(this, color).getWidth();
     }
 
     public static int getGoldPrice(){

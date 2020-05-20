@@ -11,7 +11,6 @@ import territory.gui.Controller;
 import territory.joiner.JoinController;
 
 import java.net.URL;
-import java.util.Map;
 
 public class ClientMain extends Application {
 
@@ -21,7 +20,6 @@ public class ClientMain extends Application {
     private double initialWidth = 605, initialHeight = 405;
 
     public static void main(String[] args){
-
         launch(args);
     }
 

@@ -2,12 +2,13 @@ package territory.game.construction;
 
 import territory.game.GameColor;
 import territory.game.Indexable;
+import territory.game.sprite.ImageStore;
 import territory.game.target.BuildSlot;
 import territory.game.target.Buildable;
 
 import java.io.Serializable;
 
-public class Post extends Buildable implements Indexable, Serializable {
+public class Post extends Buildable implements Construction, Indexable, Serializable {
 
     private int index = -1;
 
@@ -38,6 +39,13 @@ public class Post extends Buildable implements Indexable, Serializable {
     @Override
     public int getIndex() {
         return this.index;
+    }
+
+    @Override
+    public double getBuildZoneRadius(){
+        //post width + wall segment width
+        return ImageStore.store.imageFor(this, color).getWidth() +
+                ImageStore.store.imageFor(WallSegment.class, color).getWidth();
     }
 
     @Override

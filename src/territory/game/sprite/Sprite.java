@@ -69,4 +69,11 @@ public abstract class Sprite implements Tickable, Serializable {
 
         return rotation;
     }
+
+    /**
+     * @param x the x-coord of the point
+     * @param y the y-coord of the point
+     * @return the distance from the given point to this sprite
+     */
+    public abstract double distanceFrom(double x, double y);
 }
