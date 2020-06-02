@@ -63,16 +63,18 @@
 
         </GridPane>
 
-        <!-- Place mode -->
+        <!-- Interact mode -->
         <GridPane styleClass="border" >
-            <Button text="Scroll" onAction="#scrollModeButtonClicked"
+            <Button text="Select Units" onAction="#interactModeButtonClicked" userData="SELECT"
                     GridPane.columnIndex="0" GridPane.rowIndex="0" />
-            <Button text="Place Village" onAction="#placeVillageButtonClicked"
+            <Button text="Scroll" onAction="#interactModeButtonClicked" userData="SCROLL"
                     GridPane.columnIndex="0" GridPane.rowIndex="1" />
-            <Button text="Place Post" onAction="#placePostButtonClicked"
+            <Button text="Place Village" onAction="#interactModeButtonClicked" userData="CREATE_VILLAGE"
                     GridPane.columnIndex="0" GridPane.rowIndex="2" />
-            <Button text="Direct Soldier" onAction="#directSoldierButtonClicked"
+            <Button text="Place Post" onAction="#interactModeButtonClicked" userData="CREATE_POST"
                     GridPane.columnIndex="0" GridPane.rowIndex="3" />
+            <Button text="Direct Soldier" onAction="#interactModeButtonClicked" userData="SELECT"
+                    GridPane.columnIndex="0" GridPane.rowIndex="4" />
 
         </GridPane>
 

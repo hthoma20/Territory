@@ -9,6 +9,7 @@ import territory.game.info.*;
 import territory.game.player.Player;
 import territory.game.target.BuildProject;
 import territory.game.target.BuildType;
+import territory.game.target.PatrolArea;
 import territory.game.unit.Builder;
 import territory.game.unit.Miner;
 import territory.game.unit.Soldier;
@@ -78,13 +79,22 @@ public class ActionProcessor {
     }
 
     private void processCreateVillageAction(CreateVillageAction action){
-        if(currentInventory.takeGold(Village.getGoldPrice())){
-            Village village = new Village(player.getColor(), action.getX(), action.getY());
-            currentInventory.addVillage(village);
-        }
-        else{
+        int goldPrice = Post.getGoldPrice();
+
+        if(currentInventory.getGold() < goldPrice){
             player.sendInfo(new InsufficientFundsInfo());
+            return;
         }
+
+        if(!isValidConstruction(action.getX(), action.getY())) {
+            player.sendInfo(new IllegalConstructionInfo());
+            return;
+        }
+
+        currentInventory.takeGold(Village.getGoldPrice());
+        Village village = new Village(player.getColor(), action.getX(), action.getY());
+        currentInventory.addVillage(village);
+
     }
 
     private void processCreatePostAction(CreatePostAction action){
@@ -235,14 +245,19 @@ public class ActionProcessor {
         }
 
         if(action instanceof TrainSoldiersAction){
-            return new Soldier(player, x, y);
+            Soldier soldier = new Soldier(player, x, y);
+            soldier.setPatrolArea(new PatrolArea(soldier.getColor(), x, y, 1));
+            return soldier;
         }
 
         throw new RuntimeException("Unknown unit type to create");
     }
 
     private void processDirectUnitAction(DirectUnitAction action){
-        Unit unit = currentInventory.getUnit(action.getUnitIndex());
+        if(action.getUnitIndex() >= currentInventory.getUnits().size()){
+            player.sendInfo(new IllegalActionInfo("Direct unit index out of bounds"));
+            return;
+        }
 
         if(action instanceof DirectBuilderAction){
             processDirectBuilderAction((DirectBuilderAction)action);

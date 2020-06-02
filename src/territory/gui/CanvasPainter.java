@@ -70,6 +70,7 @@ public class CanvasPainter {
         paintTerritories(currentState.getPlayerTerritories());
         paintSprites(currentState.getAllSprites());
         paintSelection();
+        paintSelectBox();
         paintPatrolArea();
 
         gc.restore();
@@ -133,7 +134,14 @@ public class CanvasPainter {
                 return;
             case UNITS:
                 for(int index : selection.getIndices()){
-                    Unit unit = currentInventory.getUnit(index);
+                    Unit unit;
+                    try {
+                        unit = currentInventory.getUnit(index);
+                    }
+                    catch(IndexOutOfBoundsException exc){
+                        exc.printStackTrace();
+                        continue;
+                    }
 
                     highlightSprite(unit);
 
@@ -158,6 +166,20 @@ public class CanvasPainter {
         double rad = patrolCenter.distance(controller.getMousePoint());
         gc.setStroke(Color.DARKOLIVEGREEN);
         strokeCircle(patrolCenter.getX(), patrolCenter.getY(), rad);
+    }
+
+    private void paintSelectBox(){
+        Point2D selectionPoint = controller.getSelectionPoint();
+        Point2D mousePoint = controller.getMousePoint();
+
+        if(selectionPoint == null || mousePoint == null){
+            return;
+        }
+
+        RectangleArea selection = new RectangleArea(selectionPoint, mousePoint);
+
+        gc.setStroke(Color.BLUEVIOLET);
+        gc.strokeRect(selection.getTopX(), selection.getTopY(), selection.getWidth(), selection.getHeight());
     }
 
     private void strokeCircle(double x, double y, double radius){
@@ -221,7 +243,7 @@ public class CanvasPainter {
             aspectRatio += .1;
         }
 
-        aspectRatio = bound(aspectRatio, 0, 10);
+        aspectRatio = bound(aspectRatio, .1, 10);
     }
 
     /**

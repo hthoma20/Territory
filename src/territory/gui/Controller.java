@@ -1,10 +1,7 @@
 package territory.gui;
 
 import javafx.scene.Scene;
-import territory.game.GameColor;
-import territory.game.GameState;
-import territory.game.Inventory;
-import territory.game.TerritoryList;
+import territory.game.*;
 import territory.game.action.player.*;
 import territory.game.construction.*;
 import territory.game.player.GUIPlayer;
@@ -46,6 +43,7 @@ public class Controller {
     private Selection currentSelection = new Selection();
 
     private Point2D patrolAreaCenter = null;
+    private Point2D selectionPoint = null;
 
     private Point2D mousePoint;
 
@@ -60,10 +58,13 @@ public class Controller {
 
         this.canvasPainter = new CanvasPainter(this, canvas);
 
+        this.currentInteractMode = InteractMode.SELECT;
+
         canvas.setOnMouseClicked(this::handleCanvasMouseClick);
         canvas.setOnScroll(this::handleCanvasScroll);
         canvas.setOnMouseDragged(this::handleCanvasDragged);
         canvas.setOnMousePressed(this::handleCanvasMousePressed);
+        canvas.setOnMouseReleased(this::handleCanvasMouseReleased);
         canvas.setOnMouseMoved(e -> {
             mousePoint = canvasPainter.canvasPointToGamePoint(e.getX(), e.getY());
         });
@@ -153,31 +154,16 @@ public class Controller {
     }
 
     @FXML
-    public void placePostButtonClicked(ActionEvent actionEvent) {
-        System.out.println("Place Post Mode");
-        this.currentInteractMode = InteractMode.CREATE_POST;
+    public void interactModeButtonClicked(ActionEvent actionEvent){
+        String mode = userDataString(actionEvent);
+        this.currentInteractMode = InteractMode.valueOf(mode);
+        System.out.println("Setting interaction mode to " + currentInteractMode);
     }
-
-    @FXML
-    public void placeVillageButtonClicked(ActionEvent actionEvent) {
-        System.out.println("Place Village Mode");
-        this.currentInteractMode = InteractMode.CREATE_VILLAGE;
-    }
-
-    @FXML
-    public void directSoldierButtonClicked(ActionEvent actionEvent){
-        System.out.println("Direct Soldier Mode");
-        this.currentInteractMode = InteractMode.DIRECT_SOLDIER;
-    }
-
-    @FXML
-    public void scrollModeButtonClicked(ActionEvent actionEvent) {
-        System.out.println("Scroll Mode");
-        this.currentInteractMode = InteractMode.SCROLL;
-    }
-
 
     private void handleCanvasDragged(MouseEvent e){
+
+        mousePoint = canvasPainter.canvasPointToGamePoint(e.getX(), e.getY());
+
         if(currentInteractMode != InteractMode.SCROLL){
             return;
         }
@@ -196,12 +182,34 @@ public class Controller {
     }
 
     private void handleCanvasMousePressed(MouseEvent e){
-        if(currentInteractMode != InteractMode.SCROLL){
+        switch(currentInteractMode){
+            case SELECT:
+                selectionPoint = mousePoint;
+                break;
+            case SCROLL:
+                prevMouseX = e.getX();
+                prevMouseY = e.getY();
+                break;
+        }
+    }
+
+    private void handleCanvasMouseReleased(MouseEvent e){
+        if(currentInteractMode != InteractMode.SELECT){
             return;
         }
 
-        prevMouseX = e.getX();
-        prevMouseY = e.getY();
+        //select all units in selected rectangle
+        RectangleArea selection = new RectangleArea(selectionPoint, mousePoint);
+
+        for(Unit unit : currentState.getAllUnitsInArea(selection)){
+            if(unit.getColor() != player.getColor()){
+                continue;
+            }
+
+            currentSelection.select(unit);
+        }
+
+        selectionPoint = null;
     }
 
     private void handleCanvasMouseClick(MouseEvent e){
@@ -236,6 +244,8 @@ public class Controller {
                 break;
             case DIRECT_SOLDIER:
                 directSoldier(gamePoint);
+                break;
+            case SELECT:
                 break;
             default:
                 System.out.println(String.format("Unhandled interact mode %s", currentInteractMode));
@@ -417,6 +427,10 @@ public class Controller {
 
     public Point2D getPatrolAreaCenter() {
         return patrolAreaCenter;
+    }
+
+    public Point2D getSelectionPoint() {
+        return selectionPoint;
     }
 
     public Point2D getMousePoint() {

@@ -39,7 +39,7 @@ public class GUIPlayer extends Player {
 
         //the game is setup so take initial actions
         if(info instanceof PlayerSetupInfo){
-            takeInitialActions();
+            //takeInitialActions();
         }
         else if(info instanceof LostUnitInfo){
             controller.lostUnit(((LostUnitInfo) info).getUnitIndex());

@@ -70,6 +70,8 @@ public class Builder extends Unit implements Serializable {
 
     @Override
     public void kill(){
-        this.project.removeBuilder(this);
+        if(this.project != null) {
+            this.project.removeBuilder(this);
+        }
     }
 }

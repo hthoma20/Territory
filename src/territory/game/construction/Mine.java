@@ -17,6 +17,9 @@ public class Mine extends ImageSprite implements Construction, Copyable<Mine>, I
 
     private MineSlot[] slots;
 
+    private double goldProbability = .1;
+    private double stoneProbability = .5;
+
     public Mine(double x, double y){
         super(x, y);
         initSlots();
@@ -60,14 +63,14 @@ public class Mine extends ImageSprite implements Construction, Copyable<Mine>, I
      * @return the amount of gold yielded on this mining attempt
      */
     public int getGold(){
-        return RNG.withProbability(.5) ? 1 : 0;
+        return RNG.withProbability(goldProbability) ? 1 : 0;
     }
 
     /**
      * @return the amount of stone yielded on this mining attempt
      */
     public int getStone(){
-        return RNG.withProbability(.8) ? 1 : 0;
+        return RNG.withProbability(stoneProbability) ? 1 : 0;
     }
 
 

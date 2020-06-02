@@ -21,9 +21,9 @@ public abstract class Unit extends ImageSprite
     private int index = -1;
 
     //movement per tick
-    protected float speed = 2;
+    protected double speed = 1;
     //distance from target to take action
-    protected float range = 2;
+    protected double range = 2;
     protected int health = 10;
 
     public Unit(GameColor color, double x, double y) {

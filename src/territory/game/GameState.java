@@ -104,6 +104,30 @@ public class GameState implements Copyable<GameState>, Serializable {
         return sprites;
     }
 
+    /**
+     * @param area the area to get sprites within
+     * @return a list of all sprites in the given area
+     */
+    public List<Sprite> getAllSpritesInArea(RectangleArea area){
+        return getAllSprites().stream().filter( sprite ->
+                area.contains(sprite.getX(), sprite.getY()))
+                .collect(Collectors.toList());
+    }
+
+    public List<Unit> getAllUnitsInArea(RectangleArea area){
+        List<Unit> units = new ArrayList<>();
+
+        for(Inventory inventory : playerInventories){
+            for(Unit unit : inventory.getUnits()){
+                if(area.contains(unit.getX(), unit.getY())){
+                    units.add(unit);
+                }
+            }
+        }
+
+        return units;
+    }
+
     public List<Construction> getAllConstructions(){
         List<Construction> constructions = new ArrayList<>();
 

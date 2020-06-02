@@ -5,4 +5,5 @@ public enum InteractMode {
     CREATE_POST,
     SCROLL,
     DIRECT_SOLDIER,
+    SELECT,
 }

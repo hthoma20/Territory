@@ -16,8 +16,8 @@ public class Inventory implements Copyable<Inventory>, Serializable {
     private List<Post> posts = new ArrayList<>();
     private List<Wall> walls = new ArrayList<>();
 
-    private int gold = 1000;
-    private int stone = 1000;
+    private int gold = 100;
+    private int stone = 100;
 
     public Inventory(){
 

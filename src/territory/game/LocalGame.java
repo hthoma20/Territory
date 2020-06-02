@@ -97,6 +97,10 @@ public class LocalGame implements Game {
             long tickEnd = System.currentTimeMillis();
             long sleepTime = tickStart + tickSpeed - tickEnd;
 
+            if(sleepTime < 10){
+                System.out.println(String.format("Sleep time: %d", sleepTime));
+            }
+
             if(sleepTime > 0){
                 sleep(sleepTime);
             }

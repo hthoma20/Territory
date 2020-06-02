@@ -15,10 +15,10 @@ public class Village extends ImageSprite implements Construction, Copyable<Villa
 
     private GameColor color;
 
-    private int population = 10;
+    private int population = 5;
 
     //how many ticks per spawn
-    private int spawnRate = 80;
+    private int spawnRate = 200;
     //how many ticks until spawn
     private int timeToSpawn = spawnRate;
 
