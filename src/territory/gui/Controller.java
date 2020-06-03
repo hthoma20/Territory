@@ -178,7 +178,7 @@ public class Controller {
     }
 
     private void handleCanvasScroll(ScrollEvent e){
-        canvasPainter.zoom(e.getDeltaY());
+        canvasPainter.zoom(e.getDeltaY(), mousePoint.getX(), mousePoint.getY());
     }
 
     private void handleCanvasMousePressed(MouseEvent e){

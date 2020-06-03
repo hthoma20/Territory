@@ -25,6 +25,8 @@ public class CanvasPainter {
 
     //ratio of pixels per unit
     private double aspectRatio = 1;
+    private final double MIN_ASPECT_RATIO = .1;
+    private final double MAX_ASPECT_RATIO = 10;
 
     private Controller controller;
 
@@ -234,16 +236,24 @@ public class CanvasPainter {
     /**
      * Zoom in or out
      * @param delta the amount to zoom by
+     * @param x the x-coordinate to respect when zooming
+     * @param y the y-coordinate to respect when zooming
      */
-    public void zoom(double delta){
+    public void zoom(double delta, double x, double y){
+        //adjust delta
         if(delta < 0){
-            aspectRatio -= .1;
+            delta = -.1;
         }
-        else if(delta > 0){
-            aspectRatio += .1;
+        else{
+            delta = .1;
         }
 
-        aspectRatio = bound(aspectRatio, .1, 10);
+        //if the zoom doesn't violate min or max zoom, do the adjustment
+        if(inRange(aspectRatio+delta, MIN_ASPECT_RATIO, MAX_ASPECT_RATIO)){
+            aspectRatio += delta;
+            centerX += x * delta;
+            centerY += y * delta;
+        }
     }
 
     /**
@@ -262,5 +272,9 @@ public class CanvasPainter {
         }
 
         return Math.min(val, max);
+    }
+
+    private boolean inRange(double val, double min, double max){
+        return min <= val && val <= max;
     }
 }

@@ -21,6 +21,9 @@ import java.util.function.Consumer;
 import static territory.joiner.ObjectBytes.getBytes;
 
 public class JoinController {
+    //automatically join the first room and start the game
+    private static final boolean AUTO_START = true;
+
     @FXML public HBox gamesBox;
     @FXML public HBox currentGameBox;
 
@@ -42,7 +45,12 @@ public class JoinController {
     public void start() throws IOException, ClassNotFoundException {
         List<GameRoom> rooms = (List<GameRoom>) remoteRequest("/games");
 
-        GameRoom room = rooms.get(0);
+        if(AUTO_START){
+            GameRoom room = rooms.get(0);
+            joinRoom(room);
+            startGame(room);
+            return;
+        }
 
         displayGameRooms(rooms);
     }
@@ -95,17 +103,20 @@ public class JoinController {
 
         Button startButton = new Button("Start game");
 
-        startButton.setOnMouseClicked(event -> {
-            try {
-                remoteRequest("/start_game", room.getRoomId());
-            }
-            catch (IOException | ClassNotFoundException e) {
-                e.printStackTrace();
-            }
-        });
+        startButton.setOnMouseClicked(event -> startGame(room));
 
         currentGameBox.getChildren().add(startButton);
 
+    }
+
+    //send a start game request
+    private void startGame(GameRoom room){
+        try {
+            remoteRequest("/start_game", room.getRoomId());
+        }
+        catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
     }
 
     public void onGameStart(Consumer<Game> onGameStart){
