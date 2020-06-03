@@ -1,5 +1,6 @@
 package territory.game.sprite;
 
+import javafx.scene.canvas.GraphicsContext;
 import territory.game.GameState;
 import territory.game.LocalGame;
 import territory.game.Tickable;
@@ -41,6 +42,22 @@ public abstract class Sprite implements Tickable, Serializable {
 
     public double getY() {
         return y;
+    }
+
+    public double getTopX(){
+        return x - getImage().getWidth()/2;
+    }
+
+    public double getTopY(){
+        return y - getImage().getHeight()/2;
+    }
+
+    public double getWidth(){
+        return getImage().getWidth();
+    }
+
+    public double getHeight(){
+        return getImage().getHeight();
     }
 
     public double getRotation() {

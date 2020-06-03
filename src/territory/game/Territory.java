@@ -176,9 +176,8 @@ public class Territory implements Copyable<Territory>, Serializable {
 
         HashMap<Post, GeometricGraphNode> mapping = new HashMap<>();
 
-        double postRadius = ImageStore.store.imageFor(Post.class, walls.get(0).getColor()).getWidth()/2;
         for(Post post : posts){
-            mapping.put(post, new GeometricGraphNode(post.getX() + postRadius, post.getY() + postRadius));
+            mapping.put(post, new GeometricGraphNode(post.getX(), post.getY()));
         }
 
         return mapping;

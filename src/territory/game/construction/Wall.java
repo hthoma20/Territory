@@ -56,9 +56,10 @@ public class Wall implements Tickable, Copyable<Wall>, Indexable, Serializable {
 
         //find the points on the edges of the posts
         double postRadius = ImageStore.store.imageFor(Post.class, this.color).getWidth()/2;
-        Point2D post1Point = new Point2D(post1.getX() + postRadius, post1.getY() + postRadius);
-        Point2D post2Point = new Point2D(post2.getX() + postRadius, post2.getY() + postRadius);
+        Point2D post1Point = new Point2D(post1.getX(), post1.getY());
+        Point2D post2Point = new Point2D(post2.getX(), post2.getY());
 
+        //let post1Point be the higher of the two points
         if(post1Point.getY() > post2Point.getY()){
             Point2D temp = post1Point;
             post1Point = post2Point;
@@ -89,9 +90,9 @@ public class Wall implements Tickable, Copyable<Wall>, Indexable, Serializable {
 
         //find the placement of each segment
         //the for loop iterates distance from p1
-        double start = spacing;
+        double start = spacing + segmentLength/2;
         double step = spacing + segmentLength;
-        double stop = distance - step;
+        double stop = distance - start;
         int index = 0;
         for(double d = start; d <= stop+.001; d += step){
 

@@ -107,12 +107,10 @@ public class CanvasPainter {
 
         Image image = sprite.getImage();
 
-        double centerX = sprite.getX() + image.getWidth()/2;
-        double centerY = sprite.getY() + image.getHeight()/2;
+        //rotate the image according to the sprites rotation
+        gc.transform(new Affine(new Rotate(sprite.getRotation(), sprite.getX(), sprite.getY())));
 
-        gc.transform(new Affine(new Rotate(sprite.getRotation(), centerX, centerY)));
-
-        gc.drawImage(image, sprite.getX(), sprite.getY());
+        gc.drawImage(image, sprite.getTopX(), sprite.getTopY());
 
         gc.restore();
     }
@@ -189,10 +187,11 @@ public class CanvasPainter {
     }
 
     private void highlightSprite(Sprite sprite){
-        double x = sprite.getX() - highlightMargin;
-        double y = sprite.getY() - highlightMargin;
-        double width = sprite.getImage().getWidth() + 2*highlightMargin;
-        double height = sprite.getImage().getHeight() + 2*highlightMargin;
+
+        double x = sprite.getTopX() - highlightMargin;
+        double y = sprite.getTopY() - highlightMargin;
+        double width = sprite.getWidth() + 2*highlightMargin;
+        double height = sprite.getHeight() + 2*highlightMargin;
 
         gc.fillRect(x, y, width, height);
     }

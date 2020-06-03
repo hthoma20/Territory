@@ -50,14 +50,14 @@ public class Post extends Buildable implements Construction, Indexable, Serializ
 
     @Override
     protected BuildSlot[] initSlots() {
-        double width = getImage().getWidth();
-        double height = getImage().getHeight();
+        double xRad = getWidth()/2;
+        double yRad = getHeight()/2;
 
         return new BuildSlot[]{
-            new BuildSlot(this, x, y),
-            new BuildSlot(this, x + width, y),
-            new BuildSlot(this, x, y + height),
-            new BuildSlot(this, x + width, y + height),
+            new BuildSlot(this, x-xRad , y-yRad),
+            new BuildSlot(this, x-xRad, y+yRad),
+            new BuildSlot(this, x+xRad, y-yRad),
+            new BuildSlot(this, x+xRad, y+yRad),
         };
     }
 

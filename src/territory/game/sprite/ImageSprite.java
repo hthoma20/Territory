@@ -18,12 +18,13 @@ public abstract class ImageSprite extends Sprite implements Serializable {
 
     @Override
     public boolean containsPoint(double x, double y) {
-        Image image = getImage();
-        double width = image.getWidth();
-        double height = image.getHeight();
+        double topX = getTopX();
+        double topY = getTopY();
+        double width = getWidth();
+        double height = getHeight();
 
-        return  (this.x <= x && x <= this.x + width) &&
-                (this.y <= y && y <= this.y + height);
+        return  (topX <= x && x <= topX + width) &&
+                (topY <= y && y <= topY + height);
     }
 
     @Override
