@@ -157,26 +157,22 @@ public class CanvasPainter {
     }
 
     private void paintPatrolArea(){
-        Point2D patrolCenter = controller.getPatrolAreaCenter();
+        PatrolArea patrolArea = controller.getPatrolArea();
 
-        if(patrolCenter == null){
+        if(patrolArea == null){
             return;
         }
 
-        double rad = patrolCenter.distance(controller.getMousePoint());
         gc.setStroke(Color.DARKOLIVEGREEN);
-        strokeCircle(patrolCenter.getX(), patrolCenter.getY(), rad);
+        strokeCircle(patrolArea.getX(), patrolArea.getY(), patrolArea.getRadius());
     }
 
     private void paintSelectBox(){
-        Point2D selectionPoint = controller.getSelectionPoint();
-        Point2D mousePoint = controller.getMousePoint();
+        RectangleArea selection = controller.getSelectionArea();
 
-        if(selectionPoint == null || mousePoint == null){
+        if(selection == null){
             return;
         }
-
-        RectangleArea selection = new RectangleArea(selectionPoint, mousePoint);
 
         gc.setStroke(Color.BLUEVIOLET);
         gc.strokeRect(selection.getTopX(), selection.getTopY(), selection.getWidth(), selection.getHeight());

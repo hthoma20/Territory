@@ -1,6 +1,7 @@
 package territory.gui;
 
 import javafx.scene.Scene;
+import javafx.scene.control.ToggleButton;
 import territory.game.*;
 import territory.game.action.player.*;
 import territory.game.construction.*;
@@ -8,6 +9,9 @@ import territory.game.player.GUIPlayer;
 import territory.game.sprite.Sprite;
 import territory.game.target.BuildType;
 import territory.game.target.PatrolArea;
+import territory.game.unit.Builder;
+import territory.game.unit.Miner;
+import territory.game.unit.Soldier;
 import territory.game.unit.Unit;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
@@ -17,9 +21,11 @@ import javafx.geometry.Point2D;
 import javafx.scene.Node;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.control.Label;
-import javafx.scene.input.MouseEvent;
-import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.Pane;
+import territory.gui.input.InputProcessor;
+import territory.gui.input.MouseDragInput;
+import territory.gui.input.MouseInput;
+import territory.gui.input.MouseScrollInput;
 
 import java.util.List;
 
@@ -38,14 +44,12 @@ public class Controller {
     private GameState currentState;
 
     private InteractMode currentInteractMode;
-    private double prevMouseX, prevMouseY;
 
     private Selection currentSelection = new Selection();
 
-    private Point2D patrolAreaCenter = null;
-    private Point2D selectionPoint = null;
+    private PatrolArea patrolArea;
+    private RectangleArea selectionArea;
 
-    private Point2D mousePoint;
 
     private GUIPlayer player;
 
@@ -58,16 +62,18 @@ public class Controller {
 
         this.canvasPainter = new CanvasPainter(this, canvas);
 
-        this.currentInteractMode = InteractMode.SELECT;
+        this.currentInteractMode = InteractMode.CREATE_VILLAGE;
 
-        canvas.setOnMouseClicked(this::handleCanvasMouseClick);
-        canvas.setOnScroll(this::handleCanvasScroll);
-        canvas.setOnMouseDragged(this::handleCanvasDragged);
-        canvas.setOnMousePressed(this::handleCanvasMousePressed);
-        canvas.setOnMouseReleased(this::handleCanvasMouseReleased);
-        canvas.setOnMouseMoved(e -> {
-            mousePoint = canvasPainter.canvasPointToGamePoint(e.getX(), e.getY());
-        });
+
+        InputProcessor inputProcessor = new InputProcessor(scene, canvas);
+
+        inputProcessor.setOnScroll(this::handleCanvasScroll);
+        inputProcessor.setOnMiddleDrag(this::handleMiddleDrag);
+        inputProcessor.setOnRightDrag(this::handleRightDrag);
+        inputProcessor.setOnLeftDrag(this::handleLeftDrag);
+        inputProcessor.setOnLeftRelease(this::handleLeftReleased);
+        inputProcessor.setOnRightRelease(this::handleRightReleased);
+        inputProcessor.setOnLeftClick(this::handleLeftClick);
     }
 
     public void setPlayer(GUIPlayer player){
@@ -157,64 +163,76 @@ public class Controller {
     public void interactModeButtonClicked(ActionEvent actionEvent){
         String mode = userDataString(actionEvent);
         this.currentInteractMode = InteractMode.valueOf(mode);
+        actionEvent.getTarget();
         System.out.println("Setting interaction mode to " + currentInteractMode);
     }
 
-    private void handleCanvasDragged(MouseEvent e){
+    private void handleCanvasScroll(MouseScrollInput scrollInput){
+        Point2D scrollPoint = canvasPainter.canvasPointToGamePoint(scrollInput.getX(), scrollInput.getY());
+        canvasPainter.zoom(scrollInput.getDeltaY(), scrollPoint.getX(), scrollPoint.getY());
+        System.out.println(scrollInput.getX() + " " + scrollInput.getY());
+    }
 
-        mousePoint = canvasPainter.canvasPointToGamePoint(e.getX(), e.getY());
+    private void handleMiddleDrag(MouseDragInput dragInput){
+        //pan the canvas
+        canvasPainter.drag(-dragInput.getDeltaX(), -dragInput.getDeltaY());
+    }
 
-        if(currentInteractMode != InteractMode.SCROLL){
+    private void handleLeftDrag(MouseDragInput dragInput){
+        //update patrol area to direct soldiers to
+        if(currentInteractMode != InteractMode.DIRECT_SOLDIER){
             return;
         }
 
-        double deltaX = prevMouseX - e.getX();
-        double deltaY = prevMouseY - e.getY();
+        Point2D currPoint = canvasPainter.canvasPointToGamePoint(dragInput.getX(), dragInput.getY());
+        Point2D patrolCenter = canvasPainter.canvasPointToGamePoint(dragInput.getStartX(), dragInput.getStartY());
 
-        canvasPainter.drag(deltaX, deltaY);
-
-        prevMouseX = e.getX();
-        prevMouseY = e.getY();
+        this.patrolArea =
+                new PatrolArea(player.getColor(), patrolCenter.getX(), patrolCenter.getY(),
+                        patrolCenter.distance(currPoint));
     }
 
-    private void handleCanvasScroll(ScrollEvent e){
-        canvasPainter.zoom(e.getDeltaY(), mousePoint.getX(), mousePoint.getY());
-    }
-
-    private void handleCanvasMousePressed(MouseEvent e){
-        switch(currentInteractMode){
-            case SELECT:
-                selectionPoint = mousePoint;
-                break;
-            case SCROLL:
-                prevMouseX = e.getX();
-                prevMouseY = e.getY();
-                break;
-        }
-    }
-
-    private void handleCanvasMouseReleased(MouseEvent e){
-        if(currentInteractMode != InteractMode.SELECT){
+    private void handleLeftReleased(MouseInput mouseInput){
+        //direct soldiers
+        if(currentInteractMode != InteractMode.DIRECT_SOLDIER){
             return;
         }
+
+        //this means that the spot was clicked as opposed to a circle created
+        if(this.patrolArea == null){
+            return;
+        }
+
+        directSoldiersTo(this.patrolArea);
+        currentSelection.clear();
+        this.patrolArea = null;
+    }
+
+    private void handleRightDrag(MouseDragInput dragInput){
+        //update the selection area
+        Point2D p1 = canvasPainter.canvasPointToGamePoint(dragInput.getStartX(), dragInput.getStartY());
+        Point2D p2 = canvasPainter.canvasPointToGamePoint(dragInput.getX(), dragInput.getY());
+
+        this.selectionArea = new RectangleArea(p1.getX(), p1.getY(), p2.getX(), p2.getY());
+    }
+
+    private void handleRightReleased(MouseInput mouseInput){
 
         //select all units in selected rectangle
-        RectangleArea selection = new RectangleArea(selectionPoint, mousePoint);
-
-        for(Unit unit : currentState.getAllUnitsInArea(selection)){
+        for(Unit unit : currentState.getAllUnitsInArea(selectionArea)){
             if(unit.getColor() != player.getColor()){
                 continue;
             }
 
-            currentSelection.select(unit);
+            selectUnit(unit);
         }
 
-        selectionPoint = null;
+        selectionArea = null;
     }
 
-    private void handleCanvasMouseClick(MouseEvent e){
+    private void handleLeftClick(MouseInput input){
         //find the point that was clicked in the territory game
-        Point2D gamePoint = canvasPainter.canvasPointToGamePoint(e.getX(), e.getY());
+        Point2D gamePoint = canvasPainter.canvasPointToGamePoint(input.getX(), input.getY());
 
         //first check if something was clicked
         List<Sprite> clickedSprites = currentState.getSpritesContaining(gamePoint.getX(), gamePoint.getY());
@@ -239,13 +257,6 @@ public class Controller {
             case CREATE_POST:
                 System.out.println("Place Post");
                 action = new CreatePostAction(this.player.getColor(), gamePoint.getX(), gamePoint.getY());
-                break;
-            case SCROLL:
-                break;
-            case DIRECT_SOLDIER:
-                directSoldier(gamePoint);
-                break;
-            case SELECT:
                 break;
             default:
                 System.out.println(String.format("Unhandled interact mode %s", currentInteractMode));
@@ -345,19 +356,19 @@ public class Controller {
         }
     }
 
-    private void directSoldier(Point2D point){
-        if(patrolAreaCenter == null){
-            patrolAreaCenter = point;
+    private void unitClicked(Unit unit){
+        //if this is our player, select it
+        if(unit.getColor() == player.getColor()) {
+            selectUnit(unit);
         }
-        else{
-            double radius = patrolAreaCenter.distance(point);
-            PatrolArea patrolArea =
-                    new PatrolArea(this.player.getColor(), patrolAreaCenter.getX(), patrolAreaCenter.getY(), radius);
-            directSoldiersTo(patrolArea);
-            currentSelection.clear();
-            patrolAreaCenter = null;
-        }
+    }
 
+    private void selectUnit(Unit unit){
+        currentSelection.select(unit);
+
+        if(unit instanceof Soldier){
+            currentInteractMode = InteractMode.DIRECT_SOLDIER;
+        }
     }
 
     /**
@@ -367,7 +378,9 @@ public class Controller {
      */
     private void directBuildersTo(int index, BuildType type){
         for(int builderIndex : currentSelection.getIndices()){
-            player.takeAction(new DirectBuilderAction(player.getColor(), builderIndex, index, type));
+            if(getUnit(builderIndex) instanceof Builder) {
+                player.takeAction(new DirectBuilderAction(player.getColor(), builderIndex, index, type));
+            }
         }
     }
 
@@ -377,7 +390,9 @@ public class Controller {
      */
     private void directMinersTo(int index){
         for(int minerIndex : currentSelection.getIndices()){
-            player.takeAction(new DirectMinerAction(player.getColor(), minerIndex, index));
+            if(getUnit(minerIndex) instanceof Miner) {
+                player.takeAction(new DirectMinerAction(player.getColor(), minerIndex, index));
+            }
         }
     }
 
@@ -387,8 +402,14 @@ public class Controller {
      */
     private void directSoldiersTo(PatrolArea patrolArea){
         for(int soldierIndex : currentSelection.getIndices()){
-            player.takeAction(new DirectSoldierAction(player.getColor(), soldierIndex, patrolArea));
+            if(getUnit(soldierIndex) instanceof Soldier) {
+                player.takeAction(new DirectSoldierAction(player.getColor(), soldierIndex, patrolArea));
+            }
         }
+    }
+
+    private Unit getUnit(int unitIndex){
+        return currentState.getPlayerInventory(player).getUnit(unitIndex);
     }
 
     /**
@@ -404,15 +425,6 @@ public class Controller {
         currentSelection.lostUnit(unitIndex);
     }
 
-    private void unitClicked(Unit unit){
-        //if this is our player, select it
-        if(unit.getColor() == player.getColor()) {
-            currentSelection.select(unit);
-
-
-        }
-    }
-
     public GameState getCurrentState() {
         return currentState;
     }
@@ -425,15 +437,11 @@ public class Controller {
         return player;
     }
 
-    public Point2D getPatrolAreaCenter() {
-        return patrolAreaCenter;
+    public PatrolArea getPatrolArea() {
+        return patrolArea;
     }
 
-    public Point2D getSelectionPoint() {
-        return selectionPoint;
-    }
-
-    public Point2D getMousePoint() {
-        return mousePoint;
+    public RectangleArea getSelectionArea() {
+        return selectionArea;
     }
 }

@@ -9,6 +9,8 @@
 <?import javafx.scene.layout.HBox?>
 <?import java.net.URL?>
 <?import javafx.scene.layout.Pane?>
+<?import javafx.scene.control.ToggleGroup?>
+<?import javafx.scene.control.ToggleButton?>
 <VBox fx:controller="territory.gui.Controller"
       xmlns:fx="http://javafx.com/fxml" alignment="center">
 
@@ -65,23 +67,19 @@
 
         <!-- Interact mode -->
         <GridPane styleClass="border" >
-            <Button text="Select Units" onAction="#interactModeButtonClicked" userData="SELECT"
-                    GridPane.columnIndex="0" GridPane.rowIndex="0" />
-            <Button text="Scroll" onAction="#interactModeButtonClicked" userData="SCROLL"
-                    GridPane.columnIndex="0" GridPane.rowIndex="1" />
-            <Button text="Place Village" onAction="#interactModeButtonClicked" userData="CREATE_VILLAGE"
-                    GridPane.columnIndex="0" GridPane.rowIndex="2" />
-            <Button text="Place Post" onAction="#interactModeButtonClicked" userData="CREATE_POST"
-                    GridPane.columnIndex="0" GridPane.rowIndex="3" />
-            <Button text="Direct Soldier" onAction="#interactModeButtonClicked" userData="SELECT"
-                    GridPane.columnIndex="0" GridPane.rowIndex="4" />
+            <fx:define>
+                <ToggleGroup fx:id="interactToggleGroup" />
+            </fx:define>
+
+            <ToggleButton text="Place Village" onAction="#interactModeButtonClicked" userData="CREATE_VILLAGE"
+                          toggleGroup="$interactToggleGroup"
+                          GridPane.columnIndex="0" GridPane.rowIndex="0" />
+            <ToggleButton text="Place Post" onAction="#interactModeButtonClicked" userData="CREATE_POST"
+                          toggleGroup="$interactToggleGroup"
+                          GridPane.columnIndex="0" GridPane.rowIndex="1" />
 
         </GridPane>
 
-<!--        <Button text="Reset" onAction="#resetClicked"/>-->
-<!--        <Button userData="1" text="+1" onAction="#buttonClicked"/>-->
-<!--        <Button userData="2" text="+2" onAction="#buttonClicked"/>-->
-<!--        <Label fx:id="countLabel" text="Hello" />-->
     </HBox>
 
     <stylesheets>
