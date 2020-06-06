@@ -170,7 +170,6 @@ public class Controller {
     private void handleCanvasScroll(MouseScrollInput scrollInput){
         Point2D scrollPoint = canvasPainter.canvasPointToGamePoint(scrollInput.getX(), scrollInput.getY());
         canvasPainter.zoom(scrollInput.getDeltaY(), scrollPoint.getX(), scrollPoint.getY());
-        System.out.println(scrollInput.getX() + " " + scrollInput.getY());
     }
 
     private void handleMiddleDrag(MouseDragInput dragInput){

@@ -8,6 +8,13 @@ import javafx.scene.input.ScrollEvent;
 
 import java.util.function.Consumer;
 
+/**
+ * Helps to process user input
+ * various listeners can be attatched to this input processor
+ *
+ * Holding crtl makes clicks act like right clicks
+ * Holding shift makes clicks act like middle clicks
+ */
 public class InputProcessor {
 
     //the current location of the cursor on the canvas
@@ -16,6 +23,8 @@ public class InputProcessor {
     //previous location of cursor during a drag
     private double dragStartMouseX, dragStartMouseY;
     private double prevMouseX, prevMouseY;
+
+    private InputModifier modifier = null;
 
     //input handlers to be called on various events
     private Consumer<MouseDragInput> onLeftDrag;
@@ -58,10 +67,12 @@ public class InputProcessor {
     ////////////////////////////////////////////////////////
 
     private void handleCanvasClicked(MouseEvent e){
-        Consumer<MouseInput> listener = clickListenerForButton(e.getButton());
+        Consumer<MouseInput> listener = clickListenerForEvent(e);
         if(listener != null){
             listener.accept(new MouseInput(e.getX(), e.getY()));
         }
+
+        modifier = null;
     }
 
     private void handleCanvasPressed(MouseEvent e){
@@ -72,14 +83,16 @@ public class InputProcessor {
         prevMouseX = e.getX();
         prevMouseY = e.getY();
 
-        Consumer<MouseInput> listener = pressListenerForButton(e.getButton());
+        modifier = modifierForEvent(e);
+
+        Consumer<MouseInput> listener = pressListenerForEvent(e);
         if(listener != null){
             listener.accept(new MouseInput(e.getX(), e.getY()));
         }
     }
 
     private void handleCanvasReleased(MouseEvent e){
-        Consumer<MouseInput> listener = releaseListenerForButton(e.getButton());
+        Consumer<MouseInput> listener = releaseListenerForEvent(e);
         if(listener != null){
             listener.accept(new MouseInput(e.getX(), e.getY()));
         }
@@ -89,7 +102,7 @@ public class InputProcessor {
         mouseX = e.getX();
         mouseY = e.getY();
 
-        Consumer<MouseDragInput> listener = dragListenerForButton(e.getButton());
+        Consumer<MouseDragInput> listener = dragListenerForEvent(e);
 
         //if no one cares, don't do anything else
         if(listener == null){
@@ -127,11 +140,22 @@ public class InputProcessor {
     ////////////////////////////////////////////////////////
 
     /**
-     * @param button the mouse button that was dragged
+     * @param e the mouse button that was dragged
      * @return the listener that should be notified that the given button was dragged
      */
-    private Consumer<MouseDragInput> dragListenerForButton(MouseButton button){
-        switch(button.name()){
+    private Consumer<MouseDragInput> dragListenerForEvent(MouseEvent e){
+        //if there is a modifier, use that
+        if(modifier != null){
+            switch(modifier){
+                case CTRL:
+                    return onRightDrag;
+                case SHIFT:
+                    return onMiddleDrag;
+            }
+        }
+
+        //otherwise, pick based on button
+        switch(e.getButton().name()){
             case "PRIMARY":
                 return onLeftDrag;
             case "SECONDARY":
@@ -144,8 +168,18 @@ public class InputProcessor {
         }
     }
 
-    private Consumer<MouseInput> pressListenerForButton(MouseButton button){
-        switch(button.name()){
+    private Consumer<MouseInput> pressListenerForEvent(MouseEvent e){
+        //if there is a modifier, use that
+        if(modifier != null){
+            switch(modifier){
+                case CTRL:
+                    return onRightPress;
+                case SHIFT:
+                    return onMiddlePress;
+            }
+        }
+
+        switch(e.getButton().name()){
             case "PRIMARY":
                 return onLeftPress;
             case "SECONDARY":
@@ -158,8 +192,17 @@ public class InputProcessor {
         }
     }
 
-    private Consumer<MouseInput> releaseListenerForButton(MouseButton button){
-        switch(button.name()){
+    private Consumer<MouseInput> releaseListenerForEvent(MouseEvent e){
+        if(modifier != null){
+            switch(modifier){
+                case CTRL:
+                    return onRightRelease;
+                case SHIFT:
+                    return onMiddleRelease;
+            }
+        }
+
+        switch(e.getButton().name()){
             case "PRIMARY":
                 return onLeftRelease;
             case "SECONDARY":
@@ -172,8 +215,17 @@ public class InputProcessor {
         }
     }
 
-    private Consumer<MouseInput> clickListenerForButton(MouseButton button){
-        switch(button.name()){
+    private Consumer<MouseInput> clickListenerForEvent(MouseEvent e){
+        if(modifier != null){
+            switch(modifier){
+                case CTRL:
+                    return onRightClick;
+                case SHIFT:
+                    return onMiddleClick;
+            }
+        }
+
+        switch(e.getButton().name()){
             case "PRIMARY":
                 return onLeftClick;
             case "SECONDARY":
@@ -184,6 +236,17 @@ public class InputProcessor {
                 System.out.println("Unknown mouse button");
                 return null;
         }
+    }
+
+    private InputModifier modifierForEvent(MouseEvent e){
+        if(e.isControlDown()){
+            return InputModifier.CTRL;
+        }
+        if(e.isShiftDown()){
+            return InputModifier.SHIFT;
+        }
+
+        return null;
     }
 
 
@@ -245,5 +308,9 @@ public class InputProcessor {
 
     public void setOnMouseMove(Consumer<MouseInput> onMouseMove) {
         this.onMouseMove = onMouseMove;
+    }
+
+    private enum InputModifier {
+        CTRL, SHIFT
     }
 }
