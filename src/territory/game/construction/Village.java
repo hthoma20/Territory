@@ -58,7 +58,7 @@ public class Village extends ImageSprite
 
         //increase gold
         timeToGold--;
-        if(goldRate < 1){
+        if(timeToGold < 1){
             timeToGold = goldRate;
             return Arrays.asList(new GiveGoldAction(color, 1));
         }
