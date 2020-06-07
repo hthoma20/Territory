@@ -55,7 +55,7 @@ public class Mine extends ImageSprite implements Construction, Copyable<Mine>, I
         double xOffset = -getWidth()/2;
         double yOffset = -getHeight()/2;
         for(int i = 0; i < slotPoints.length; i++){
-            slotPoints[i] = new Point2D(x + xOffset, y + yOffset);
+            slotPoints[i] = new Point2D(slotPoints[i].getX() + xOffset, slotPoints[i].getY() + yOffset);
         }
 
         slots = new MineSlot[slotPoints.length];

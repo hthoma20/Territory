@@ -63,6 +63,7 @@ public class JoinerMain extends Application {
             System.out.println("Starting game");
             Platform.runLater(() -> {
                 primaryStage.setScene(gameScene);
+                primaryStage.setMaximized(true);
             });
         });
 

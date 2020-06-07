@@ -29,12 +29,6 @@ public class ClientMain extends Application {
         String host = getParameters().getNamed().getOrDefault("host", DEFAULT_HOST);
         System.out.format("Connecting to %s on port %d\n", host, PORT);
 
-        //give a second for the server to start
-//        try{
-//            Thread.sleep(5000);
-//        }
-//        catch(InterruptedException ignored){}
-
         URL gameLayout = getClass().getResource("gui/layout.fxml");
         URL joinerLayout = getClass().getResource("joiner/joiner.fxml");
 
@@ -63,7 +57,10 @@ public class ClientMain extends Application {
 
         joinController.onGameStart( game -> {
             System.out.println("Starting game");
-            Platform.runLater(() -> primaryStage.setScene(gameScene));
+            Platform.runLater(() -> {
+                primaryStage.setScene(gameScene);
+                primaryStage.setMaximized(true);
+            });
         });
 
         joinController.start();
