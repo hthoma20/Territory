@@ -20,8 +20,7 @@ public class GUIPlayer extends Player {
     //whether we should automatically take some actions (for testing and debugging)
     private static final boolean TAKE_INITIAL_ACTIONS = false;
 
-    private SimpleStringProperty displayNameProperty =
-            new SimpleStringProperty("Un-named GUI Player");
+    private String displayName = "Un-named GUI Player";
 
     private Controller controller;
 
@@ -41,12 +40,6 @@ public class GUIPlayer extends Player {
     @Override
     public void setGame(Game game){
         super.setGame(game);
-    }
-
-
-    public void setDisplayName(String displayName) {
-        this.displayNameProperty.setValue(displayName);
-        System.out.println("Set name to " + displayName);
     }
 
     @Override
@@ -76,12 +69,11 @@ public class GUIPlayer extends Player {
         takeAction(new CreateVillageAction(color, -100, 100));
     }
 
-    public String getDisplayName(){
-        return displayNameProperty.getValue();
+    public String getDisplayName() {
+        return displayName;
     }
 
-    public SimpleStringProperty getDisplayNameProperty(){
-        return displayNameProperty;
+    public void setDisplayName(String displayName) {
+        this.displayName = displayName;
     }
-
 }
