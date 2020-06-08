@@ -73,7 +73,8 @@ public class GameState implements Copyable<GameState>, Serializable {
     private void initMines(){
         this.mines = new ArrayList<>();
 
-        mines.add(new Mine(0,0));
+        mines.add(new Mine(-100,-100));
+        mines.add(new Mine(100, 100));
 
         for(int i = 0; i < mines.size(); i++){
             mines.get(i).setIndex(i);

@@ -51,7 +51,7 @@ public class Miner extends Unit implements Serializable {
     }
 
     public static int getGoldPrice(){
-        return 10;
+        return 5;
     }
 
     @Override

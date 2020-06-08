@@ -2,6 +2,7 @@ package territory.joiner;
 
 import com.sun.net.httpserver.HttpExchange;
 import territory.game.info.GameStartedInfo;
+import territory.game.player.ComputerPlayer;
 import territory.game.player.Player;
 import territory.game.player.RemotePlayer;
 
@@ -9,6 +10,9 @@ import java.io.InputStream;
 import java.util.*;
 
 public class GameJoiner {
+
+    //add a computer player before a game is started
+    private static final boolean ADD_COMPUTER_PLAYER = true;
 
     //map from room id to room
     private Map<Integer, GameRoom> roomsById = new HashMap<>();
@@ -30,11 +34,6 @@ public class GameJoiner {
         System.out.println("Get game rooms");
         return new ArrayList<>(roomsById.values());
     }
-
-    public Object getNumber(Object request){
-        return 14;
-    }
-
 
     public Object handleJoinRoomRequest(Object request){
 
@@ -66,6 +65,12 @@ public class GameJoiner {
 
         if(room == null){
             throw new JoinerException(String.format("No Room with id %d", roomId));
+        }
+
+        //add a computer player (for testing and debugging)
+        if(ADD_COMPUTER_PLAYER){
+            System.out.println("Adding computer player");
+            room.addPlayer(new ComputerPlayer());
         }
 
         System.out.println("Game joiner starting game");

@@ -88,10 +88,25 @@ public class Selection {
 
     /**
      * Called to indicate that a unit was lost
-     * @param index the index of the lost unit
+     * @param lostIndex the index of the lost unit
      */
-    public void lostUnit(int index){
+    public void lostUnit(int lostIndex){
+        if(selectionType != Type.UNITS){
+            return;
+        }
 
+        //make a copy for iteration so we can modify the original
+        HashSet<Integer> selectedIndicesCopy = new HashSet<>(selectedIndices);
+
+        for(int selectedIndex : selectedIndicesCopy){
+            if(selectedIndex == lostIndex){
+                selectedIndices.remove(selectedIndex);
+            }
+            else if(selectedIndex > lostIndex){
+                selectedIndices.remove(selectedIndex);
+                selectedIndices.add(selectedIndex - 1);
+            }
+        }
     }
 
     /**

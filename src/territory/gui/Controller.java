@@ -416,11 +416,6 @@ public class Controller {
      * @param unitIndex the index of the lost unit
      */
     public void lostUnit(int unitIndex){
-        //we only care if this unit was selected
-        if(currentSelection.getType() != Selection.Type.UNITS){
-            return;
-        }
-
         currentSelection.lostUnit(unitIndex);
     }
 

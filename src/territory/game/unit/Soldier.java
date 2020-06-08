@@ -44,7 +44,7 @@ public class Soldier extends Unit implements Serializable {
     }
 
     public static int getGoldPrice(){
-        return 10;
+        return 20;
     }
 
     @Override

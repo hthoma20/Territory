@@ -139,7 +139,7 @@ public class CanvasPainter {
                         unit = currentInventory.getUnit(index);
                     }
                     catch(IndexOutOfBoundsException exc){
-                        exc.printStackTrace();
+                        System.out.println("Out of bounds in CanvasPainter.paintSelection");
                         continue;
                     }
 

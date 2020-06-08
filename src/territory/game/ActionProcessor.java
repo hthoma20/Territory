@@ -246,7 +246,7 @@ public class ActionProcessor {
 
         if(action instanceof TrainSoldiersAction){
             Soldier soldier = new Soldier(player, x, y);
-            soldier.setPatrolArea(new PatrolArea(soldier.getColor(), x, y, 1));
+            soldier.setPatrolArea(new PatrolArea(soldier.getColor(), x, y, 50));
             return soldier;
         }
 
