@@ -54,6 +54,9 @@ public class ActionProcessor {
         else if(action instanceof DirectUnitAction){
             processDirectUnitAction((DirectUnitAction)action);
         }
+        else if(action instanceof DirectSoldiersAction){
+            processDirectSoldiersAction((DirectSoldiersAction)action);
+        }
 
         //Tick actions
         else if(action instanceof GiveGoldAction){
@@ -325,6 +328,17 @@ public class ActionProcessor {
 
         Soldier soldier = (Soldier)unit;
         soldier.setPatrolArea(action.getPatrolArea());
+    }
+
+    private void processDirectSoldiersAction(DirectSoldiersAction action){
+        int maxIndex = currentInventory.getUnits().size();
+
+        for(int index : action.getIndices()){
+            if(index < maxIndex) {
+                processDirectSoldierAction(
+                        new DirectSoldierAction(action.getColor(), index, action.getPatrolArea()));
+            }
+        }
     }
 
     private void processGiveGoldAction(GiveGoldAction action) {

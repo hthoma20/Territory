@@ -7,8 +7,6 @@ import java.io.Serializable;
 
 public class DirectSoldierAction extends DirectUnitAction implements Serializable {
 
-    private GameColor targetColor;
-
     private PatrolArea patrolArea;
 
     public DirectSoldierAction(GameColor color, int unitIndex, PatrolArea patrolArea) {

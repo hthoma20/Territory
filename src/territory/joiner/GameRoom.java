@@ -1,11 +1,13 @@
 package territory.joiner;
 
 import territory.game.LocalGame;
+import territory.game.info.PlayerAddedInfo;
 import territory.game.player.Player;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class GameRoom implements Serializable {
     private transient List<Player> players = new ArrayList<>();
@@ -15,8 +17,13 @@ public class GameRoom implements Serializable {
     private static int nextId = 0;
     private int roomId = nextId++;
 
-    public void addPlayer(Player player){
-        this.players.add(player);
+    public void addPlayer(Player newPlayer){
+        this.players.add(newPlayer);
+
+        List<String> playerNames = players.stream().map(Player::getName).collect(Collectors.toList());
+        for(Player player : this.players){
+            player.sendInfo(new PlayerAddedInfo(playerNames));
+        }
     }
 
     public List<Player> getPlayers(){

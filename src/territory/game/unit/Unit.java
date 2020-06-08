@@ -21,7 +21,10 @@ public abstract class Unit extends ImageSprite
     private int index = -1;
 
     //movement per tick
+    //set to default here, adjust this in subclass's constructor
     protected double speed = 1;
+
+
     //distance from target to take action
     protected double range = 2;
     protected int health = 10;

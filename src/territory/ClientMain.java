@@ -17,7 +17,7 @@ public class ClientMain extends Application {
     public static final int PORT = 4000;
     public static final String DEFAULT_HOST = "localhost";
 
-    private double initialWidth = 605, initialHeight = 405;
+    private double initialWidth = 1226, initialHeight = 657;
 
     public static void main(String[] args){
         launch(args);
@@ -42,6 +42,7 @@ public class ClientMain extends Application {
 
         //exit on close
         primaryStage.setOnCloseRequest(this::exitApplication);
+        primaryStage.setResizable(false);
 
         primaryStage.setScene(joinerScene);
         primaryStage.show();
@@ -59,7 +60,6 @@ public class ClientMain extends Application {
             System.out.println("Starting game");
             Platform.runLater(() -> {
                 primaryStage.setScene(gameScene);
-                primaryStage.setMaximized(true);
             });
         });
 

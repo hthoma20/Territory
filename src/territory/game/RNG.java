@@ -1,5 +1,7 @@
 package territory.game;
 
+import java.util.Collection;
+import java.util.List;
 import java.util.Random;
 
 public class RNG {
@@ -34,5 +36,14 @@ public class RNG {
      */
     public static boolean withProbability(double probability){
         return random.nextDouble() < probability;
+    }
+
+    /**
+     * Pick a random choice with uniform probability
+     * @param choices the choices to pick from
+     * @return a random choice
+     */
+    public static <T> T pick(List<T> choices){
+        return choices.get(random.nextInt(choices.size()));
     }
 }

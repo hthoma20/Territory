@@ -24,7 +24,8 @@ public class Soldier extends Unit implements Serializable {
 
     public Soldier(Player owner, double x, double y) {
         super(owner.getColor(), x, y);
-        this.speed = 1.5;
+
+        super.speed = .75;
     }
 
     public Soldier(Soldier src) {

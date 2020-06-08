@@ -3,6 +3,7 @@ package territory.game;
 import territory.game.action.player.PlayerAction;
 import territory.game.info.GameInfo;
 import territory.game.info.JoinInfo;
+import territory.game.info.NameInfo;
 import territory.game.player.GUIPlayer;
 import territory.joiner.JoinInfoListener;
 
@@ -31,6 +32,9 @@ public class RemoteGame implements Game {
             if(object instanceof JoinInfo && joinInfoListener != null){
                 joinInfoListener.receiveJoinInfo((JoinInfo) object);
             }
+        }
+        else if(object instanceof NameInfo){
+            localPlayer.setDisplayName(((NameInfo) object).getName());
         }
         else{
             System.err.println("Unexpected object received");

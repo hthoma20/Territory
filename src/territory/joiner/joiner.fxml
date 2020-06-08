@@ -9,17 +9,28 @@
 <?import javafx.scene.layout.HBox?>
 <?import java.net.URL?>
 <?import javafx.scene.layout.Pane?>
+<?import territory.gui.SwapPane?>
+<?import javafx.scene.text.Text?>
 <VBox fx:controller="territory.joiner.JoinController"
       xmlns:fx="http://javafx.com/fxml" alignment="center">
 
-    <!-- The list of games -->
-    <HBox fx:id="gamesBox" alignment="center" spacing="20">
+    <SwapPane fx:id="swapPane" alignment="center">
 
-    </HBox>
+            <!-- The list of rooms -->
+            <VBox fx:id="roomsPane" alignment="center" spacing="20">
 
-    <HBox fx:id="currentGameBox" alignment="center" spacing="20">
+            </VBox>
 
-    </HBox>
+            <!-- The current room -->
+            <VBox fx:id="currentRoomPane" alignment="center" spacing="20">
+                <Button fx:id="startButton">
+                    Start game
+                </Button>
+                <Text fx:id="playerListText" />
+            </VBox>
+
+    </SwapPane>
+
 
     <stylesheets>
         <URL value="@../gui/layout.css" />

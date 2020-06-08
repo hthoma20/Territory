@@ -8,6 +8,8 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
+import territory.ClientMain;
+import territory.ServerMain;
 import territory.game.GameNotStartedException;
 import territory.game.RemoteGame;
 import territory.game.player.GUIPlayer;
@@ -25,7 +27,7 @@ public class JoinerMain extends Application {
     public static final int PORT = 4000;
     public static final String HOST = "localhost";
 
-    private double initialWidth = 605, initialHeight = 405;
+    private double initialWidth = 1226, initialHeight = 657;
 
     public static void main(String[] args) throws IOException, ClassNotFoundException {
         launch(args);
@@ -46,6 +48,7 @@ public class JoinerMain extends Application {
 
         //exit on close
         primaryStage.setOnCloseRequest(this::exitApplication);
+        primaryStage.setResizable(false);
 
         primaryStage.setScene(joinerScene);
         primaryStage.show();
@@ -63,7 +66,6 @@ public class JoinerMain extends Application {
             System.out.println("Starting game");
             Platform.runLater(() -> {
                 primaryStage.setScene(gameScene);
-                primaryStage.setMaximized(true);
             });
         });
 

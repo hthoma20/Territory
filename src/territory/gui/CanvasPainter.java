@@ -25,8 +25,8 @@ public class CanvasPainter {
 
     //ratio of pixels per unit
     private double aspectRatio = 1;
-    private final double MIN_ASPECT_RATIO = .1;
-    private final double MAX_ASPECT_RATIO = 10;
+    private final double MIN_ASPECT_RATIO = .5;
+    private final double MAX_ASPECT_RATIO = 2;
 
     private Controller controller;
 

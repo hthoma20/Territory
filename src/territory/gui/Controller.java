@@ -27,7 +27,10 @@ import territory.gui.input.MouseDragInput;
 import territory.gui.input.MouseInput;
 import territory.gui.input.MouseScrollInput;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 public class Controller {
     @FXML private Pane canvasPane;
@@ -67,8 +70,8 @@ public class Controller {
 
         InputProcessor inputProcessor = new InputProcessor(scene, canvas);
 
-        inputProcessor.setOnScroll(this::handleCanvasScroll);
-        inputProcessor.setOnMiddleDrag(this::handleMiddleDrag);
+        //inputProcessor.setOnScroll(this::handleCanvasScroll);
+        //inputProcessor.setOnMiddleDrag(this::handleMiddleDrag);
         inputProcessor.setOnRightDrag(this::handleRightDrag);
         inputProcessor.setOnLeftDrag(this::handleLeftDrag);
         inputProcessor.setOnLeftRelease(this::handleLeftReleased);
@@ -400,11 +403,12 @@ public class Controller {
      * @param patrolArea the area to patrol
      */
     private void directSoldiersTo(PatrolArea patrolArea){
-        for(int soldierIndex : currentSelection.getIndices()){
-            if(getUnit(soldierIndex) instanceof Soldier) {
-                player.takeAction(new DirectSoldierAction(player.getColor(), soldierIndex, patrolArea));
-            }
-        }
+        //get the selected indices that are soldiers
+        Set<Integer> soldierIndices = currentSelection.getIndices().stream().filter( index ->
+                getUnit(index) instanceof Soldier).collect(Collectors.toSet());
+
+        //direct them to the patrol area
+        player.takeAction(new DirectSoldiersAction(player.getColor(), soldierIndices, patrolArea));
     }
 
     private Unit getUnit(int unitIndex){

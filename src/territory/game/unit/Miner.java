@@ -23,6 +23,8 @@ public class Miner extends Unit implements Serializable {
 
     public Miner(Player owner, double x, double y) {
         super(owner.getColor(), x, y);
+
+        super.speed = 1;
     }
 
     @Override

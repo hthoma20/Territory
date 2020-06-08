@@ -5,14 +5,15 @@ import territory.game.info.GameStartedInfo;
 import territory.game.player.ComputerPlayer;
 import territory.game.player.Player;
 import territory.game.player.RemotePlayer;
+import territory.joiner.request.JoinRoomRequest;
 
 import java.io.InputStream;
 import java.util.*;
 
 public class GameJoiner {
 
-    //add a computer player before a game is started
-    private static final boolean ADD_COMPUTER_PLAYER = true;
+    //add a computer player before a game is started (for testing and debugging)
+    private static final boolean ADD_COMPUTER_PLAYER = false;
 
     //map from room id to room
     private Map<Integer, GameRoom> roomsById = new HashMap<>();
@@ -35,9 +36,11 @@ public class GameJoiner {
         return new ArrayList<>(roomsById.values());
     }
 
-    public Object handleJoinRoomRequest(Object request){
+    public Object handleJoinRoomRequest(Object requestObject){
 
-        int roomId = (Integer)request;
+        JoinRoomRequest request = (JoinRoomRequest)requestObject;
+        int roomId = request.getRoomId();
+        String playerName = request.getPlayerName();
 
         GameRoom room = roomsById.get(roomId);
 
@@ -46,7 +49,7 @@ public class GameJoiner {
         }
 
         int port = getAvailablePort();
-        RemotePlayer player = new RemotePlayer(port);
+        RemotePlayer player = new RemotePlayer(port, playerName);
 
         new Thread(() -> {
             System.out.format("Connecting on port %d...\n", port);

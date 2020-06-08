@@ -20,6 +20,8 @@ public class Builder extends Unit implements Serializable {
 
     public Builder(Player owner, double x, double y) {
         super(owner.getColor(), x, y);
+
+        super.speed = .85;
     }
 
     public Builder(Builder src) {
