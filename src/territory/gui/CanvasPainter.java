@@ -1,6 +1,8 @@
 package territory.gui;
 
+import javafx.scene.text.TextAlignment;
 import territory.game.*;
+import territory.game.construction.Village;
 import territory.game.target.Buildable;
 import territory.game.sprite.Sprite;
 import javafx.geometry.Point2D;
@@ -113,6 +115,14 @@ public class CanvasPainter {
         gc.drawImage(image, sprite.getTopX(), sprite.getTopY());
 
         gc.restore();
+
+        if(sprite instanceof Village){
+            int population = ((Village) sprite).getPopulation();
+            double x = sprite.getX();
+            double y = sprite.getY() + sprite.getHeight()/2 + 15;
+            gc.setTextAlign(TextAlignment.CENTER);
+            gc.strokeText("Pop " + population, x, y);
+        }
     }
 
     /**

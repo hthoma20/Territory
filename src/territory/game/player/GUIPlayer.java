@@ -18,7 +18,7 @@ import java.util.function.Consumer;
 
 public class GUIPlayer extends Player {
     //whether we should automatically take some actions (for testing and debugging)
-    private static final boolean TAKE_INITIAL_ACTIONS = false;
+    private static final boolean TAKE_INITIAL_ACTIONS = true;
 
     private String displayName = "Un-named GUI Player";
 
@@ -52,7 +52,7 @@ public class GUIPlayer extends Player {
         System.out.println(info);
 
         //the game is setup so take initial actions
-        if(info instanceof PlayerSetupInfo && TAKE_INITIAL_ACTIONS){
+        if(info instanceof PlayerSetupInfo){
             takeInitialActions();
         }
         else if(info instanceof LostUnitInfo){
@@ -61,8 +61,8 @@ public class GUIPlayer extends Player {
     }
 
     private void takeInitialActions(){
-
-        if(color != GameColor.values()[0]){
+        //only have the first player take actions
+        if(color != GameColor.values()[0] || !TAKE_INITIAL_ACTIONS){
             return;
         }
 

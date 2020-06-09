@@ -67,6 +67,12 @@ public class InputProcessor {
     ////////////////////////////////////////////////////////
 
     private void handleCanvasClicked(MouseEvent e){
+        //only counts as a click if the press and release were in the same place
+        // (within 5 px)
+        if(distance(dragStartMouseX, dragStartMouseY, mouseX, mouseY) > 5){
+            return;
+        }
+
         Consumer<MouseInput> listener = clickListenerForEvent(e);
         if(listener != null){
             listener.accept(new MouseInput(e.getX(), e.getY()));
@@ -238,6 +244,10 @@ public class InputProcessor {
         }
     }
 
+    /**
+     * @param e the mouse event
+     * @return the relevant modifier from the event
+     */
     private InputModifier modifierForEvent(MouseEvent e){
         if(e.isControlDown()){
             return InputModifier.CTRL;
@@ -247,6 +257,21 @@ public class InputProcessor {
         }
 
         return null;
+    }
+
+    /**
+     * @param x1 the x-coord of the first point
+     * @param y1 the y-coord of the first point
+     * @param x2 the x-coord of the second point
+     * @param y2 the y-corrd of the second point
+     *
+     * @return the distance between the two points
+     */
+    private double distance(double x1, double y1, double x2, double y2){
+        double dx = x2 - x1;
+        double dy = y2 - y1;
+
+        return Math.sqrt(dx*dx + dy*dy);
     }
 
 

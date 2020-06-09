@@ -27,7 +27,7 @@ import static territory.joiner.ObjectBytes.getBytes;
 
 public class JoinController {
     //automatically join the first room and start the game
-    private static final boolean AUTO_START = false;
+    private static final boolean AUTO_START = true;
 
     @FXML private SwapPane swapPane;
     @FXML private Pane roomsPane;

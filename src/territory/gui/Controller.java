@@ -220,6 +220,12 @@ public class Controller {
 
     private void handleRightReleased(MouseInput mouseInput){
 
+        //if there is no selection box, clear the selection
+        if(selectionArea == null){
+            currentSelection.clear();
+            return;
+        }
+
         //select all units in selected rectangle
         for(Unit unit : currentState.getAllUnitsInArea(selectionArea)){
             if(unit.getColor() != player.getColor()){
