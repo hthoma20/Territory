@@ -13,7 +13,7 @@ import java.util.*;
 public class GameJoiner {
 
     //add a computer player before a game is started (for testing and debugging)
-    private static final boolean ADD_COMPUTER_PLAYER = false;
+    private static final boolean ADD_COMPUTER_PLAYER = true;
 
     //map from room id to room
     private Map<Integer, GameRoom> roomsById = new HashMap<>();

@@ -33,12 +33,31 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 public class Controller {
+
     @FXML private Pane canvasPane;
     @FXML private Canvas canvas;
-    @FXML private Label populationLabel;
     @FXML private Label stoneLabel;
     @FXML private Label goldLabel;
     @FXML private Label territoryLabel;
+    @FXML private Label minersLabel;
+    @FXML private Label buildersLabel;
+    @FXML private Label soldiersLabel;
+    @FXML private Label villagesLabel;
+    @FXML private Label populationLabel;
+
+    //labels for prices of things on the GUI
+    private boolean priceLabelsValid = false;
+    @FXML private Label minerPriceLabel1;
+    @FXML private Label minerPriceLabel5;
+    @FXML private Label minerPriceLabel10;
+    @FXML private Label builderPriceLabel1;
+    @FXML private Label builderPriceLabel5;
+    @FXML private Label builderPriceLabel10;
+    @FXML private Label soldierPriceLabel1;
+    @FXML private Label soldierPriceLabel5;
+    @FXML private Label soldierPriceLabel10;
+    @FXML private Label villagePriceLabel;
+    @FXML private Label postPriceLabel;
 
     private Scene scene;
 
@@ -117,13 +136,72 @@ public class Controller {
         goldLabel.setText(""+inventory.getGold());
         territoryLabel.setText(String.format("%,d", (int)(territories.area()/1000)));
 
-        if(currentSelection.getType() != Selection.Type.VILLAGE){
-            populationLabel.setText("No village selected");
+        updateCountLabels();
+
+        if(!priceLabelsValid){
+            setPriceLabels();
+            priceLabelsValid = true;
         }
-        else{
-            int villagePopulation = inventory.getVillage(currentSelection.getIndex()).getPopulation();
-            populationLabel.setText(String.format("Population: %d", villagePopulation));
+    }
+
+    private void updateCountLabels(){
+        Inventory inventory = currentState.getPlayerInventory(player);
+
+        int minerCount = 0;
+        int builderCount = 0;
+        int soldierCount = 0;
+
+        for(Unit unit : inventory.getUnits()){
+            if(unit instanceof Miner){
+                minerCount++;
+            }
+            else if(unit instanceof Builder){
+                builderCount++;
+            }
+            else if(unit instanceof Soldier){
+                soldierCount++;
+            }
+            else{
+                System.err.println(
+                        "Unknown unit type in Controller.updateUnitCountLabels: " + unit.getClass().getSimpleName());
+            }
         }
+
+        minersLabel.setText("" + minerCount);
+        buildersLabel.setText("" + builderCount);
+        soldiersLabel.setText("" + soldierCount);
+
+        int villageCount = inventory.getVillages().size();
+        villagesLabel.setText("" + villageCount);
+
+        int population = 0;
+        for(Village village : inventory.getVillages()){
+            population += village.getPopulation();
+        }
+        populationLabel.setText("" + population);
+    }
+
+    private void setPriceLabels(){
+        int minerGold = Miner.getGoldPrice();
+        int builderGold = Builder.getGoldPrice();
+        int soldierGold = Soldier.getGoldPrice();
+        int villageGold = Village.getGoldPrice();
+        int postGold = Post.getGoldPrice();
+
+        minerPriceLabel1.setText("" + minerGold);
+        minerPriceLabel5.setText("" + minerGold*5);
+        minerPriceLabel10.setText("" + minerGold*10);
+
+        builderPriceLabel1.setText("" + builderGold);
+        builderPriceLabel5.setText("" + builderGold*5);
+        builderPriceLabel10.setText("" + builderGold*10);
+
+        soldierPriceLabel1.setText("" + soldierGold);
+        soldierPriceLabel5.setText("" + soldierGold*5);
+        soldierPriceLabel10.setText("" + soldierGold*10);
+
+        villagePriceLabel.setText("" + villageGold);
+        postPriceLabel.setText("" + postGold);
     }
 
     @FXML

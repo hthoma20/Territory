@@ -5,12 +5,15 @@ import territory.game.GameColor;
 import territory.game.GameState;
 import territory.game.Indexable;
 import territory.game.action.tick.TickAction;
+import territory.game.construction.Wall;
+import territory.game.construction.WallSegment;
 import territory.game.sprite.ImageSprite;
 import territory.game.sprite.Sprite;
 import javafx.geometry.Point2D;
 import territory.game.target.Target;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 public abstract class Unit extends ImageSprite
@@ -79,12 +82,43 @@ public abstract class Unit extends ImageSprite
         //otherwise we are not at the target, move towards it
         Point2D velocity = distance.normalize().multiply(speed);
 
-        x += velocity.getX();
-        y += velocity.getY();
+        //check if we collide with a something impassible
+        if(canMove(currentState, velocity)){
+            x += velocity.getX();
+            y += velocity.getY();
 
-        this.rotation = Sprite.rotation(velocity);
+            this.rotation = Sprite.rotation(velocity);
+        }
 
         return null;
+    }
+
+    private boolean canMove(GameState state, Point2D velocity){
+
+        double newX = x + velocity.getX();
+        double newY = y + velocity.getY();
+
+        for(Wall wall : state.getAllWalls()){
+            //we can pass through our own walls
+            if(wall.getColor() == this.color){
+                continue;
+            }
+
+            if(wall.getPost1().containsPoint(newX, newY)){
+                return false;
+            }
+            if(wall.getPost2().containsPoint(newX, newY)){
+                return false;
+            }
+
+            for(WallSegment segment : wall.getSegments()){
+                if(segment.containsPoint(newX, newY)){
+                    return false;
+                }
+            }
+        }
+
+        return true;
     }
 
     @Override

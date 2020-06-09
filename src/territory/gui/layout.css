@@ -7,6 +7,24 @@
     -fx-border-color: steelblue;
 }
 
-.noVillage {
-    -fx-color: red;
+.unitBox {
+    -fx-border-width: 1;
+    -fx-border-color: brown;
+
+    -fx-alignment: center;
+    -fx-spacing: 10;
+    /* top right bottom left */
+    -fx-padding: 0 10 0 10;
+}
+
+.stats {
+    -fx-font-size: 20;
+    -fx-font-family: fantasy;
+
+    /* top right bottom left */
+    -fx-padding: 40 30 0 30;
+
+    -fx-alignment:  top-center;
+
+    -fx-spacing: 20;
 }

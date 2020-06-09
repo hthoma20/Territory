@@ -9,7 +9,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import java.net.URL?>
 <?import javafx.scene.layout.Pane?>
-<?import territory.gui.SwapPane?>
+<?import territory.gui.component.SwapPane?>
 <?import javafx.scene.text.Text?>
 <VBox fx:controller="territory.joiner.JoinController"
       xmlns:fx="http://javafx.com/fxml" alignment="center">

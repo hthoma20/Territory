@@ -3,7 +3,6 @@ package territory.joiner;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
-import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.text.Text;
 import territory.game.Game;
@@ -13,7 +12,7 @@ import territory.game.info.JoinInfo;
 import territory.game.info.PlayerAddedInfo;
 import territory.game.player.GUIPlayer;
 import territory.game.player.Player;
-import territory.gui.SwapPane;
+import territory.gui.component.SwapPane;
 import territory.joiner.request.JoinRoomRequest;
 
 import java.io.IOException;

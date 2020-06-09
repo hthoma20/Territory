@@ -1,4 +1,4 @@
-package territory.gui;
+package territory.gui.component;
 
 import javafx.scene.Node;
 import javafx.scene.layout.Pane;

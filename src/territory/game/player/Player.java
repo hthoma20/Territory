@@ -47,6 +47,7 @@ public abstract class Player implements Indexable, Serializable {
 
     public void sendInfo(GameInfo info){
         if(info instanceof PlayerSetupInfo){
+            System.out.println("Index: " + ((PlayerSetupInfo) info).getIndex());
             this.index = ((PlayerSetupInfo) info).getIndex();
             this.color = ((PlayerSetupInfo) info).getColor();
         }

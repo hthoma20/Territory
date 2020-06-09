@@ -32,7 +32,7 @@ public class ComputerPlayer extends Player {
         takeAction(new CreateVillageAction(color, 0, 0));
 
         int numSoldiers = 0;
-        int numMiners = 5;
+        int numMiners = 0;
 
         takeAction(new TrainSoldiersAction(color, 0, numSoldiers));
 
@@ -50,6 +50,8 @@ public class ComputerPlayer extends Player {
 
         takeAction(new TrainMinersAction(color, 0, numMiners));
 
-
+        takeAction(new CreatePostAction(color, 200, -100));
+        takeAction(new CreatePostAction(color, 300, -100));
+        takeAction(new CreateWallAction(color, 0, 1));
     }
 }

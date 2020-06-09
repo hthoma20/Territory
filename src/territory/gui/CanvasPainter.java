@@ -121,7 +121,7 @@ public class CanvasPainter {
             double x = sprite.getX();
             double y = sprite.getY() + sprite.getHeight()/2 + 15;
             gc.setTextAlign(TextAlignment.CENTER);
-            gc.strokeText("Pop " + population, x, y);
+            gc.strokeText("Pop. " + population, x, y);
         }
     }
 
