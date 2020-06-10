@@ -1,6 +1,7 @@
 package territory.joiner;
 
 import com.sun.net.httpserver.HttpExchange;
+import territory.game.Version;
 import territory.game.info.GameStartedInfo;
 import territory.game.player.ComputerPlayer;
 import territory.game.player.Player;
@@ -29,6 +30,10 @@ public class GameJoiner {
     private void addRoom(){
         GameRoom room = new GameRoom();
         roomsById.put(room.getRoomId(), room);
+    }
+
+    public Version getCurrentVersion(Object request){
+        return Version.CURRENT_VERSION;
     }
 
     public List<GameRoom> getGameRooms(Object request) {

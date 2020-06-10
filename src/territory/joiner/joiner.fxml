@@ -29,6 +29,28 @@
                 <Text fx:id="playerListText" />
             </VBox>
 
+            <!-- Version mismatch page -->
+            <VBox fx:id="versionErrorPane" alignment="center" spacing="20">
+                <Label text="There is a version mismatch" />
+                <HBox alignment="center" spacing="20">
+                    <Label text="You are running version " />
+                    <Label fx:id="clientVersionLabel" />
+                </HBox>
+                <HBox alignment="center" spacing="20">
+                    <Label text="The server is running version " />
+                    <Label fx:id="serverVersionLabel" />
+                </HBox>
+                <HBox alignment="center" spacing="20">
+                    <Button text="Proceed anyway" onAction="#proceedWithVersion"/>
+                    <Button text="Update version" onAction="#updateVersion"/>
+                </HBox>
+            </VBox>
+
+            <!-- Update complete -->
+            <VBox fx:id="versionUpdatedPane" alignment="center" spacing="20">
+                <Label text="Update complete. Please re-run the game" />
+            </VBox>
+
     </SwapPane>
 
 

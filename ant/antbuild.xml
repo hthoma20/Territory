@@ -1,0 +1,19 @@
+<project name="Territory" default="buildnum" basedir=".">
+    <description>
+        Incriment build count
+    </description>
+
+    <!-- set global properties for this build -->
+    <property name="src" location="../src"/>
+
+    <target name="buildnum">
+
+        <buildnumber/>
+        <replaceregexp file="${src}/territory/game/Version.java"
+                       match="public\s+static\s+final\s+int\s+BUILD_NUMBER\s+=\s+.*;"
+                       replace="public static final int BUILD_NUMBER = ${build.number};"
+                       byline="true"
+        />
+
+    </target>
+</project>

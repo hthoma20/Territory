@@ -1,12 +1,15 @@
 package territory.joiner;
 
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.layout.Pane;
 import javafx.scene.text.Text;
 import territory.game.Game;
 import territory.game.RemoteGame;
+import territory.game.Version;
 import territory.game.info.GameStartedInfo;
 import territory.game.info.JoinInfo;
 import territory.game.info.PlayerAddedInfo;
@@ -15,6 +18,8 @@ import territory.game.player.Player;
 import territory.gui.component.SwapPane;
 import territory.joiner.request.JoinRoomRequest;
 
+import java.io.BufferedInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.net.HttpURLConnection;
@@ -27,6 +32,8 @@ import static territory.joiner.ObjectBytes.getBytes;
 public class JoinController {
     //automatically join the first room and start the game
     private static final boolean AUTO_START = true;
+    //force a version failure for testing and debugging
+    private static final boolean FORCE_VERSION_FAILURE = false;
 
     @FXML private SwapPane swapPane;
     @FXML private Pane roomsPane;
@@ -34,6 +41,11 @@ public class JoinController {
     @FXML private Pane currentRoomPane;
     @FXML private Button startButton;
     @FXML private Text playerListText;
+
+    @FXML private Pane versionErrorPane;
+    @FXML private Pane versionUpdatedPane;
+    @FXML private Label clientVersionLabel;
+    @FXML private Label serverVersionLabel;
 
     private String remoteHost;
     private int remotePort;
@@ -48,20 +60,48 @@ public class JoinController {
         this.player = player;
     }
 
-    public void start() throws IOException, ClassNotFoundException {
-        List<GameRoom> rooms = (List<GameRoom>) remoteRequest("/games");
+    public void start() {
+
+        //check versions
+        Version serverVersion = (Version) remoteObjectRequest("/current_version");
+
+        if(serverVersion.equals(Version.CURRENT_VERSION) && !FORCE_VERSION_FAILURE){
+            displayGameRooms();
+        }
+        else{
+            displayVersionError(serverVersion, Version.CURRENT_VERSION);
+        }
+    }
+
+    private void displayVersionError(Version serverVersion, Version clientVersion){
+        serverVersionLabel.setText(serverVersion.toString());
+        clientVersionLabel.setText(clientVersion.toString());
+
+        swapPane.show(versionErrorPane);
+    }
+
+    @FXML
+    public void proceedWithVersion(ActionEvent e){
+        displayGameRooms();
+    }
+
+    @FXML
+    public void updateVersion(ActionEvent e){
+        System.out.println("Request to update version");
+        remoteFileRequest("/client_jar", "./Territory.jar");
+        swapPane.show(versionUpdatedPane);
+    }
+
+    private void displayGameRooms() {
+        List<GameRoom> gameRooms = (List<GameRoom>) remoteObjectRequest("/games");
 
         if(AUTO_START){
-            GameRoom room = rooms.get(0);
+            GameRoom room = gameRooms.get(0);
             joinRoom(room);
             startGame(room);
             return;
         }
 
-        displayGameRooms(rooms);
-    }
-
-    private void displayGameRooms(List<GameRoom> gameRooms){
         swapPane.show(roomsPane);
 
         roomsPane.getChildren().clear();
@@ -74,21 +114,15 @@ public class JoinController {
     private Node joinGameRoomNode(GameRoom room){
         Button roomButton = new Button(String.format("Room %d", room.getRoomId()));
         roomButton.setOnMouseClicked(event -> {
-            try {
-                joinRoom(room);
-                System.out.println("Clicked");
-            }
-            catch (IOException | ClassNotFoundException e) {
-                e.printStackTrace();
-            }
+            joinRoom(room);
         });
 
         return roomButton;
     }
 
-    private void joinRoom(GameRoom room) throws IOException, ClassNotFoundException {
+    private void joinRoom(GameRoom room) {
         JoinRoomRequest request = new JoinRoomRequest(room.getRoomId(), Player.randomName());
-        int port = (Integer) remoteRequest("/join", request);
+        int port = (Integer) remoteObjectRequest("/join", request);
         System.out.println(port);
 
         RemoteGame game = new RemoteGame(player, remoteHost, port);
@@ -119,12 +153,7 @@ public class JoinController {
 
     //send a start game request
     private void startGame(GameRoom room){
-        try {
-            remoteRequest("/start_game", room.getRoomId());
-        }
-        catch (IOException | ClassNotFoundException e) {
-            e.printStackTrace();
-        }
+        remoteObjectRequest("/start_game", room.getRoomId());
     }
 
     public void onGameStart(Consumer<Game> onGameStart){
@@ -144,34 +173,67 @@ public class JoinController {
         playerListText.setText(namesText.toString());
     }
 
-    private Object remoteRequest(String file, Object requestObject) throws IOException, ClassNotFoundException {
-        URL url = new URL("http", remoteHost, remotePort, file);
+    private Object remoteObjectRequest(String file, Object requestObject)  {
+        try {
+            URL url = new URL("http", remoteHost, remotePort, file);
 
-        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-        connection.setRequestMethod("POST");
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+            connection.setRequestMethod("POST");
 
-        if(requestObject != null) {
-            connection.setDoOutput(true);
-            connection.getOutputStream().write(getBytes(requestObject));
-        }
+            if (requestObject != null) {
+                connection.setDoOutput(true);
+                connection.getOutputStream().write(getBytes(requestObject));
+            }
 
-        connection.connect();
+            connection.connect();
 
-        Object obj = null;
+            Object obj = null;
 
-        try(ObjectInputStream in = new ObjectInputStream(connection.getInputStream())){
-            obj = in.readObject();
-        }
+            try (ObjectInputStream in = new ObjectInputStream(connection.getInputStream())) {
+                obj = in.readObject();
+            }
 //        catch(SocketException ignored){
 //            ignored.printStackTrace();
 //        }
 
-        connection.disconnect();
+            connection.disconnect();
 
-        return obj;
+            return obj;
+        }
+        catch(IOException | ClassNotFoundException exc){
+            exc.printStackTrace();
+            System.exit(1);
+        }
+
+        return null;
     }
 
-    private Object remoteRequest(String file) throws IOException, ClassNotFoundException {
-        return remoteRequest(file, null);
+    private Object remoteObjectRequest(String file) {
+        return remoteObjectRequest(file, null);
+    }
+
+    /**
+     * Download and save a file
+     * @param remoteFile the file to download
+     * @param localFile the path to save to
+     */
+    private void remoteFileRequest(String remoteFile, String localFile) {
+        try{
+            URL url = new URL("http", remoteHost, remotePort, remoteFile);
+
+            BufferedInputStream bis = new BufferedInputStream(url.openStream());
+            FileOutputStream fis = new FileOutputStream(localFile);
+            byte[] buffer = new byte[1024];
+            int count=0;
+            while((count = bis.read(buffer,0,1024)) != -1)
+            {
+                fis.write(buffer, 0, count);
+            }
+            fis.close();
+            bis.close();
+        }
+        catch(IOException exc){
+            exc.printStackTrace();
+        }
     }
 }
