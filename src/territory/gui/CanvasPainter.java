@@ -53,7 +53,7 @@ public class CanvasPainter {
         this.controller = controller;
         this.canvas = canvas;
         this.gc = canvas.getGraphicsContext2D();
-        this.background = Color.AZURE;
+        this.background = Color.CORNSILK;
     }
 
     /**

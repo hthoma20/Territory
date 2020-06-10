@@ -15,16 +15,19 @@ public class Village extends ImageSprite
 
     private GameColor color;
 
-    private int population = 5;
+    private int population = 2;
 
-    //how many ticks per spawn
-    private int spawnRate = 200;
+    //spawn time when there are 0 units
+    private int firstUnitSpawnTime = 150;
     //how many ticks until spawn
-    private int timeToSpawn = spawnRate;
+    private int timeToSpawn = firstUnitSpawnTime;
+
+    private double growthRate = 0.002;
+    private int maxPopulation = 20;
 
     //how many ticks per gold
     private int goldRate = 200;
-    //how many ticks until spawn
+    //how many ticks until gold
     private int timeToGold = goldRate;
 
     private int index = -1;
@@ -52,8 +55,10 @@ public class Village extends ImageSprite
         //increase population
         timeToSpawn--;
         if(timeToSpawn < 1){
+
             population++;
-            timeToSpawn = spawnRate;
+
+            timeToSpawn = computeTimeToSpawn();
         }
 
         //increase gold
@@ -64,6 +69,18 @@ public class Village extends ImageSprite
         }
 
         return null;
+    }
+
+    /**
+     * @return how long until the next unit should spawn, based on the current population
+     */
+    private int computeTimeToSpawn(){
+        if(population == 0){
+            return firstUnitSpawnTime;
+        }
+
+        double popPerTime = growthRate*(maxPopulation - population)/maxPopulation*population;
+        return (int)(1.0/popPerTime);
     }
 
     @Override
@@ -106,6 +123,9 @@ public class Village extends ImageSprite
         }
 
         this.population -= population;
+
+        timeToSpawn = computeTimeToSpawn();
+
         return true;
     }
 }

@@ -93,7 +93,7 @@ public class LocalGame implements Game {
             //process actions taken
             processActionQueue();
 
-            //sleep for the duration of the tick time
+            //sleep for the duration of the tick time ( (tickEnd - tickStart) + sleepTime = tickSpeed )
             long tickEnd = System.currentTimeMillis();
             long sleepTime = tickStart + tickSpeed - tickEnd;
 
