@@ -1,6 +1,7 @@
 package territory.game;
 
 
+import javafx.geometry.Point2D;
 import territory.game.construction.*;
 import territory.game.player.Player;
 import territory.game.sprite.Sprite;
@@ -18,6 +19,12 @@ public class GameState implements Copyable<GameState>, Serializable {
     private List<Inventory> playerInventories;
     private List<TerritoryList> playerTerritories;
     private List<Mine> mines;
+
+    //the part of the map which can be played on
+    private final double areaInPlayWidth = 1500;
+    private final double areaInPlayHeight = 750;
+    private RectangleArea areaInPlay =
+            new RectangleArea(-areaInPlayWidth/2, -areaInPlayHeight/2, areaInPlayWidth/2, areaInPlayHeight/2);
 
     public GameState(int numPlayers){
         this.numPlayers = numPlayers;
@@ -44,6 +51,8 @@ public class GameState implements Copyable<GameState>, Serializable {
         for(Mine srcMine : src.mines){
             this.mines.add(srcMine.copy());
         }
+
+        this.areaInPlay = src.areaInPlay.copy();
     }
 
     @Override
@@ -68,11 +77,35 @@ public class GameState implements Copyable<GameState>, Serializable {
     }
 
     private void initMines(){
-        this.mines = new ArrayList<>();
+        int numMines = numPlayers + RNG.randInt(2);
 
-        mines.add(new Mine(-100,-100));
-        mines.add(new Mine(100, 100));
+        this.mines = new ArrayList<>(numMines);
 
+        double padding = 200;
+        double minX = areaInPlay.getTopX() + padding;
+        double maxX = areaInPlay.getTopX() + areaInPlay.getWidth() - padding;
+        double minY = areaInPlay.getTopY() + padding;
+        double maxY = areaInPlay.getTopY() + areaInPlay.getHeight() - padding;
+
+        while(mines.size() < numMines){
+            double x = RNG.randDouble(minX, maxX);
+            double y = RNG.randDouble(minY, maxY);
+
+            //check that its a valid spot
+            boolean valid = true;
+            for(Mine mine : mines){
+                if(new Point2D(x, y).distance(mine.getX(), mine.getY()) < mine.getBuildZoneRadius()){
+                    valid = false;
+                    break;
+                }
+            }
+
+            if(valid){
+                mines.add(new Mine(x, y));
+            }
+        }
+
+        //set mine indices
         for(int i = 0; i < mines.size(); i++){
             mines.get(i).setIndex(i);
         }
@@ -236,6 +269,10 @@ public class GameState implements Copyable<GameState>, Serializable {
 
     public Mine getMine(int index){
         return mines.get(index);
+    }
+
+    public RectangleArea getAreaInPlay(){
+        return areaInPlay;
     }
 
     public GameColor[] colorsInUse(){

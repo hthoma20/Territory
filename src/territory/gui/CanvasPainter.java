@@ -71,6 +71,7 @@ public class CanvasPainter {
         gc.save();
         this.transformCanvas();
 
+        paintAreaInPlay();
         paintTerritories(currentState.getPlayerTerritories());
         paintSprites(currentState.getAllSprites());
         paintSelection();
@@ -188,6 +189,16 @@ public class CanvasPainter {
         gc.strokeRect(selection.getTopX(), selection.getTopY(), selection.getWidth(), selection.getHeight());
     }
 
+    private void paintAreaInPlay(){
+        gc.save();
+        gc.setStroke(Color.BLACK);
+        gc.setLineWidth(3/aspectRatio);
+
+        RectangleArea area = currentState.getAreaInPlay();
+        gc.strokeRect(area.getTopX(), area.getTopY(), area.getWidth(), area.getHeight());
+        gc.restore();
+    }
+
     private void strokeCircle(double x, double y, double radius){
         gc.strokeOval(x - radius, y - radius, 2*radius, 2*radius);
     }
@@ -271,12 +282,19 @@ public class CanvasPainter {
         centerY += deltaY;
     }
 
-    private double bound(double val, double min, double max){
-        if(val < min){
-            return min;
-        }
+    /**
+     * Fit the canvas to match the given area
+     * @param area the area to fit the canvas to
+     */
+    public void fitToArea(RectangleArea area){
 
-        return Math.min(val, max);
+        centerX = area.getTopX() + area.getWidth()/2;
+        centerY = area.getTopY() + area.getHeight()/2;
+
+        double widthRatio = canvas.getWidth()/area.getWidth();
+        double heightRatio = canvas.getHeight()/area.getHeight();
+
+        aspectRatio = Math.min(widthRatio, heightRatio);
     }
 
     private boolean inRange(double val, double min, double max){

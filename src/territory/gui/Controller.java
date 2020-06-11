@@ -143,6 +143,7 @@ public class Controller {
         currentState = state;
 
         Platform.runLater(()-> {
+            canvasPainter.fitToArea(state.getAreaInPlay());
             //paint the canvas
             canvasPainter.paint();
 

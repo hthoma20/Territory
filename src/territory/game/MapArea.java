@@ -1,9 +1,11 @@
 package territory.game;
 
+import java.io.Serializable;
+
 /**
  * Defines an area of the map
  */
-public interface MapArea {
+public interface MapArea extends Copyable<MapArea>, Serializable {
 
     /**
      * @param x the x-coord of the point to test

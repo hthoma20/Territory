@@ -2,10 +2,12 @@ package territory.game;
 
 import javafx.geometry.Point2D;
 
+import java.io.Serializable;
+
 /**
  * Defines a rectanglular area of the map
  */
-public class RectangleArea implements MapArea {
+public class RectangleArea implements MapArea, Serializable {
     //point 1 is the upper left point
     private double x1, y1;
     //point 2 is the lower right point
@@ -21,6 +23,18 @@ public class RectangleArea implements MapArea {
 
     public RectangleArea(Point2D p1, Point2D p2){
         this(p1.getX(), p1.getY(), p2.getX(), p2.getY());
+    }
+
+    public RectangleArea(RectangleArea src){
+        this.x1 = src.x1;
+        this.y1 = src.y1;
+        this.x2 = src.x2;
+        this.y2 = src.y2;
+    }
+
+    @Override
+    public RectangleArea copy(){
+        return new RectangleArea(this);
     }
 
     public double getTopX(){

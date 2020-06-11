@@ -172,6 +172,12 @@ public class ActionProcessor {
     private boolean isValidConstruction(double x, double y){
         Point2D point = new Point2D(x, y);
 
+        //check that it is in bounds
+        if(!currentState.getAreaInPlay().contains(x, y)){
+            return false;
+        }
+
+        //check if it is too close to another construction
         for(Construction construction : currentState.getAllConstructions()){
             //if the point is too close to the construction
             if(point.distance(construction.getX(), construction.getY()) < construction.getBuildZoneRadius()){

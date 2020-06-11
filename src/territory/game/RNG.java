@@ -31,6 +31,20 @@ public class RNG {
     }
 
     /**
+     * @return an int in the range [0, upper)
+     */
+    public static int randInt(int upper){
+        return random.nextInt(upper);
+    }
+
+    /**
+     * @return an int in the range [lower, upper)
+     */
+    public static int randInt(int lower, int upper){
+        return random.nextInt(upper-lower) + lower;
+    }
+
+    /**
      * @param probability the probability of true
      * @return true with the given probability, false otherwise
      */

@@ -42,7 +42,6 @@ public class JoinerMain extends Application {
 
         //exit on close
         primaryStage.setOnCloseRequest(this::exitApplication);
-        primaryStage.setResizable(false);
 
         primaryStage.setScene(joinerScene);
         primaryStage.show();
@@ -60,6 +59,7 @@ public class JoinerMain extends Application {
             System.out.println("Starting game");
             Platform.runLater(() -> {
                 primaryStage.setScene(gameScene);
+                primaryStage.setMaximized(true);
             });
         });
 
