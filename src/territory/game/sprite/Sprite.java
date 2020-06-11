@@ -12,21 +12,16 @@ import java.io.Serializable;
 import java.util.List;
 
 public abstract class Sprite implements Tickable, Serializable {
-
-    private int id;
-
     protected double x, y;
 
     protected double rotation = 0;
 
     public Sprite(double x, double y){
-        this.id = LocalGame.getUniqueId();
         this.x = x;
         this.y = y;
     }
 
     public Sprite(Sprite src){
-        this.id = src.id;
         this.x = src.x;
         this.y = src.y;
         this.rotation = src.rotation;
@@ -62,10 +57,6 @@ public abstract class Sprite implements Tickable, Serializable {
 
     public double getRotation() {
         return rotation;
-    }
-
-    public int getId() {
-        return id;
     }
 
     @Override

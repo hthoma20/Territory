@@ -4,6 +4,7 @@ package territory.game;
 import territory.game.action.GameAction;
 import territory.game.action.player.PlayerAction;
 import territory.game.action.tick.TickAction;
+import territory.game.info.GameOverInfo;
 import territory.game.info.PlayerSetupInfo;
 import territory.game.player.Player;
 
@@ -16,7 +17,9 @@ import java.util.List;
  * and is in charge of the territory.game loop
  */
 public class LocalGame implements Game {
-    private static int nextId = 0;
+
+    //territory needed to win the game
+    private int territoryNeeded = 10000;
 
     private int tickSpeed = 1000/40; // millis/fps
 
@@ -79,7 +82,7 @@ public class LocalGame implements Game {
         while(gameLoopRunning) {
             long tickStart = System.currentTimeMillis();
 
-            //advance the territory.game
+            //advance the territory game
             for (Tickable tickable : state.getAllTickables()) {
                 List<TickAction> actionsToTake = tickable.tick(state);
                 if(actionsToTake != null){
@@ -89,6 +92,13 @@ public class LocalGame implements Game {
 
             //send the players the new state
             this.sendStateToPlayers();
+
+            //check if the game is over
+            GameColor winner = getWinner();
+            if(winner != null){
+                this.sendGameOverInfoToPlayers(winner);
+                return;
+            }
 
             //process actions taken
             processActionQueue();
@@ -107,6 +117,22 @@ public class LocalGame implements Game {
 
             assertInvariants();
         }
+    }
+
+    /**
+     * Determine if there is a winner in the current state
+     * @return the color of the winner, or null if there is no winner
+     */
+    private GameColor getWinner(){
+        for(Player player : this.players){
+            TerritoryList playerTerritories = state.getPlayerTerritories(player.getIndex());
+
+            if(playerTerritories.area() >= territoryNeeded){
+                return player.getColor();
+            }
+        }
+
+        return null;
     }
 
     private void processActionQueue(){
@@ -129,6 +155,15 @@ public class LocalGame implements Game {
         }
     }
 
+    //send info to all players that the game is over
+    private void sendGameOverInfoToPlayers(GameColor winningColor){
+        GameOverInfo info = new GameOverInfo(winningColor);
+
+        for(Player player : this.players){
+            player.sendInfo(info);
+        }
+    }
+
     @Override
     public void receiveAction(PlayerAction action){
         actionQueue.add(action);
@@ -142,15 +177,12 @@ public class LocalGame implements Game {
         }
     }
 
-    public static int getUniqueId(){
-        int id = LocalGame.nextId;
-        LocalGame.nextId++;
-
-        return id;
-    }
-
     public GameState getState() {
         return state;
+    }
+
+    public int getTerritoryNeeded(){
+        return territoryNeeded;
     }
 
     public Player getPlayer(GameColor color) {
@@ -163,6 +195,8 @@ public class LocalGame implements Game {
 
         return player;
     }
+
+
 
 
     private void assertInvariants(){
