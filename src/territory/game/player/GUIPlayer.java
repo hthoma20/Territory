@@ -18,7 +18,7 @@ import java.util.function.Consumer;
 
 public class GUIPlayer extends Player {
     //whether we should automatically take some actions (for testing and debugging)
-    private static final boolean TAKE_INITIAL_ACTIONS = true;
+    private static final boolean TAKE_INITIAL_ACTIONS = false;
 
     private String displayName = "Un-named GUI Player";
 

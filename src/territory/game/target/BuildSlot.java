@@ -1,5 +1,7 @@
 package territory.game.target;
 
+import territory.game.construction.Buildable;
+
 import java.io.Serializable;
 
 /**

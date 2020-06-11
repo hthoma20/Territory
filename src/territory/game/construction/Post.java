@@ -4,7 +4,6 @@ import territory.game.GameColor;
 import territory.game.Indexable;
 import territory.game.sprite.ImageStore;
 import territory.game.target.BuildSlot;
-import territory.game.target.Buildable;
 
 import java.io.Serializable;
 

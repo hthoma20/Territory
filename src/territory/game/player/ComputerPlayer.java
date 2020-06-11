@@ -4,6 +4,7 @@ import territory.game.GameState;
 import territory.game.action.player.*;
 import territory.game.info.GameInfo;
 import territory.game.info.PlayerSetupInfo;
+import territory.game.target.BuildType;
 import territory.game.target.PatrolArea;
 
 import java.util.HashSet;
@@ -53,5 +54,14 @@ public class ComputerPlayer extends Player {
         takeAction(new CreatePostAction(color, 200, -100));
         takeAction(new CreatePostAction(color, 300, -100));
         takeAction(new CreateWallAction(color, 0, 1));
+
+        int numBuilders = 2;
+        takeAction(new TrainBuildersAction(color, 0, numBuilders));
+        for(int i = 0; i < numBuilders/2; i++){
+            takeAction(new DirectBuilderAction(color, i, 0, BuildType.POST));
+        }
+        for(int i = numBuilders/2; i < numBuilders; i++){
+            takeAction(new DirectBuilderAction(color, i, 1, BuildType.POST));
+        }
     }
 }

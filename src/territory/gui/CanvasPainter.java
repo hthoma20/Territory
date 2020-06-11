@@ -3,7 +3,7 @@ package territory.gui;
 import javafx.scene.text.TextAlignment;
 import territory.game.*;
 import territory.game.construction.Village;
-import territory.game.target.Buildable;
+import territory.game.construction.Buildable;
 import territory.game.sprite.Sprite;
 import javafx.geometry.Point2D;
 import javafx.scene.canvas.Canvas;

@@ -1,10 +1,7 @@
 package territory.game;
 
 
-import territory.game.construction.Construction;
-import territory.game.construction.Mine;
-import territory.game.construction.Wall;
-import territory.game.construction.WallSegment;
+import territory.game.construction.*;
 import territory.game.player.Player;
 import territory.game.sprite.Sprite;
 import territory.game.target.PatrolArea;
@@ -178,6 +175,30 @@ public class GameState implements Copyable<GameState>, Serializable {
         }
 
         return patrolAreas;
+    }
+
+    public List<Post> getAllPosts(){
+        ArrayList<Post> posts = new ArrayList<>();
+        for(Inventory inventory : playerInventories){
+            posts.addAll(inventory.getPosts());
+        }
+
+        return posts;
+    }
+
+    /**
+     * @param color the color of the unit to get collidables for
+     * @return a list of all sprites that a unit of the given color cannot move through
+     */
+    public List<Sprite> getAllCollidables(GameColor color){
+        ArrayList<Buildable> collidables = new ArrayList<>();
+        collidables.addAll(getAllWallSegments());
+        collidables.addAll(getAllPosts());
+
+        //a unit can only collide with a different color, and it must be fully built
+        return collidables.stream().filter(collidable ->
+            collidable.isComplete() && collidable.getColor() != color
+        ).collect(Collectors.toList());
     }
 
     public List<Sprite> getSpritesContaining(double x, double y){

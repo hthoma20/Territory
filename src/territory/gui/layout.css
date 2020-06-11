@@ -19,7 +19,6 @@
 
 .stats {
     -fx-font-size: 20;
-    -fx-font-family: fantasy;
 
     /* top right bottom left */
     -fx-padding: 40 30 0 30;

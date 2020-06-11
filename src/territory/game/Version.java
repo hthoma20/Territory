@@ -8,7 +8,7 @@ import java.util.Objects;
  */
 public class Version implements Serializable {
 
-    public static final int BUILD_NUMBER = 23;
+    public static final int BUILD_NUMBER = 51;
     public static final Version CURRENT_VERSION = new Version(0, 2, BUILD_NUMBER);
 
     private int majorVersion;

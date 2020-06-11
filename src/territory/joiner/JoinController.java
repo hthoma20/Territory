@@ -98,6 +98,11 @@ public class JoinController {
         if(AUTO_START){
             GameRoom room = gameRooms.get(0);
             joinRoom(room);
+            try {
+                Thread.sleep(15);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
             startGame(room);
             return;
         }

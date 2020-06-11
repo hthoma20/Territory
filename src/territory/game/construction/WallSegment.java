@@ -2,7 +2,6 @@ package territory.game.construction;
 
 import territory.game.sprite.ImageStore;
 import territory.game.target.BuildSlot;
-import territory.game.target.Buildable;
 
 import java.io.Serializable;
 

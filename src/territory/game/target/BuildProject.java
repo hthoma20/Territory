@@ -1,6 +1,7 @@
 package territory.game.target;
 
 import territory.game.Copyable;
+import territory.game.construction.Buildable;
 import territory.game.construction.Wall;
 import territory.game.unit.Builder;
 

@@ -89,6 +89,11 @@ public abstract class Unit extends ImageSprite
 
             this.rotation = Sprite.rotation(velocity);
         }
+        //if you can't move, back it up
+        else {
+            x -= velocity.getX();
+            y -= velocity.getY();
+        }
 
         return null;
     }
@@ -98,23 +103,9 @@ public abstract class Unit extends ImageSprite
         double newX = x + velocity.getX();
         double newY = y + velocity.getY();
 
-        for(Wall wall : state.getAllWalls()){
-            //we can pass through our own walls
-            if(wall.getColor() == this.color){
-                continue;
-            }
-
-            if(wall.getPost1().containsPoint(newX, newY)){
+        for(Sprite collidable : state.getAllCollidables(color)){
+            if(collidable.containsPoint(newX, newY)){
                 return false;
-            }
-            if(wall.getPost2().containsPoint(newX, newY)){
-                return false;
-            }
-
-            for(WallSegment segment : wall.getSegments()){
-                if(segment.containsPoint(newX, newY)){
-                    return false;
-                }
             }
         }
 

@@ -1,8 +1,9 @@
-package territory.game.target;
+package territory.game.construction;
 
 import territory.game.Copyable;
 import territory.game.GameColor;
 import territory.game.sprite.ImageSprite;
+import territory.game.target.BuildSlot;
 
 import java.io.Serializable;
 
@@ -12,7 +13,7 @@ public abstract class Buildable extends ImageSprite implements Copyable<Buildabl
 
     private BuildSlot[] slots;
 
-    protected int stoneNeeded = 0;//100;
+    protected int stoneNeeded = 100;
 
     public Buildable(GameColor color, double x, double y) {
         super(x, y);
