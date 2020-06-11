@@ -15,7 +15,7 @@ public class Village extends ImageSprite
 
     private GameColor color;
 
-    private int population = 1000;//2;
+    private int population = 2;
 
     //spawn time when there are 0 units
     private int firstUnitSpawnTime = 150;

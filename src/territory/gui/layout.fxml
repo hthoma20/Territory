@@ -100,9 +100,7 @@
                     <graphic>
                         <VBox alignment="CENTER">
                             <Label text="Village" />
-                            <ImageView>
-                                <Image url="constructions/Village_purple.png" />
-                            </ImageView>
+                            <ImageView fx:id="villageImageView" />
                             <HBox alignment="CENTER">
                                 <Label fx:id="villagePriceLabel" />
                                 <Label text=" gold" />
@@ -115,9 +113,7 @@
                     <graphic>
                         <VBox alignment="CENTER">
                             <Label text="Wall Post" />
-                            <ImageView>
-                                <Image url="constructions/Post_purple.png" />
-                            </ImageView>
+                            <ImageView fx:id="postImageView" />
                             <HBox alignment="CENTER">
                                 <Label fx:id="postPriceLabel" />
                                 <Label text=" gold" />
@@ -130,9 +126,7 @@
                 <HBox styleClass="unitBox">
 
                     <VBox alignment="CENTER">
-                        <ImageView>
-                            <Image url="units/Miner_purple.png" />
-                        </ImageView>
+                        <ImageView fx:id="minerImageView" />
                         <Label text="Miners" />
                     </VBox>
 
@@ -170,9 +164,7 @@
                 <HBox styleClass="unitBox" >
 
                     <VBox alignment="CENTER">
-                        <ImageView>
-                            <Image url="units/Builder_purple.png" />
-                        </ImageView>
+                        <ImageView fx:id="builderImageView" />
                         <Label text="Builders" />
                     </VBox>
 
@@ -210,9 +202,7 @@
                 <HBox styleClass="unitBox" >
 
                     <VBox alignment="CENTER">
-                        <ImageView>
-                            <Image url="units/Soldier_purple.png" />
-                        </ImageView>
+                        <ImageView fx:id="soldierImageView" />
                         <Label text="Soldiers" />
                     </VBox>
 

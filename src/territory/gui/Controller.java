@@ -2,10 +2,12 @@ package territory.gui;
 
 import javafx.scene.Scene;
 import javafx.scene.control.ToggleButton;
+import javafx.scene.image.ImageView;
 import territory.game.*;
 import territory.game.action.player.*;
 import territory.game.construction.*;
 import territory.game.player.GUIPlayer;
+import territory.game.sprite.ImageStore;
 import territory.game.sprite.Sprite;
 import territory.game.target.BuildType;
 import territory.game.target.PatrolArea;
@@ -46,7 +48,6 @@ public class Controller {
     @FXML private Label populationLabel;
 
     //labels for prices of things on the GUI
-    private boolean priceLabelsValid = false;
     @FXML private Label minerPriceLabel1;
     @FXML private Label minerPriceLabel5;
     @FXML private Label minerPriceLabel10;
@@ -58,6 +59,14 @@ public class Controller {
     @FXML private Label soldierPriceLabel10;
     @FXML private Label villagePriceLabel;
     @FXML private Label postPriceLabel;
+
+    //color-specific imageviews on the gui
+    @FXML private ImageView villageImageView;
+    @FXML private ImageView postImageView;
+    @FXML private ImageView minerImageView;
+    @FXML private ImageView builderImageView;
+    @FXML private ImageView soldierImageView;
+
 
     private Scene scene;
 
@@ -86,6 +95,7 @@ public class Controller {
 
         this.currentInteractMode = InteractMode.CREATE_VILLAGE;
 
+        setPriceLabels();
 
         InputProcessor inputProcessor = new InputProcessor(scene, canvas);
 
@@ -100,6 +110,18 @@ public class Controller {
 
     public void setPlayer(GUIPlayer player){
         this.player = player;
+    }
+
+    /**
+     * Initialize color-specific images
+     * @param color the color of the player
+     */
+    public void initImages(GameColor color){
+        this.villageImageView.setImage(ImageStore.store.imageFor(Village.class, color));
+        this.postImageView.setImage(ImageStore.store.imageFor(Post.class, color));
+        this.minerImageView.setImage(ImageStore.store.imageFor(Miner.class, color));
+        this.builderImageView.setImage(ImageStore.store.imageFor(Builder.class, color));
+        this.soldierImageView.setImage(ImageStore.store.imageFor(Soldier.class, color));
     }
 
     //Parse the user data from the given event as an int,
@@ -137,11 +159,6 @@ public class Controller {
         territoryLabel.setText(String.format("%,d", (int)(territories.area()/1000)));
 
         updateCountLabels();
-
-        if(!priceLabelsValid){
-            setPriceLabels();
-            priceLabelsValid = true;
-        }
     }
 
     private void updateCountLabels(){

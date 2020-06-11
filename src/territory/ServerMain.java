@@ -6,6 +6,7 @@ import javafx.stage.Stage;
 import territory.joiner.GameJoiner;
 import territory.joiner.handler.HttpFileHandler;
 import territory.joiner.handler.HttpObjectHandler;
+import territory.joiner.handler.HttpSimpleHandler;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
@@ -34,7 +35,7 @@ public class ServerMain extends Application {
         server.createContext("/start_game", new HttpObjectHandler(joiner::handleStartGameRequest));
         server.createContext("/current_version", new HttpObjectHandler(joiner::getCurrentVersion));
 
-        server.createContext("/ping", new HttpObjectHandler(obj -> 200));
+        server.createContext("/ping", new HttpSimpleHandler("Territory joiner"));
         server.createContext("/client_jar", new HttpFileHandler("out/artifacts/Territory_jar/Territory.jar"));
 
         server.start();

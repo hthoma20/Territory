@@ -53,6 +53,7 @@ public class GUIPlayer extends Player {
 
         //the game is setup so take initial actions
         if(info instanceof PlayerSetupInfo){
+            controller.initImages(((PlayerSetupInfo) info).getColor());
             takeInitialActions();
         }
         else if(info instanceof LostUnitInfo){
