@@ -53,7 +53,7 @@ public class ComputerPlayer extends Player {
 
         takeAction(new CreatePostAction(color, 200, -100));
         takeAction(new CreatePostAction(color, 300, -100));
-        takeAction(new CreateWallAction(color, 0, 1));
+        //takeAction(new CreateWallAction(color, 0, 1));
 
         int numBuilders = 2;
         takeAction(new TrainBuildersAction(color, 0, numBuilders));

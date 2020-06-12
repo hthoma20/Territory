@@ -126,12 +126,11 @@ public class GameState implements Copyable<GameState>, Serializable {
 
         sprites.addAll(getAllWallSegments());
 
-        for(Inventory inventory : playerInventories){
-            sprites.addAll(inventory.getPosts());
+        sprites.addAll(getAllPosts());
 
-            sprites.addAll(inventory.getVillages());
-            sprites.addAll(inventory.getUnits());
-        }
+        sprites.addAll(getAllVillages());
+
+        sprites.addAll(getAllUnits());
 
         return sprites;
     }
@@ -147,17 +146,9 @@ public class GameState implements Copyable<GameState>, Serializable {
     }
 
     public List<Unit> getAllUnitsInArea(RectangleArea area){
-        List<Unit> units = new ArrayList<>();
-
-        for(Inventory inventory : playerInventories){
-            for(Unit unit : inventory.getUnits()){
-                if(area.contains(unit.getX(), unit.getY())){
-                    units.add(unit);
-                }
-            }
-        }
-
-        return units;
+        return getAllUnits().stream().filter(unit ->
+                area.contains(unit.getX(), unit.getY()))
+                .collect(Collectors.toList());
     }
 
     public List<Construction> getAllConstructions(){
@@ -218,6 +209,24 @@ public class GameState implements Copyable<GameState>, Serializable {
         }
 
         return posts;
+    }
+
+    public List<Village> getAllVillages(){
+        ArrayList<Village> villages = new ArrayList<>();
+        for(Inventory inventory : playerInventories){
+            villages.addAll(inventory.getVillages());
+        }
+
+        return villages;
+    }
+
+    public List<Unit> getAllUnits(){
+        ArrayList<Unit> units = new ArrayList<>();
+        for(Inventory inventory : playerInventories){
+            units.addAll(inventory.getUnits());
+        }
+
+        return units;
     }
 
     /**
