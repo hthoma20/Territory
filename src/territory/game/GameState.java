@@ -123,6 +123,7 @@ public class GameState implements Copyable<GameState>, Serializable {
         List<Sprite> sprites = new ArrayList<>();
 
         sprites.addAll(mines);
+
         sprites.addAll(getAllWallSegments());
 
         for(Inventory inventory : playerInventories){

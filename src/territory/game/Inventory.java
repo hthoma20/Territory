@@ -11,13 +11,14 @@ import java.util.Collection;
 import java.util.List;
 
 public class Inventory implements Copyable<Inventory>, Serializable {
+
     private List<Unit> units = new ArrayList<>();
     private List<Village> villages = new ArrayList<>();
     private List<Post> posts = new ArrayList<>();
     private List<Wall> walls = new ArrayList<>();
 
-    private int gold = 100;
-    private int stone = 100;
+    private int gold = 100000;//100;
+    private int stone = 100000;//100;
 
     public Inventory(){
 

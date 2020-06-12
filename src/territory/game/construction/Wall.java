@@ -70,17 +70,19 @@ public class Wall implements Tickable, Copyable<Wall>, Indexable, Serializable {
         Point2D p1 = post1Point.add(normalDistance.multiply(postRadius));
         Point2D p2 = post1Point.add(normalDistance.multiply(post1Point.subtract(post2Point).magnitude() - postRadius));
 
+        //distance to cover
         Point2D distanceVector = p2.subtract(p1);
         double distance = distanceVector.magnitude();
 
         //compute the number of segments
         double segmentLength = ImageStore.store.imageFor(WallSegment.class, this.color).getWidth();
-        int numSegments = (int)(distance/segmentLength);
+        int numSegments = (int)Math.ceil(distance/segmentLength);
 
-        //compute spacing
-        // there is a space on both side of each segment, so there are numSegments+1 spaces, so
-        // numSegments*segmentLength + (numSegments+1)*spacing = distance
-        double spacing = (distance - numSegments*segmentLength)/(numSegments+1);
+        //actual distance of wall
+        double wallDistance = segmentLength * numSegments;
+
+        //how much do the walls stick into the post (its going to stick on both sides, hence /2)
+        double overlap = (wallDistance - distance)/2;
 
         //create the segments
         this.segments = new WallSegment[numSegments];
@@ -90,11 +92,10 @@ public class Wall implements Tickable, Copyable<Wall>, Indexable, Serializable {
 
         //find the placement of each segment
         //the for loop iterates distance from p1
-        double start = spacing + segmentLength/2;
-        double step = spacing + segmentLength;
+        double start = (segmentLength/2) - overlap;
         double stop = distance - start;
         int index = 0;
-        for(double d = start; d <= stop+.001; d += step){
+        for(double d = start; d <= stop+.001; d += segmentLength){
 
             Point2D distanceFromP1 = normalDistance.multiply(d);
             Point2D segmentPoint = p1.add(distanceFromP1);

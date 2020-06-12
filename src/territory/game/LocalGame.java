@@ -19,7 +19,7 @@ import java.util.List;
 public class LocalGame implements Game {
 
     //territory needed to win the game
-    private int territoryNeeded = 10000;
+    private int territoryNeeded = 10000000;
 
     private int tickSpeed = 1000/40; // millis/fps
 
