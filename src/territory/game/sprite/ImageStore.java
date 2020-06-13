@@ -1,11 +1,9 @@
 package territory.game.sprite;
 
 import territory.game.GameColor;
-import territory.game.construction.Mine;
-import territory.game.construction.Post;
-import territory.game.construction.Village;
-import territory.game.construction.WallSegment;
+import territory.game.construction.*;
 import territory.game.unit.Builder;
+import territory.game.unit.Lumberjack;
 import territory.game.unit.Miner;
 import javafx.scene.image.Image;
 import territory.game.unit.Soldier;
@@ -34,6 +32,7 @@ public class ImageStore {
         loadImage(Soldier.class, GameColor.PURPLE, "units/Soldier_purple.png");
         loadImage(Soldier.class, GameColor.GREEN, "units/Soldier_green.png");
         loadImage(Soldier.class, GameColor.BLUE, "units/Soldier_blue.png");
+        loadImage(Lumberjack.class, GameColor.PURPLE, "units/Lumberjack_purple.png");
 
         //Villages
         loadImage(Village.class, GameColor.PURPLE, "constructions/Village_purple.png");
@@ -52,6 +51,9 @@ public class ImageStore {
 
         //Mines
         loadImage(Mine.class, null, "constructions/Mine.png");
+
+        //Trees
+        loadImage(Tree.class, null, "constructions/Tree.png");
     }
 
     public Image imageFor(Class<? extends Sprite> clazz, GameColor color){

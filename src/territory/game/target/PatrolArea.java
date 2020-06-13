@@ -171,10 +171,8 @@ public class PatrolArea implements Tickable, Copyable<PatrolArea>, Serializable 
      * @return the enemy in enemies nearest to soldier
      */
     private Unit nearestEnemy(Soldier soldier, List<Unit> enemies){
-        Point2D soldierPoint = new Point2D(soldier.getX(), soldier.getY());
-
         return Collections.min(enemies, Comparator.comparing( enemy ->
-            soldierPoint.distance(enemy.getX(), enemy.getY())
+            soldier.distanceFrom(enemy.getX(), enemy.getY())
         ));
     }
 

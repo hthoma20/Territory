@@ -31,7 +31,7 @@ import static territory.joiner.ObjectBytes.getBytes;
 
 public class JoinController {
     //automatically join the first room and start the game
-    private static final boolean AUTO_START = false;
+    private static final boolean AUTO_START = true;
     //force a version failure for testing and debugging
     private static final boolean FORCE_VERSION_FAILURE = false;
 

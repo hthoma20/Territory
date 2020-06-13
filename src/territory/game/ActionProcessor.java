@@ -10,10 +10,7 @@ import territory.game.player.Player;
 import territory.game.target.BuildProject;
 import territory.game.target.BuildType;
 import territory.game.target.PatrolArea;
-import territory.game.unit.Builder;
-import territory.game.unit.Miner;
-import territory.game.unit.Soldier;
-import territory.game.unit.Unit;
+import territory.game.unit.*;
 
 
 import java.util.ArrayList;
@@ -73,6 +70,9 @@ public class ActionProcessor {
         }
         else if(action instanceof CheckTerritoryAction){
             processCheckTerritoryAction((CheckTerritoryAction)action);
+        }
+        else if(action instanceof FellTreeAction){
+            processFellTreeAction((FellTreeAction) action);
         }
 
         //Unhandled action
@@ -233,6 +233,9 @@ public class ActionProcessor {
         if(action instanceof TrainSoldiersAction){
             return Soldier.getGoldPrice();
         }
+        if(action instanceof TrainLumberjacksAction){
+            return Lumberjack.getGoldPrice();
+        }
 
         throw new RuntimeException("Unknown unit price");
     }
@@ -259,6 +262,10 @@ public class ActionProcessor {
             return soldier;
         }
 
+        if(action instanceof TrainLumberjacksAction){
+            return new Lumberjack(player, x, y);
+        }
+
         throw new RuntimeException("Unknown unit type to create");
     }
 
@@ -276,6 +283,9 @@ public class ActionProcessor {
         }
         else if(action instanceof DirectSoldierAction){
             processDirectSoldierAction((DirectSoldierAction)action);
+        }
+        else if(action instanceof DirectLumberjackAction){
+            processDirectLumberjackAction((DirectLumberjackAction) action);
         }
         else{
             System.err.println("Unknown direct unit action");
@@ -322,6 +332,19 @@ public class ActionProcessor {
         Miner miner = (Miner)unit;
         Mine mine = currentState.getMine(action.getTargetIndex());
         miner.setTarget(mine.getOpenMineSlot());
+    }
+
+    private void processDirectLumberjackAction(DirectLumberjackAction action){
+        Unit unit = currentInventory.getUnit(action.getUnitIndex());
+
+        if( !(unit instanceof Lumberjack)){
+            player.sendInfo(new IllegalActionInfo("Direct lumberjack but unit not lumberjack"));
+            return;
+        }
+
+        Lumberjack jack = (Lumberjack)unit;
+        Tree tree = currentState.getTree(action.getTargetIndex());
+        jack.setTarget(tree);
     }
 
     private void processDirectSoldierAction(DirectSoldierAction action){
@@ -388,5 +411,10 @@ public class ActionProcessor {
     private void processCheckTerritoryAction(CheckTerritoryAction action){
         TerritoryList territories = Territory.fromWalls(currentInventory.getWalls());
         currentState.setPlayerTerritories(player.getIndex(), territories);
+    }
+
+    private void processFellTreeAction(FellTreeAction action){
+        Tree tree = action.getFelledTree();
+        currentInventory.giveWood(tree.getWood());
     }
 }

@@ -2,6 +2,7 @@ package territory.gui;
 
 import javafx.scene.text.TextAlignment;
 import territory.game.*;
+import territory.game.construction.Tree;
 import territory.game.construction.Village;
 import territory.game.construction.Buildable;
 import territory.game.sprite.Sprite;
@@ -106,6 +107,14 @@ public class CanvasPainter {
     }
 
     private void paintSprite(Sprite sprite){
+
+        //todo -- this is janked out. time for sprites to draw themselves
+        if(sprite instanceof Tree){
+            if(!((Tree) sprite).isAlive()){
+                return;
+            }
+        }
+
         gc.save();
 
         Image image = sprite.getImage();

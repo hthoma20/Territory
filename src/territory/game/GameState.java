@@ -19,6 +19,7 @@ public class GameState implements Copyable<GameState>, Serializable {
     private List<Inventory> playerInventories;
     private List<TerritoryList> playerTerritories;
     private List<Mine> mines;
+    private List<Tree> trees;
 
     //the part of the map which can be played on
     private final double areaInPlayWidth = 1500;
@@ -32,6 +33,7 @@ public class GameState implements Copyable<GameState>, Serializable {
         initInventories();
         initTerritories();
         initMines();
+        initTrees();
     }
 
     public GameState(GameState src){
@@ -50,6 +52,11 @@ public class GameState implements Copyable<GameState>, Serializable {
         this.mines = new ArrayList<>(src.mines.size());
         for(Mine srcMine : src.mines){
             this.mines.add(srcMine.copy());
+        }
+
+        this.trees = new ArrayList<>(src.trees.size());
+        for(Tree srcTree : src.trees){
+            this.trees.add(srcTree.copy());
         }
 
         this.areaInPlay = src.areaInPlay.copy();
@@ -111,6 +118,26 @@ public class GameState implements Copyable<GameState>, Serializable {
         }
     }
 
+    private void initTrees(){
+        this.trees = new ArrayList<>();
+
+        //make a grid of trees
+        double offset = 0;
+        for(double y = -300; y < 200; y += 30){
+
+            for(double x = -600; x < -200; x += 30){
+                trees.add(new Tree(x + offset, y));
+            }
+
+            offset = offset == 0 ? 20 : 0;
+        }
+
+        //set tree indices
+        for(int i = 0; i < trees.size(); i++){
+            this.trees.get(i).setIndex(i);
+        }
+    }
+
     public List<Tickable> getAllTickables(){
         List<Tickable> tickables = new ArrayList<>();
         tickables.addAll(getAllSprites());
@@ -123,6 +150,8 @@ public class GameState implements Copyable<GameState>, Serializable {
         List<Sprite> sprites = new ArrayList<>();
 
         sprites.addAll(mines);
+
+        sprites.addAll(trees);
 
         sprites.addAll(getAllWallSegments());
 
@@ -279,6 +308,14 @@ public class GameState implements Copyable<GameState>, Serializable {
 
     public Mine getMine(int index){
         return mines.get(index);
+    }
+
+    public List<Tree> getTrees(){
+        return trees;
+    }
+
+    public Tree getTree(int index){
+        return trees.get(index);
     }
 
     public RectangleArea getAreaInPlay(){

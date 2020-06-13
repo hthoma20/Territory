@@ -11,10 +11,7 @@ import territory.game.sprite.ImageStore;
 import territory.game.sprite.Sprite;
 import territory.game.target.BuildType;
 import territory.game.target.PatrolArea;
-import territory.game.unit.Builder;
-import territory.game.unit.Miner;
-import territory.game.unit.Soldier;
-import territory.game.unit.Unit;
+import territory.game.unit.*;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
@@ -40,8 +37,10 @@ public class Controller {
     @FXML private Canvas canvas;
     @FXML private Label stoneLabel;
     @FXML private Label goldLabel;
+    @FXML private Label woodLabel;
     @FXML private Label territoryLabel;
     @FXML private Label minersLabel;
+    @FXML private Label lumberjacksLabel;
     @FXML private Label buildersLabel;
     @FXML private Label soldiersLabel;
     @FXML private Label villagesLabel;
@@ -51,6 +50,9 @@ public class Controller {
     @FXML private Label minerPriceLabel1;
     @FXML private Label minerPriceLabel5;
     @FXML private Label minerPriceLabel10;
+    @FXML private Label lumberjackPriceLabel1;
+    @FXML private Label lumberjackPriceLabel5;
+    @FXML private Label lumberjackPriceLabel10;
     @FXML private Label builderPriceLabel1;
     @FXML private Label builderPriceLabel5;
     @FXML private Label builderPriceLabel10;
@@ -64,6 +66,7 @@ public class Controller {
     @FXML private ImageView villageImageView;
     @FXML private ImageView postImageView;
     @FXML private ImageView minerImageView;
+    @FXML private ImageView lumberjackImageView;
     @FXML private ImageView builderImageView;
     @FXML private ImageView soldierImageView;
 
@@ -120,6 +123,7 @@ public class Controller {
         this.villageImageView.setImage(ImageStore.store.imageFor(Village.class, color));
         this.postImageView.setImage(ImageStore.store.imageFor(Post.class, color));
         this.minerImageView.setImage(ImageStore.store.imageFor(Miner.class, color));
+        this.lumberjackImageView.setImage(ImageStore.store.imageFor(Lumberjack.class, color));
         this.builderImageView.setImage(ImageStore.store.imageFor(Builder.class, color));
         this.soldierImageView.setImage(ImageStore.store.imageFor(Soldier.class, color));
     }
@@ -157,6 +161,7 @@ public class Controller {
         TerritoryList territories = currentState.getPlayerTerritories(this.player.getIndex());
         stoneLabel.setText(""+inventory.getStone());
         goldLabel.setText(""+inventory.getGold());
+        woodLabel.setText(""+inventory.getWood());
         territoryLabel.setText(String.format("%,d", (int)(territories.area()/1000)));
 
         updateCountLabels();
@@ -166,12 +171,16 @@ public class Controller {
         Inventory inventory = currentState.getPlayerInventory(player);
 
         int minerCount = 0;
+        int lumberjackCount = 0;
         int builderCount = 0;
         int soldierCount = 0;
 
         for(Unit unit : inventory.getUnits()){
             if(unit instanceof Miner){
                 minerCount++;
+            }
+            else if(unit instanceof Lumberjack){
+                lumberjackCount++;
             }
             else if(unit instanceof Builder){
                 builderCount++;
@@ -186,6 +195,7 @@ public class Controller {
         }
 
         minersLabel.setText("" + minerCount);
+        lumberjacksLabel.setText("" + lumberjackCount);
         buildersLabel.setText("" + builderCount);
         soldiersLabel.setText("" + soldierCount);
 
@@ -201,6 +211,7 @@ public class Controller {
 
     private void setPriceLabels(){
         int minerGold = Miner.getGoldPrice();
+        int lumberjackGold = Lumberjack.getGoldPrice();
         int builderGold = Builder.getGoldPrice();
         int soldierGold = Soldier.getGoldPrice();
         int villageGold = Village.getGoldPrice();
@@ -209,6 +220,10 @@ public class Controller {
         minerPriceLabel1.setText("" + minerGold);
         minerPriceLabel5.setText("" + minerGold*5);
         minerPriceLabel10.setText("" + minerGold*10);
+
+        lumberjackPriceLabel1.setText("" + lumberjackGold);
+        lumberjackPriceLabel5.setText("" + lumberjackGold*5);
+        lumberjackPriceLabel10.setText("" + lumberjackGold*10);
 
         builderPriceLabel1.setText("" + builderGold);
         builderPriceLabel5.setText("" + builderGold*5);
@@ -223,39 +238,33 @@ public class Controller {
     }
 
     @FXML
-    public void trainMinerButtonClicked(ActionEvent actionEvent) {
-        int numMiners = userDataInt(actionEvent);
-        System.out.println("Miner " + numMiners);
-        //we cannot train miners from no village
+    public void trainUnitsButtonClicked(ActionEvent actionEvent){
+
+        //we cannot train units from no village
         if(currentSelection.getType() != Selection.Type.VILLAGE){
             return;
         }
 
-        player.takeAction(new TrainMinersAction(this.player.getColor(), currentSelection.getIndex(), numMiners));
-    }
+        //user data should have the form "<unit type>:<number>", i.e. "Soldier:10"
+        String arg = userDataString(actionEvent);
+        String[] parsedArg = arg.split(":");
+        String unitType = parsedArg[0].toLowerCase();
+        int count = Integer.parseInt(parsedArg[1]);
 
-    @FXML
-    public void trainBuilderButtonClicked(ActionEvent actionEvent) {
-        System.out.println("Builder " + userDataInt(actionEvent));
-        int numBuilders = userDataInt(actionEvent);
-        //we cannot train builders from no village
-        if(currentSelection.getType() != Selection.Type.VILLAGE){
-            return;
+        switch(unitType){
+            case "miner":
+                player.takeAction(new TrainMinersAction(this.player.getColor(), currentSelection.getIndex(), count));
+                return;
+            case "builder":
+                player.takeAction(new TrainBuildersAction(this.player.getColor(), currentSelection.getIndex(), count));
+                return;
+            case "soldier":
+                player.takeAction(new TrainSoldiersAction(this.player.getColor(), currentSelection.getIndex(), count));
+                return;
+            case "lumberjack":
+                player.takeAction(new TrainLumberjacksAction(this.player.getColor(), currentSelection.getIndex(), count));
+                return;
         }
-
-        player.takeAction(new TrainBuildersAction(this.player.getColor(), currentSelection.getIndex(), numBuilders));
-    }
-
-    @FXML
-    public void trainSoldierButtonClicked(ActionEvent actionEvent) {
-        System.out.println("Soldier " + userDataInt(actionEvent));
-        int numSoldiers = userDataInt(actionEvent);
-        //we cannot train soldiers from no village
-        if(currentSelection.getType() != Selection.Type.VILLAGE){
-            return;
-        }
-
-        player.takeAction(new TrainSoldiersAction(this.player.getColor(), currentSelection.getIndex(), numSoldiers));
     }
 
     @FXML
@@ -396,6 +405,9 @@ public class Controller {
         else if(sprite instanceof WallSegment){
             wallClicked((WallSegment) sprite);
         }
+        else if(sprite instanceof Tree){
+            treeClicked((Tree) sprite);
+        }
         else if(sprite instanceof Unit){
             unitClicked((Unit)sprite);
         }
@@ -460,6 +472,14 @@ public class Controller {
         }
     }
 
+    private void treeClicked(Tree tree){
+        //if units are selected, send them here
+        if(currentSelection.getType() == Selection.Type.UNITS){
+            directLumberjacksTo(tree.getIndex());
+            currentSelection.clear();
+        }
+    }
+
     private void unitClicked(Unit unit){
         //if this is our player, select it
         if(unit.getColor() == player.getColor()) {
@@ -496,6 +516,18 @@ public class Controller {
         for(int minerIndex : currentSelection.getIndices()){
             if(getUnit(minerIndex) instanceof Miner) {
                 player.takeAction(new DirectMinerAction(player.getColor(), minerIndex, index));
+            }
+        }
+    }
+
+    /**
+     * Send the selected units to the given tree
+     * @param index the index of the mine to send lumberjacks to
+     */
+    private void directLumberjacksTo(int index){
+        for(int lumberjackIndex : currentSelection.getIndices()){
+            if(getUnit(lumberjackIndex) instanceof Lumberjack) {
+                player.takeAction(new DirectLumberjackAction(player.getColor(), lumberjackIndex, index));
             }
         }
     }

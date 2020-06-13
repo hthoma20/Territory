@@ -19,6 +19,7 @@ public class Inventory implements Copyable<Inventory>, Serializable {
 
     private int gold = 100000;//100;
     private int stone = 100000;//100;
+    private int wood = 1000;
 
     public Inventory(){
 
@@ -47,6 +48,7 @@ public class Inventory implements Copyable<Inventory>, Serializable {
 
         this.gold = src.gold;
         this.stone = src.stone;
+        this.wood = src.wood;
     }
 
     @Override
@@ -160,6 +162,21 @@ public class Inventory implements Copyable<Inventory>, Serializable {
     }
 
     /**
+     * Add wood to the inventory, does not subtract
+     * @param wood the amount of wood to add
+     * @return whether or not the wood was added, equivalently
+     *         whether the argument was non-negative
+     */
+    public boolean giveWood(int wood){
+        if(wood < 0){
+            return false;
+        }
+
+        this.wood += wood;
+        return true;
+    }
+
+    /**
      * Substract the stone and return true if possible,
      * otherwise return false
      * @return whether or not the stone was taken, equivalently, whether or not
@@ -195,5 +212,9 @@ public class Inventory implements Copyable<Inventory>, Serializable {
 
     public int getStone() {
         return stone;
+    }
+
+    public int getWood(){
+        return wood;
     }
 }
