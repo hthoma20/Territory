@@ -39,6 +39,9 @@ public class ImageStore {
         loadImage(Village.class, GameColor.GREEN, "constructions/Village_green.png");
         loadImage(Village.class, GameColor.BLUE, "constructions/Village_blue.png");
 
+        //Village expansions
+        loadImage("Well", "constructions/Well.png");
+
         //Posts
         loadImage(Post.class, GameColor.PURPLE, "constructions/Post_purple.png");
         loadImage(Post.class, GameColor.GREEN, "constructions/Post_green.png");

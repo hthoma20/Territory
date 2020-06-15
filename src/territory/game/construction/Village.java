@@ -5,12 +5,12 @@ import javafx.scene.text.TextAlignment;
 import territory.game.*;
 import territory.game.action.tick.GiveGoldAction;
 import territory.game.action.tick.TickAction;
+import territory.game.construction.upgrade.VillageUpgrade;
 import territory.game.sprite.ImageSprite;
 import territory.game.sprite.ImageStore;
 
 import java.io.Serializable;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 public class Village extends ImageSprite
                     implements Construction, Copyable<Village>, Indexable, Serializable {
@@ -32,6 +32,8 @@ public class Village extends ImageSprite
     //how many ticks until gold
     private int timeToGold = goldRate;
 
+    private Set<VillageUpgrade> upgrades = new HashSet<>();
+
     private int index = -1;
 
     public Village(GameColor color, double x, double y){
@@ -44,6 +46,8 @@ public class Village extends ImageSprite
         this.color = src.color;
         this.index = src.index;
         this.population = src.population;
+
+        this.upgrades = new HashSet<>(src.upgrades);
     }
 
     @Override
@@ -135,8 +139,32 @@ public class Village extends ImageSprite
     public void paintOn(GraphicsContext gc){
         super.paintOn(gc);
 
+        //paint the well
+        if(hasUpgrade(VillageUpgrade.WELL)) {
+            double wellXOffset = 22;
+            double wellYOffset = 27;
+            double wellX = getTopX() + wellXOffset;
+            double wellY = getTopY() + wellYOffset;
+            gc.drawImage(ImageStore.store.imageFor("Well"), wellX, wellY);
+        }
+
+        //paint the population
         double textY = y + getHeight()/2 + 15;
         gc.setTextAlign(TextAlignment.CENTER);
         gc.strokeText("Pop. " + population, x, textY);
+    }
+
+    public void upgrade(VillageUpgrade upgrade){
+        this.upgrades.add(upgrade);
+    }
+
+    public boolean hasUpgrade(VillageUpgrade upgrade){
+        return upgrades.contains(upgrade);
+    }
+
+    public List<VillageUpgrade> availableUpgrades(){
+        List<VillageUpgrade> availableUpgrades = Arrays.asList(VillageUpgrade.values());
+        availableUpgrades.removeAll(upgrades);
+        return availableUpgrades;
     }
 }

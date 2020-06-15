@@ -278,6 +278,10 @@ public class GameState implements Copyable<GameState>, Serializable {
                 .collect(Collectors.toList());
     }
 
+    public List<Sprite> getSpritesContaining(Point2D point){
+        return getSpritesContaining(point.getX(), point.getY());
+    }
+
     public Inventory getPlayerInventory(int playerIndex){
         return playerInventories.get(playerIndex);
     }

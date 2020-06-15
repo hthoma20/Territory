@@ -5,6 +5,7 @@ import territory.game.action.*;
 import territory.game.action.player.*;
 import territory.game.action.tick.*;
 import territory.game.construction.*;
+import territory.game.construction.upgrade.VillageUpgrade;
 import territory.game.info.*;
 import territory.game.player.Player;
 import territory.game.target.BuildProject;
@@ -53,6 +54,9 @@ public class ActionProcessor {
         }
         else if(action instanceof DirectSoldiersAction){
             processDirectSoldiersAction((DirectSoldiersAction)action);
+        }
+        else if(action instanceof UpgradeVillageAction){
+            processUpgradeVillageAction((UpgradeVillageAction) action);
         }
 
         //Tick actions
@@ -368,6 +372,19 @@ public class ActionProcessor {
                         new DirectSoldierAction(action.getColor(), index, action.getPatrolArea()));
             }
         }
+    }
+
+    private void processUpgradeVillageAction(UpgradeVillageAction action){
+        int woodPrice = action.getUpgrade().getWoodPrice();
+
+        if(woodPrice > currentInventory.getWood()){
+            player.sendInfo(new InsufficientFundsInfo());
+            return;
+        }
+
+        Village village = currentInventory.getVillage(action.getVillageIndex());
+        currentInventory.takeWood(woodPrice);
+        village.upgrade(action.getUpgrade());
     }
 
     private void processGiveGoldAction(GiveGoldAction action) {

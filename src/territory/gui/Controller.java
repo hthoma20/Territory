@@ -1,11 +1,12 @@
 package territory.gui;
 
 import javafx.scene.Scene;
-import javafx.scene.control.ToggleButton;
+import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
 import territory.game.*;
 import territory.game.action.player.*;
 import territory.game.construction.*;
+import territory.game.construction.upgrade.VillageUpgrade;
 import territory.game.player.GUIPlayer;
 import territory.game.sprite.ImageStore;
 import territory.game.sprite.Sprite;
@@ -19,7 +20,6 @@ import javafx.fxml.FXML;
 import javafx.geometry.Point2D;
 import javafx.scene.Node;
 import javafx.scene.canvas.Canvas;
-import javafx.scene.control.Label;
 import javafx.scene.layout.Pane;
 import territory.gui.input.InputProcessor;
 import territory.gui.input.MouseDragInput;
@@ -70,7 +70,6 @@ public class Controller {
     @FXML private ImageView builderImageView;
     @FXML private ImageView soldierImageView;
 
-
     private Scene scene;
 
     private CanvasPainter canvasPainter;
@@ -109,6 +108,7 @@ public class Controller {
         inputProcessor.setOnLeftRelease(this::handleLeftReleased);
         inputProcessor.setOnRightRelease(this::handleRightReleased);
         inputProcessor.setOnLeftClick(this::handleLeftClick);
+        inputProcessor.setOnRightClick(this::handleRightClick);
     }
 
     public void setPlayer(GUIPlayer player){
@@ -348,7 +348,7 @@ public class Controller {
         Point2D gamePoint = canvasPainter.canvasPointToGamePoint(input.getX(), input.getY());
 
         //first check if something was clicked
-        List<Sprite> clickedSprites = currentState.getSpritesContaining(gamePoint.getX(), gamePoint.getY());
+        List<Sprite> clickedSprites = currentState.getSpritesContaining(gamePoint);
 
         if(clickedSprites.size() > 0){
             spritesClicked(clickedSprites);
@@ -379,6 +379,55 @@ public class Controller {
         if(action != null){
             this.player.takeAction(action);
         }
+    }
+
+    private void handleRightClick(MouseInput input){
+        Point2D gamePoint = canvasPainter.canvasPointToGamePoint(input.getX(), input.getY());
+
+        Village clickedVillage = null;
+
+        for(Sprite sprite : currentState.getSpritesContaining(gamePoint)){
+            if(sprite instanceof Village){
+                clickedVillage = (Village) sprite;
+            }
+        }
+
+        if(clickedVillage == null){
+            return;
+        }
+
+        //create a context menu for the clicked village
+        ContextMenu menu = new ContextMenu();
+
+        for(VillageUpgrade availableUpgrade : clickedVillage.availableUpgrades()){
+            String label = String.format("%s (%d wood)", availableUpgrade.name(), availableUpgrade.getWoodPrice());
+            MenuItem item = new MenuItem(label);
+            item.setUserData(availableUpgrade);
+            menu.getItems().add(item);
+        }
+
+        menu.getItems().add(new MenuItem("Close Menu"));
+
+        menu.setOnAction(this::handleVillageMenuClicked);
+        menu.setUserData(clickedVillage);
+
+        menu.show(canvas, input.getX(), input.getY());
+    }
+
+    private void handleVillageMenuClicked(ActionEvent event){
+        ContextMenu menu = (ContextMenu)event.getSource();
+        MenuItem itemClicked = (MenuItem)event.getTarget();
+
+        Object itemData = itemClicked.getUserData();
+
+        if(!(itemData instanceof VillageUpgrade)){
+            return;
+        }
+
+        Village village = (Village)menu.getUserData();
+        VillageUpgrade upgrade = (VillageUpgrade)itemData;
+
+        player.takeAction(new UpgradeVillageAction(player.getColor(), village.getIndex(), upgrade));
     }
 
     /**

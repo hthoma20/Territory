@@ -177,6 +177,21 @@ public class Inventory implements Copyable<Inventory>, Serializable {
     }
 
     /**
+     * Substract the wood and return true if possible,
+     * otherwise return false
+     * @return whether or not the wood was taken, equivalently, whether or not
+     *          the player has sufficient funds
+     */
+    public boolean takeWood(int wood){
+        if(this.wood < wood){
+            return false;
+        }
+
+        this.wood -= wood;
+        return true;
+    }
+
+    /**
      * Substract the stone and return true if possible,
      * otherwise return false
      * @return whether or not the stone was taken, equivalently, whether or not
