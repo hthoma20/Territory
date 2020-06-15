@@ -195,6 +195,12 @@ public class ActionProcessor {
     private void processTrainUnitsAction(TrainUnitsAction action){
         Village village = currentInventory.getVillage(action.getVillageIndex());
 
+        //can these units be trained from this village?
+        if(!village.canTrain(action.getUnitClass())){
+            player.sendInfo(new IllegalTrainUnitInfo(action.getUnitClass()));
+            return;
+        }
+
         int unitGoldPrice = unitGoldPrice(action);
 
         //determine how many of the requested units can actually be purchased
@@ -207,6 +213,8 @@ public class ActionProcessor {
         if(unitLimit < action.getNumUnits()){
             player.sendInfo(new InsufficientFundsInfo());
         }
+
+        village.canTrain(Soldier.class);
 
         currentInventory.takeGold(unitGoldPrice * numUnits);
         village.takePopulation(numUnits);

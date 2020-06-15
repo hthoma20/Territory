@@ -2,10 +2,11 @@ package territory.game.action.player;
 
 import territory.game.GameColor;
 import territory.game.player.Player;
+import territory.game.unit.Unit;
 
 import java.io.Serializable;
 
-public class TrainUnitsAction extends PlayerAction implements Serializable {
+public abstract class TrainUnitsAction extends PlayerAction implements Serializable {
 
     private int villageIndex;
     private int numUnits;
@@ -24,4 +25,6 @@ public class TrainUnitsAction extends PlayerAction implements Serializable {
     public int getNumUnits() {
         return numUnits;
     }
+
+    public abstract Class<? extends Unit> getUnitClass();
 }

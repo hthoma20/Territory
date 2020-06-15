@@ -41,6 +41,7 @@ public class ImageStore {
 
         //Village expansions
         loadImage("Well", "constructions/Well.png");
+        loadImage("Barracks", "constructions/Barracks.png");
 
         //Posts
         loadImage(Post.class, GameColor.PURPLE, "constructions/Post_purple.png");

@@ -8,6 +8,8 @@ import territory.game.action.tick.TickAction;
 import territory.game.construction.upgrade.VillageUpgrade;
 import territory.game.sprite.ImageSprite;
 import territory.game.sprite.ImageStore;
+import territory.game.unit.Soldier;
+import territory.game.unit.Unit;
 
 import java.io.Serializable;
 import java.util.*;
@@ -139,19 +141,35 @@ public class Village extends ImageSprite
     public void paintOn(GraphicsContext gc){
         super.paintOn(gc);
 
-        //paint the well
-        if(hasUpgrade(VillageUpgrade.WELL)) {
-            double wellXOffset = 22;
-            double wellYOffset = 27;
-            double wellX = getTopX() + wellXOffset;
-            double wellY = getTopY() + wellYOffset;
-            gc.drawImage(ImageStore.store.imageFor("Well"), wellX, wellY);
-        }
+        paintUpgrades(gc);
 
         //paint the population
         double textY = y + getHeight()/2 + 15;
         gc.setTextAlign(TextAlignment.CENTER);
         gc.strokeText("Pop. " + population, x, textY);
+    }
+
+    private void paintUpgrades(GraphicsContext gc){
+        double topX = getTopX();
+        double topY = getTopY();
+
+        //paint the well
+        if(hasUpgrade(VillageUpgrade.WELL)) {
+            double wellXOffset = 22;
+            double wellYOffset = 27;
+            double wellX = topX + wellXOffset;
+            double wellY = topY + wellYOffset;
+            gc.drawImage(ImageStore.store.imageFor("Well"), wellX, wellY);
+        }
+
+        //paint the barracks
+        if(hasUpgrade(VillageUpgrade.BARRACKS)){
+            double barracksXOffset = 61;
+            double barracksYOffset = -1;
+            double barracksX = topX + barracksXOffset;
+            double barracksY = topY + barracksYOffset;
+            gc.drawImage(ImageStore.store.imageFor("Barracks"), barracksX, barracksY);
+        }
     }
 
     public void upgrade(VillageUpgrade upgrade){
@@ -163,8 +181,18 @@ public class Village extends ImageSprite
     }
 
     public List<VillageUpgrade> availableUpgrades(){
-        List<VillageUpgrade> availableUpgrades = Arrays.asList(VillageUpgrade.values());
+        List<VillageUpgrade> availableUpgrades = new LinkedList<>(Arrays.asList(VillageUpgrade.values()));
         availableUpgrades.removeAll(upgrades);
         return availableUpgrades;
+    }
+
+    public boolean canTrain(Class<? extends Unit> unitClass){
+        //we can always spawn non-soldiers
+        if(!unitClass.equals(Soldier.class)){
+            return true;
+        }
+
+        //we can only spawn soldiers if we have a barracks
+        return hasUpgrade(VillageUpgrade.BARRACKS);
     }
 }
