@@ -84,54 +84,7 @@ public class CanvasPainter {
 
     private void paintSprites(Collection<Sprite> sprites){
         for(Sprite sprite : sprites){
-            if(sprite instanceof Buildable){
-                paintBuildable(sprite);
-            }
-            else{
-                paintSprite(sprite);
-            }
-
-        }
-    }
-
-    private void paintBuildable(Sprite sprite){
-        boolean complete = ((Buildable)sprite).isComplete();
-
-        if(!complete){
-            gc.setGlobalAlpha(.5);
-        }
-
-        paintSprite(sprite);
-
-        gc.setGlobalAlpha(1);
-    }
-
-    private void paintSprite(Sprite sprite){
-
-        //todo -- this is janked out. time for sprites to draw themselves
-        if(sprite instanceof Tree){
-            if(!((Tree) sprite).isAlive()){
-                return;
-            }
-        }
-
-        gc.save();
-
-        Image image = sprite.getImage();
-
-        //rotate the image according to the sprites rotation
-        gc.transform(new Affine(new Rotate(sprite.getRotation(), sprite.getX(), sprite.getY())));
-
-        gc.drawImage(image, sprite.getTopX(), sprite.getTopY());
-
-        gc.restore();
-
-        if(sprite instanceof Village){
-            int population = ((Village) sprite).getPopulation();
-            double x = sprite.getX();
-            double y = sprite.getY() + sprite.getHeight()/2 + 15;
-            gc.setTextAlign(TextAlignment.CENTER);
-            gc.strokeText("Pop. " + population, x, y);
+            sprite.paintOn(gc);
         }
     }
 
@@ -140,17 +93,15 @@ public class CanvasPainter {
      */
     private void paintSelection(){
 
-        gc.setFill(new Color(0, 1, 0, highlightOpacity));
-
         Selection selection = controller.getCurrentSelection();
         switch(selection.getType()){
             case NONE:
                 return;
             case VILLAGE:
-                highlightSprite(currentInventory.getVillage(selection.getIndex()));
+                currentInventory.getVillage(selection.getIndex()).paintHighlightOn(gc);
                 return;
             case POST:
-                highlightSprite(currentInventory.getPost(selection.getIndex()));
+                currentInventory.getPost(selection.getIndex()).paintHighlightOn(gc);
                 return;
             case UNITS:
                 for(int index : selection.getIndices()){
@@ -163,14 +114,7 @@ public class CanvasPainter {
                         continue;
                     }
 
-                    highlightSprite(unit);
-
-                    if(unit instanceof Soldier){
-                        PatrolArea area = ((Soldier) unit).getPatrolArea();
-                        if(area != null){
-                            strokeCircle(area.getX(), area.getY(), area.getRadius());
-                        }
-                    }
+                    unit.paintHighlightOn(gc);
                 }
                 return;
         }
@@ -208,19 +152,14 @@ public class CanvasPainter {
         gc.restore();
     }
 
-    private void strokeCircle(double x, double y, double radius){
+    public static void strokeCircle(GraphicsContext gc, double x, double y, double radius){
         gc.strokeOval(x - radius, y - radius, 2*radius, 2*radius);
     }
 
-    private void highlightSprite(Sprite sprite){
-
-        double x = sprite.getTopX() - highlightMargin;
-        double y = sprite.getTopY() - highlightMargin;
-        double width = sprite.getWidth() + 2*highlightMargin;
-        double height = sprite.getHeight() + 2*highlightMargin;
-
-        gc.fillRect(x, y, width, height);
+    private void strokeCircle(double x, double y, double radius){
+        strokeCircle(gc, x, y, radius);
     }
+
 
     private void paintTerritories(List<TerritoryList> allTerritories){
         for(TerritoryList territories : allTerritories){

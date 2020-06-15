@@ -1,5 +1,7 @@
 package territory.game.construction;
 
+import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.text.TextAlignment;
 import territory.game.*;
 import territory.game.action.tick.GiveGoldAction;
 import territory.game.action.tick.TickAction;
@@ -127,5 +129,14 @@ public class Village extends ImageSprite
         timeToSpawn = computeTimeToSpawn();
 
         return true;
+    }
+
+    @Override
+    public void paintOn(GraphicsContext gc){
+        super.paintOn(gc);
+
+        double textY = y + getHeight()/2 + 15;
+        gc.setTextAlign(TextAlignment.CENTER);
+        gc.strokeText("Pop. " + population, x, textY);
     }
 }

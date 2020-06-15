@@ -1,5 +1,6 @@
 package territory.game.construction;
 
+import javafx.scene.canvas.GraphicsContext;
 import territory.game.Copyable;
 import territory.game.GameColor;
 import territory.game.Indexable;
@@ -65,5 +66,12 @@ public class Tree extends ImageSprite
     @Override
     public GameColor getColor() {
         return null;
+    }
+
+    @Override
+    public void paintOn(GraphicsContext gc){
+        if(isAlive()){
+            super.paintOn(gc);
+        }
     }
 }

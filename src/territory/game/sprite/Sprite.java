@@ -29,7 +29,9 @@ public abstract class Sprite implements Tickable, Serializable {
 
     public abstract boolean containsPoint(double x, double y);
 
-    public abstract Image getImage();
+    public abstract void paintOn(GraphicsContext gc);
+
+    public abstract void paintHighlightOn(GraphicsContext gc);
 
     public double getX() {
         return x;
@@ -40,20 +42,15 @@ public abstract class Sprite implements Tickable, Serializable {
     }
 
     public double getTopX(){
-        return x - getImage().getWidth()/2;
+        return x - getWidth()/2;
     }
 
     public double getTopY(){
-        return y - getImage().getHeight()/2;
+        return y - getHeight()/2;
     }
 
-    public double getWidth(){
-        return getImage().getWidth();
-    }
-
-    public double getHeight(){
-        return getImage().getHeight();
-    }
+    public abstract double getWidth();
+    public abstract double getHeight();
 
     public double getRotation() {
         return rotation;
@@ -63,6 +60,15 @@ public abstract class Sprite implements Tickable, Serializable {
     public List<TickAction> tick(GameState currentState){
         return null;
     }
+
+
+    /**
+     * @param x the x-coord of the point
+     * @param y the y-coord of the point
+     * @return the distance from the given point to this sprite
+     */
+    public abstract double distanceFrom(double x, double y);
+
 
     /**
      * @param vector the vector to get the angle of
@@ -77,11 +83,4 @@ public abstract class Sprite implements Tickable, Serializable {
 
         return rotation;
     }
-
-    /**
-     * @param x the x-coord of the point
-     * @param y the y-coord of the point
-     * @return the distance from the given point to this sprite
-     */
-    public abstract double distanceFrom(double x, double y);
 }

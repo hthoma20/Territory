@@ -15,7 +15,7 @@ import java.util.Objects;
  * Class to store images by class
  */
 public class ImageStore {
-    private HashMap<ClassColorPair, Image> imageMap;
+    private HashMap<String, Image> imageMap;
 
     public static final ImageStore store = new ImageStore();
 
@@ -56,8 +56,19 @@ public class ImageStore {
         loadImage(Tree.class, null, "constructions/Tree.png");
     }
 
+    public Image imageFor(String key){
+        Image image = imageMap.get(key);
+
+        if(image == null){
+            throw new RuntimeException(
+                    String.format("Could not find image for %s", key));
+        }
+
+        return image;
+    }
+
     public Image imageFor(Class<? extends Sprite> clazz, GameColor color){
-        Image image = imageMap.get(new ClassColorPair(clazz, color));
+        Image image = imageMap.get(keyFor(clazz, color));
 
         if(image == null){
             throw new RuntimeException(
@@ -72,30 +83,14 @@ public class ImageStore {
     }
 
     private void loadImage(Class<? extends Sprite> clazz, GameColor color, String imagePath){
-        this.imageMap.put(new ClassColorPair(clazz, color), new Image(imagePath));
+        this.imageMap.put(keyFor(clazz, color), new Image(imagePath));
     }
 
-    private static class ClassColorPair{
-        Class<? extends Sprite> clazz;
-        GameColor color;
+    private void loadImage(String key, String imagePath){
+        this.imageMap.put(key, new Image(imagePath));
+    }
 
-        public ClassColorPair(Class<? extends Sprite> clazz, GameColor color){
-            this.clazz = clazz;
-            this.color = color;
-        }
-
-        @Override
-        public boolean equals(Object o) {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
-            ClassColorPair that = (ClassColorPair) o;
-            return Objects.equals(clazz, that.clazz) &&
-                    color == that.color;
-        }
-
-        @Override
-        public int hashCode() {
-            return Objects.hash(clazz, color);
-        }
+    public static String keyFor(Class<? extends Sprite> clazz, GameColor color){
+        return String.format("$%s#%s", clazz.getSimpleName(), color);
     }
 }

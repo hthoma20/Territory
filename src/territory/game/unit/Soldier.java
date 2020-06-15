@@ -1,5 +1,6 @@
 package territory.game.unit;
 
+import javafx.scene.canvas.GraphicsContext;
 import territory.game.RNG;
 import territory.game.action.tick.DealDamageAction;
 import territory.game.action.tick.TickAction;
@@ -7,6 +8,7 @@ import territory.game.player.Player;
 import territory.game.target.PatrolArea;
 import territory.game.target.PointTarget;
 import territory.game.target.Target;
+import territory.gui.CanvasPainter;
 
 import java.io.Serializable;
 import java.util.Arrays;
@@ -102,4 +104,13 @@ public class Soldier extends Unit implements Serializable {
 
     @Override
     public void kill(){}
+
+    @Override
+    public void paintHighlightOn(GraphicsContext gc){
+        super.paintHighlightOn(gc);
+
+        if(patrolArea != null){
+            CanvasPainter.strokeCircle(gc, patrolArea.getX(), patrolArea.getY(), patrolArea.getRadius());
+        }
+    }
 }

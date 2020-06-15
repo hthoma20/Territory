@@ -1,5 +1,6 @@
 package territory.game.construction;
 
+import javafx.scene.canvas.GraphicsContext;
 import territory.game.Copyable;
 import territory.game.GameColor;
 import territory.game.sprite.ImageSprite;
@@ -13,7 +14,7 @@ public abstract class Buildable extends ImageSprite implements Copyable<Buildabl
 
     private BuildSlot[] slots;
 
-    protected int stoneNeeded = 0;//100;
+    protected int stoneNeeded = 10;//100;
 
     public Buildable(GameColor color, double x, double y) {
         super(x, y);
@@ -81,5 +82,18 @@ public abstract class Buildable extends ImageSprite implements Copyable<Buildabl
         }
 
         return minSlot;
+    }
+
+    @Override
+    public void paintOn(GraphicsContext gc){
+        double originalAlpha = gc.getGlobalAlpha();
+
+        if(!isComplete()){
+            gc.setGlobalAlpha(.5);
+        }
+
+        super.paintOn(gc);
+
+        gc.setGlobalAlpha(originalAlpha);
     }
 }
