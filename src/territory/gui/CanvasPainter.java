@@ -65,10 +65,11 @@ public class CanvasPainter {
 
         gc.setTextAlign(TextAlignment.CENTER);
         gc.setFont(new Font(100));
-        gc.setLineWidth(10);
-        gc.strokeText(message, x, y);
+        gc.setLineWidth(2);
         gc.setFill(territoryPaint.get(winner));
+
         gc.fillText(message, x, y);
+        gc.strokeText(message, x, y);
     }
 
     /**
