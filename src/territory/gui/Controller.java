@@ -105,7 +105,7 @@ public class Controller {
 
         InputProcessor inputProcessor = new InputProcessor(scene, canvas);
 
-        //inputProcessor.setOnScroll(this::handleCanvasScroll);
+        inputProcessor.setOnScroll(this::handleCanvasScroll);
         //inputProcessor.setOnMiddleDrag(this::handleMiddleDrag);
         inputProcessor.setOnRightDrag(this::handleRightDrag);
         inputProcessor.setOnLeftDrag(this::handleLeftDrag);
@@ -140,6 +140,8 @@ public class Controller {
 
         cursorMap.put(InteractMode.CREATE_VILLAGE, cursorForSprite(Village.class, color));
         cursorMap.put(InteractMode.CREATE_POST, cursorForSprite(Post.class, color));
+        cursorMap.put(InteractMode.DIRECT_SOLDIER, Cursor.CROSSHAIR);
+        cursorMap.put(InteractMode.NONE, Cursor.DEFAULT);
     }
 
     private Cursor cursorForSprite(Class<? extends Sprite> spriteClass, GameColor color){
@@ -301,8 +303,23 @@ public class Controller {
     }
 
     private void handleCanvasScroll(MouseScrollInput scrollInput){
-        Point2D scrollPoint = canvasPainter.canvasPointToGamePoint(scrollInput.getX(), scrollInput.getY());
-        canvasPainter.zoom(scrollInput.getDeltaY(), scrollPoint.getX(), scrollPoint.getY());
+        //either up one or down one
+        int delta = scrollInput.getDeltaY() > 0 ? 1 : -1;
+
+        System.out.println(scrollInput.getDeltaY() + " " + delta);
+
+        InteractMode[] modes = InteractMode.values();
+
+        int newMode = Math.floorMod(currentInteractMode.ordinal() + delta, modes.length);
+
+        //if we can't actually select soldiers
+        if(modes[newMode] == InteractMode.DIRECT_SOLDIER && !soldierSelected()){
+            newMode = Math.floorMod(newMode + delta, modes.length);
+        }
+
+        currentInteractMode = modes[newMode];
+
+        scene.setCursor(cursorMap.get(currentInteractMode));
     }
 
     private void handleMiddleDrag(MouseDragInput dragInput){
@@ -588,6 +605,23 @@ public class Controller {
         if(unit instanceof Soldier){
             currentInteractMode = InteractMode.DIRECT_SOLDIER;
         }
+    }
+
+    /**
+     * @return whether there is currently a soldier selected
+     */
+    private boolean soldierSelected(){
+        if(currentSelection.getType() != Selection.Type.UNITS){
+            return false;
+        }
+
+        for(int index : currentSelection.getIndices()){
+            if(getUnit(index) instanceof Soldier){
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**

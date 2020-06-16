@@ -1,6 +1,5 @@
 package territory.game.construction;
 
-import territory.game.sprite.ImageStore;
 import territory.game.target.BuildSlot;
 
 import java.io.Serializable;
@@ -29,7 +28,7 @@ public class WallSegment extends Buildable implements Construction, Serializable
 
     @Override
     public double getBuildZoneRadius(){
-        return ImageStore.store.imageFor(this, color).getWidth();
+        return getWidth();
     }
 
     @Override
