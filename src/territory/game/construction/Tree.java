@@ -16,7 +16,7 @@ public class Tree extends ImageSprite
 
     private int index = -1;
 
-    private int wood = 30;
+    private int wood = 10;
     private int health = 50;
 
     public Tree(double x, double y){

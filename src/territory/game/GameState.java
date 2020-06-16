@@ -119,18 +119,34 @@ public class GameState implements Copyable<GameState>, Serializable {
     }
 
     private void initTrees(){
-        this.trees = new ArrayList<>();
+        int numTrees = 100*numPlayers + RNG.randInt(100);
 
-        //make a grid of trees
-        double offset = 0;
-        for(double y = -300; y < 200; y += 30){
+        this.trees = new ArrayList<>(numTrees);
 
-            for(double x = -600; x < -200; x += 30){
-                trees.add(new Tree(x + offset, y));
+        double padding = 20;
+        double minX = areaInPlay.getTopX() + padding;
+        double maxX = areaInPlay.getTopX() + areaInPlay.getWidth() - padding;
+        double minY = areaInPlay.getTopY() + padding;
+        double maxY = areaInPlay.getTopY() + areaInPlay.getHeight() - padding;
+
+        while(trees.size() < numTrees){
+            double x = RNG.randDouble(minX, maxX);
+            double y = RNG.randDouble(minY, maxY);
+
+            //check that its a valid spot
+            boolean valid = true;
+            for(Mine mine : mines){
+                if(new Point2D(x, y).distance(mine.getX(), mine.getY()) < mine.getBuildZoneRadius()){
+                    valid = false;
+                    break;
+                }
             }
 
-            offset = offset == 0 ? 20 : 0;
+            if(valid){
+                trees.add(new Tree(x, y));
+            }
         }
+
 
         //set tree indices
         for(int i = 0; i < trees.size(); i++){

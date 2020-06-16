@@ -105,7 +105,7 @@ public class Wall implements Tickable, Copyable<Wall>, Indexable, Serializable {
             index++;
         }
 
-        System.out.printf("Created wall with %d segments", segments.length);
+        System.out.printf("Created wall with %d segments\n", segments.length);
     }
 
     @Override

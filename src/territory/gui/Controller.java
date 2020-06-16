@@ -143,6 +143,10 @@ public class Controller {
         return (String)userData;
     }
 
+    public void gameOver(GameColor winner){
+        canvasPainter.gameOver(winner);
+    }
+
     public void updateDisplay(GameState state){
         currentState = state;
 

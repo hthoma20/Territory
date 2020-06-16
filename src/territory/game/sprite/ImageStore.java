@@ -33,6 +33,8 @@ public class ImageStore {
         loadImage(Soldier.class, GameColor.GREEN, "units/Soldier_green.png");
         loadImage(Soldier.class, GameColor.BLUE, "units/Soldier_blue.png");
         loadImage(Lumberjack.class, GameColor.PURPLE, "units/Lumberjack_purple.png");
+        loadImage(Lumberjack.class, GameColor.GREEN, "units/Lumberjack_green.png");
+        loadImage(Lumberjack.class, GameColor.BLUE, "units/Lumberjack_blue.png");
 
         //Villages
         loadImage(Village.class, GameColor.PURPLE, "constructions/Village_purple.png");

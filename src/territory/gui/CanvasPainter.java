@@ -1,5 +1,6 @@
 package territory.gui;
 
+import javafx.scene.text.Font;
 import javafx.scene.text.TextAlignment;
 import territory.game.*;
 import territory.game.construction.Tree;
@@ -55,6 +56,19 @@ public class CanvasPainter {
         this.canvas = canvas;
         this.gc = canvas.getGraphicsContext2D();
         this.background = Color.CORNSILK;
+    }
+
+    public void gameOver(GameColor winner){
+        String message = String.format("The %s team won!", winner);
+        double x = canvas.getWidth()/2;
+        double y = canvas.getHeight()/2;
+
+        gc.setTextAlign(TextAlignment.CENTER);
+        gc.setFont(new Font(100));
+        gc.setLineWidth(10);
+        gc.strokeText(message, x, y);
+        gc.setFill(territoryPaint.get(winner));
+        gc.fillText(message, x, y);
     }
 
     /**

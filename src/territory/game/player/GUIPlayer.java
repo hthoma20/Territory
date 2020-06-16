@@ -10,6 +10,7 @@ import territory.game.action.player.CreateVillageAction;
 import territory.game.action.player.CreateWallAction;
 import territory.game.action.player.TrainSoldiersAction;
 import territory.game.info.GameInfo;
+import territory.game.info.GameOverInfo;
 import territory.game.info.LostUnitInfo;
 import territory.game.info.PlayerSetupInfo;
 import territory.gui.Controller;
@@ -58,6 +59,9 @@ public class GUIPlayer extends Player {
         }
         else if(info instanceof LostUnitInfo){
             controller.lostUnit(((LostUnitInfo) info).getUnitIndex());
+        }
+        else if(info instanceof GameOverInfo){
+            controller.gameOver(((GameOverInfo) info).getWinningColor());
         }
     }
 
