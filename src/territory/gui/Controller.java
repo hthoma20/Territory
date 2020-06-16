@@ -1,7 +1,10 @@
 package territory.gui;
 
+import javafx.scene.Cursor;
+import javafx.scene.ImageCursor;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import territory.game.*;
 import territory.game.action.player.*;
@@ -26,9 +29,7 @@ import territory.gui.input.MouseDragInput;
 import territory.gui.input.MouseInput;
 import territory.gui.input.MouseScrollInput;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class Controller {
@@ -70,6 +71,9 @@ public class Controller {
     @FXML private ImageView builderImageView;
     @FXML private ImageView soldierImageView;
 
+    //cursors
+    private Map<InteractMode, Cursor> cursorMap;
+
     private Scene scene;
 
     private CanvasPainter canvasPainter;
@@ -109,6 +113,7 @@ public class Controller {
         inputProcessor.setOnRightRelease(this::handleRightReleased);
         inputProcessor.setOnLeftClick(this::handleLeftClick);
         inputProcessor.setOnRightClick(this::handleRightClick);
+        inputProcessor.setOnMouseMove(this::handleMouseMoved);
     }
 
     public void setPlayer(GUIPlayer player){
@@ -126,6 +131,20 @@ public class Controller {
         this.lumberjackImageView.setImage(ImageStore.store.imageFor(Lumberjack.class, color));
         this.builderImageView.setImage(ImageStore.store.imageFor(Builder.class, color));
         this.soldierImageView.setImage(ImageStore.store.imageFor(Soldier.class, color));
+
+        initCursors(color);
+    }
+
+    private void initCursors(GameColor color){
+        this.cursorMap = new HashMap<>(2);
+
+        cursorMap.put(InteractMode.CREATE_VILLAGE, cursorForSprite(Village.class, color));
+        cursorMap.put(InteractMode.CREATE_POST, cursorForSprite(Post.class, color));
+    }
+
+    private Cursor cursorForSprite(Class<? extends Sprite> spriteClass, GameColor color){
+        Image image = ImageStore.store.imageFor(spriteClass, color);
+        return new ImageCursor(image, image.getWidth()/2, image.getHeight()/2);
     }
 
     //Parse the user data from the given event as an int,
@@ -275,7 +294,9 @@ public class Controller {
     public void interactModeButtonClicked(ActionEvent actionEvent){
         String mode = userDataString(actionEvent);
         this.currentInteractMode = InteractMode.valueOf(mode);
-        actionEvent.getTarget();
+
+        scene.setCursor(cursorMap.get(currentInteractMode));
+
         System.out.println("Setting interaction mode to " + currentInteractMode);
     }
 
@@ -287,6 +308,27 @@ public class Controller {
     private void handleMiddleDrag(MouseDragInput dragInput){
         //pan the canvas
         canvasPainter.drag(-dragInput.getDeltaX(), -dragInput.getDeltaY());
+    }
+
+    private void handleMouseMoved(MouseInput input){
+        Point2D gamePoint = canvasPainter.canvasPointToGamePoint(input.getX(), input.getY());
+
+        //if it's off the map
+        if(!currentState.getAreaInPlay().contains(gamePoint.getX(), gamePoint.getY())){
+            scene.setCursor(null);
+            return;
+        }
+
+        List<Sprite> spritesHovered = currentState.getSpritesContaining(gamePoint);
+
+        //if we aren't about to click something
+        if(spritesHovered.isEmpty()){
+            scene.setCursor(cursorMap.get(currentInteractMode));
+        }
+        //if we are about to click something
+        else{
+            scene.setCursor(Cursor.HAND);
+        }
     }
 
     private void handleLeftDrag(MouseDragInput dragInput){
