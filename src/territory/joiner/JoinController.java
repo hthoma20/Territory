@@ -7,6 +7,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.Pane;
 import javafx.scene.text.Text;
+import territory.util.GlobalConstants;
 import territory.game.Game;
 import territory.game.RemoteGame;
 import territory.game.Version;
@@ -27,13 +28,13 @@ import java.net.URL;
 import java.util.List;
 import java.util.function.Consumer;
 
-import static territory.joiner.ObjectBytes.getBytes;
+import static territory.util.ObjectUtils.getBytes;
 
 public class JoinController {
     //automatically join the first room and start the game
-    private static final boolean AUTO_START = false;
+    private static final boolean AUTO_START = GlobalConstants.AUTO_START;
     //force a version failure for testing and debugging
-    private static final boolean FORCE_VERSION_FAILURE = false;
+    private static final boolean FORCE_VERSION_FAILURE = GlobalConstants.FORCE_VERSION_FAILURE;
 
     @FXML private SwapPane swapPane;
     @FXML private Pane roomsPane;

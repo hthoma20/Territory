@@ -30,22 +30,6 @@ public class Soldier extends Unit implements Serializable {
         super.speed = .75;
     }
 
-    public Soldier(Soldier src) {
-        super(src);
-
-        if(src.patrolArea == null){
-            this.patrolArea = null;
-        }
-        else{
-            this.patrolArea = src.patrolArea.copy();
-        }
-    }
-
-    @Override
-    public Soldier copy(){
-        return new Soldier(this);
-    }
-
     public static int getGoldPrice(){
         return 20;
     }

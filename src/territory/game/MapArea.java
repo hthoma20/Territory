@@ -5,7 +5,7 @@ import java.io.Serializable;
 /**
  * Defines an area of the map
  */
-public interface MapArea extends Copyable<MapArea>, Serializable {
+public interface MapArea extends Serializable {
 
     /**
      * @param x the x-coord of the point to test

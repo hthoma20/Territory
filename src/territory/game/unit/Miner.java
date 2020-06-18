@@ -32,17 +32,6 @@ public class Miner extends Unit implements Serializable {
         return target;
     }
 
-    public Miner(Miner src){
-        super(src);
-
-        this.target = src.target;
-    }
-
-    @Override
-    public Miner copy(){
-        return new Miner(this);
-    }
-
     public void setTarget(MineSlot target){
         if(this.target != null){
             this.target.decUnitCount();

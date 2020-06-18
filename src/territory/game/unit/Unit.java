@@ -1,23 +1,19 @@
 package territory.game.unit;
 
-import territory.game.Copyable;
 import territory.game.GameColor;
 import territory.game.GameState;
 import territory.game.Indexable;
 import territory.game.action.tick.TickAction;
-import territory.game.construction.Wall;
-import territory.game.construction.WallSegment;
 import territory.game.sprite.ImageSprite;
 import territory.game.sprite.Sprite;
 import javafx.geometry.Point2D;
 import territory.game.target.Target;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.List;
 
 public abstract class Unit extends ImageSprite
-                            implements Copyable<Unit>, Indexable, Target, Serializable {
+                            implements Indexable, Target, Serializable {
 
     protected GameColor color;
 
@@ -35,15 +31,6 @@ public abstract class Unit extends ImageSprite
     public Unit(GameColor color, double x, double y) {
         super(x, y);
         this.color = color;
-    }
-
-    public Unit(Unit src){
-        super(src);
-
-        this.color = src.color;
-        this.index = src.index;
-        this.speed = src.speed;
-        this.range = src.range;
     }
 
     //what are we targeting?

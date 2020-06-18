@@ -1,6 +1,5 @@
 package territory.game.target;
 
-import territory.game.Copyable;
 import territory.game.construction.Buildable;
 import territory.game.construction.Wall;
 import territory.game.unit.Builder;
@@ -8,7 +7,7 @@ import territory.game.unit.Builder;
 import java.io.Serializable;
 import java.util.*;
 
-public class BuildProject implements Copyable<BuildProject>, Serializable {
+public class BuildProject implements Serializable {
     private List<Buildable> buildables;
 
     //map of builders assigned to this project, and where they should be building
@@ -16,16 +15,6 @@ public class BuildProject implements Copyable<BuildProject>, Serializable {
 
     public BuildProject(Wall wall){
         this.buildables = Arrays.asList(wall.getSegments());
-    }
-
-    public BuildProject(BuildProject src){
-        this.buildables = new ArrayList<>(src.buildables);
-        this.builders = new HashMap<>(src.builders);
-    }
-
-    @Override
-    public BuildProject copy() {
-        return new BuildProject(this);
     }
 
     /**

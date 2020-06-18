@@ -15,17 +15,6 @@ public class WallSegment extends Buildable implements Construction, Serializable
         this.wall = wall;
     }
 
-    public WallSegment(WallSegment src) {
-        super(src);
-
-        this.wall = src.wall;
-    }
-
-    @Override
-    public WallSegment copy() {
-        return new WallSegment(this);
-    }
-
     @Override
     public double getBuildZoneRadius(){
         return getWidth();

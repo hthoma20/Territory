@@ -35,17 +35,6 @@ public class Lumberjack extends Unit implements Serializable {
         return target;
     }
 
-    public Lumberjack(Lumberjack src){
-        super(src);
-
-        this.target = src.target;
-    }
-
-    @Override
-    public Lumberjack copy(){
-        return new Lumberjack(this);
-    }
-
     public void setTarget(Tree target){
         this.target = target;
     }

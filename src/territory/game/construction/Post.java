@@ -15,17 +15,6 @@ public class Post extends Buildable implements Construction, Indexable, Serializ
         super(color, x, y);
     }
 
-    public Post(Post src){
-        super(src);
-
-        this.index = src.index;
-    }
-
-    @Override
-    public Post copy(){
-        return new Post(this);
-    }
-
     public static int getGoldPrice(){
         return 10;
     }

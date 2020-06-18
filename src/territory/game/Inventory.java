@@ -1,5 +1,6 @@
 package territory.game;
 
+import territory.util.GlobalConstants;
 import territory.game.construction.Post;
 import territory.game.construction.Village;
 import territory.game.construction.Wall;
@@ -10,50 +11,19 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-public class Inventory implements Copyable<Inventory>, Serializable {
+public class Inventory implements Serializable {
 
     private List<Unit> units = new ArrayList<>();
     private List<Village> villages = new ArrayList<>();
     private List<Post> posts = new ArrayList<>();
     private List<Wall> walls = new ArrayList<>();
 
-    private int gold = 100;
-    private int stone = 100;
-    private int wood = 0;
+    private int gold = GlobalConstants.INITIAL_GOLD;
+    private int stone = GlobalConstants.INITIAL_STONE;
+    private int wood = GlobalConstants.INITIAL_WOOD;
 
     public Inventory(){
 
-    }
-
-    public Inventory(Inventory src){
-        this.units = new ArrayList<>(src.units.size());
-        for(Unit srcUnit : src.units){
-            this.units.add(srcUnit.copy());
-        }
-
-        this.villages = new ArrayList<>(src.villages.size());
-        for(Village srcVillage : src.villages){
-            this.villages.add(srcVillage.copy());
-        }
-
-        this.posts = new ArrayList<>(src.posts.size());
-        for(Post srcPost : src.posts){
-            this.posts.add(srcPost.copy());
-        }
-
-        this.walls = new ArrayList<>(src.walls.size());
-        for(Wall srcWall : src.walls){
-            this.walls.add(srcWall.copy());
-        }
-
-        this.gold = src.gold;
-        this.stone = src.stone;
-        this.wood = src.wood;
-    }
-
-    @Override
-    public Inventory copy(){
-        return new Inventory(this);
     }
 
     public void addUnit(Unit unit){

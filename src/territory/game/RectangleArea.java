@@ -25,18 +25,6 @@ public class RectangleArea implements MapArea, Serializable {
         this(p1.getX(), p1.getY(), p2.getX(), p2.getY());
     }
 
-    public RectangleArea(RectangleArea src){
-        this.x1 = src.x1;
-        this.y1 = src.y1;
-        this.x2 = src.x2;
-        this.y2 = src.y2;
-    }
-
-    @Override
-    public RectangleArea copy(){
-        return new RectangleArea(this);
-    }
-
     public double getTopX(){
         return x1;
     }

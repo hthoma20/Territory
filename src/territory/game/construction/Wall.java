@@ -13,7 +13,7 @@ import java.io.Serializable;
 import java.util.Arrays;
 import java.util.List;
 
-public class Wall implements Tickable, Copyable<Wall>, Indexable, Serializable {
+public class Wall implements Tickable, Indexable, Serializable {
     private GameColor color;
 
     private int index = -1;
@@ -31,25 +31,6 @@ public class Wall implements Tickable, Copyable<Wall>, Indexable, Serializable {
         this.post2 = post2;
 
         initWallSegments();
-    }
-
-    public Wall(Wall src){
-        this.color = src.color;
-        this.index = src.index;
-        this.post1 = src.post1;
-        this.post2 = src.post2;
-
-        this.segments = new WallSegment[src.segments.length];
-        for(int i = 0; i < src.segments.length; i++){
-            this.segments[i] = src.segments[i].copy();
-        }
-
-        this.wasComplete = src.wasComplete;
-    }
-
-    @Override
-    public Wall copy() {
-        return new Wall(this);
     }
 
     private void initWallSegments(){

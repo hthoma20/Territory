@@ -13,7 +13,7 @@ import java.io.Serializable;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class GameState implements Copyable<GameState>, Serializable {
+public class GameState implements Serializable {
 
     private int numPlayers;
     private List<Inventory> playerInventories;
@@ -34,37 +34,6 @@ public class GameState implements Copyable<GameState>, Serializable {
         initTerritories();
         initMines();
         initTrees();
-    }
-
-    public GameState(GameState src){
-        this.numPlayers = src.numPlayers;
-
-        this.playerInventories = new ArrayList<>(src.playerInventories.size());
-        for(Inventory inventory : src.playerInventories){
-            this.playerInventories.add(inventory.copy());
-        }
-
-        this.playerTerritories = new ArrayList<>(src.playerTerritories.size());
-        for(TerritoryList territoryList : src.playerTerritories){
-            this.playerTerritories.add(territoryList.copy());
-        }
-
-        this.mines = new ArrayList<>(src.mines.size());
-        for(Mine srcMine : src.mines){
-            this.mines.add(srcMine.copy());
-        }
-
-        this.trees = new ArrayList<>(src.trees.size());
-        for(Tree srcTree : src.trees){
-            this.trees.add(srcTree.copy());
-        }
-
-        this.areaInPlay = src.areaInPlay.copy();
-    }
-
-    @Override
-    public GameState copy() {
-        return new GameState(this);
     }
 
     private void initInventories(){

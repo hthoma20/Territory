@@ -10,7 +10,7 @@ import java.io.Serializable;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class PatrolArea implements Tickable, Copyable<PatrolArea>, Serializable {
+public class PatrolArea implements Tickable, Serializable {
     private Map<Soldier, Target> soldierTargets = new HashMap<>();
 
     //color of the troops patrolling this area
@@ -25,21 +25,6 @@ public class PatrolArea implements Tickable, Copyable<PatrolArea>, Serializable 
         this.x = x;
         this.y = y;
         this.radius = radius;
-    }
-
-    public PatrolArea(PatrolArea src){
-        this.soldierTargets = new HashMap<>(src.soldierTargets);
-
-        this.color = src.color;
-
-        this.x = src.x;
-        this.y = src.y;
-        this.radius = src.radius;
-    }
-
-    @Override
-    public PatrolArea copy(){
-        return new PatrolArea(this);
     }
 
     public void addSoldier(Soldier soldier){

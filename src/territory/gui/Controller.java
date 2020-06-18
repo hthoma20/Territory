@@ -24,6 +24,7 @@ import javafx.geometry.Point2D;
 import javafx.scene.Node;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.layout.Pane;
+import territory.gui.component.SwapPane;
 import territory.gui.input.InputProcessor;
 import territory.gui.input.MouseDragInput;
 import territory.gui.input.MouseInput;
@@ -36,6 +37,7 @@ public class Controller {
 
     @FXML private Pane canvasPane;
     @FXML private Canvas canvas;
+
     @FXML private Label stoneLabel;
     @FXML private Label goldLabel;
     @FXML private Label woodLabel;
@@ -46,6 +48,14 @@ public class Controller {
     @FXML private Label soldiersLabel;
     @FXML private Label villagesLabel;
     @FXML private Label populationLabel;
+
+    //info pane
+    @FXML private SwapPane infoSwapPane;
+    @FXML private Pane trainUnitsPane;
+    @FXML private Pane villagePane;
+    @FXML private Pane villageUpgradesPane;
+    @FXML private Pane shopUpgradesPane;
+    @FXML private Pane buildPane;
 
     //labels for prices of things on the GUI
     @FXML private Label minerPriceLabel1;
@@ -100,6 +110,8 @@ public class Controller {
         this.canvasPainter = new CanvasPainter(this, canvas);
 
         this.currentInteractMode = InteractMode.CREATE_VILLAGE;
+
+        infoSwapPane.show(trainUnitsPane);
 
         setPriceLabels();
 
@@ -531,7 +543,50 @@ public class Controller {
         }
 
         currentSelection.select((Village)village);
-        System.out.println("Selected village " + ((Village) village).getIndex());
+
+        displayVillageInfo(village);
+    }
+
+    /**
+     * update the info pane to display info on the given village
+     * @param village the village to display info for
+     */
+    private void displayVillageInfo(Village village){
+        //infoSwapPane.show(villagePane);
+
+        //display available upgrades
+        villageUpgradesPane.getChildren().clear();
+        for(VillageUpgrade upgrade : village.availableUpgrades()){
+            villageUpgradesPane.getChildren().add(upgradeNode(upgrade));
+        }
+    }
+
+    /**
+     * Create clickable node for the given upgrade
+     * @param upgrade the upgrade to make a node for
+     * @return a node for the upgrade
+     */
+    private Node upgradeNode(VillageUpgrade upgrade){
+        Button upgradeButton = new Button(toCapitalCase(upgrade.name()));
+        upgradeButton.setTooltip(new Tooltip(upgrade.getDescription()));
+        return upgradeButton;
+    }
+
+    /**
+     * Capitalize the given string, for example
+     * HELLO THERE -> Hello there
+     * @param str the string to capitalize
+     * @return str, but capitalized
+     */
+    private String toCapitalCase(String str){
+        if(str.length() < 1){
+            return str;
+        }
+
+        char first = str.charAt(0);
+        String rest = str.substring(1);
+
+        return Character.toUpperCase(first) + rest.toLowerCase();
     }
 
     private void postClicked(Post post){
@@ -547,7 +602,6 @@ public class Controller {
         //if no post is selected, select this one
         else if(currentSelection.getType() != Selection.Type.POST){
             currentSelection.select(post);
-            System.out.println("Selected post " + post.getIndex());
         }
 
         //if we get this far, the selection is a post

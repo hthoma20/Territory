@@ -24,22 +24,6 @@ public class Builder extends Unit implements Serializable {
         super.speed = .85;
     }
 
-    public Builder(Builder src) {
-        super(src);
-
-        if(src.project == null){
-            this.project = null;
-        }
-        else{
-            this.project = src.project.copy();
-        }
-    }
-
-    @Override
-    public Builder copy(){
-        return new Builder(this);
-    }
-
     public static int getGoldPrice(){
         return 10;
     }

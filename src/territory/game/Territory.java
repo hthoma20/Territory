@@ -10,7 +10,7 @@ import territory.graph.GeometricGraphNode;
 import java.io.Serializable;
 import java.util.*;
 
-public class Territory implements Copyable<Territory>, Serializable {
+public class Territory implements Serializable {
 
     private GameColor color;
 
@@ -27,17 +27,6 @@ public class Territory implements Copyable<Territory>, Serializable {
         this.yPoints = yPoints;
 
         this.color = color;
-    }
-
-    public Territory(Territory src){
-        this.xPoints = Arrays.copyOf(src.xPoints, src.xPoints.length);
-        this.yPoints = Arrays.copyOf(src.yPoints, src.yPoints.length);
-        this.color = src.color;
-    }
-
-    @Override
-    public Territory copy(){
-        return new Territory(this);
     }
 
     public static TerritoryList fromWalls(List<Wall> walls){

@@ -3,7 +3,7 @@ package territory.game;
 import java.io.Serializable;
 import java.util.*;
 
-public class TerritoryList implements Copyable<TerritoryList>, Iterable<Territory>, Serializable {
+public class TerritoryList implements Iterable<Territory>, Serializable {
     private List<Territory> territories = new ArrayList<>();
 
     public TerritoryList(){}
@@ -15,19 +15,6 @@ public class TerritoryList implements Copyable<TerritoryList>, Iterable<Territor
 
     public TerritoryList(Territory... territories){
         this.territories = Arrays.asList(territories);
-    }
-
-    public TerritoryList(TerritoryList src){
-        this.territories = new ArrayList<>(src.territories.size());
-
-        for(Territory territory : src.territories){
-            this.territories.add(territory.copy());
-        }
-    }
-
-    @Override
-    public TerritoryList copy(){
-        return new TerritoryList(this);
     }
 
     public List<Territory> getTerritories() {

@@ -16,14 +16,4 @@ public class MinerStats extends UnitStats implements Serializable {
         this.mineProbability = .05;
         super.speed = 1;
     }
-
-    public MinerStats(MinerStats src){
-        super(src);
-        this.mineProbability = src.mineProbability;
-    }
-
-    @Override
-    public MinerStats copy() {
-        return new MinerStats(this);
-    }
 }

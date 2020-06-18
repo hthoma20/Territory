@@ -17,13 +17,4 @@ public class BuilderStats extends UnitStats implements Serializable {
         super.speed = .85;
     }
 
-    public BuilderStats(BuilderStats src){
-        super(src);
-        this.buildProbability = src.buildProbability;
-    }
-
-    @Override
-    public BuilderStats copy() {
-        return new BuilderStats(this);
-    }
 }

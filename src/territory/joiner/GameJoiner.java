@@ -1,6 +1,6 @@
 package territory.joiner;
 
-import com.sun.net.httpserver.HttpExchange;
+import territory.util.GlobalConstants;
 import territory.game.Version;
 import territory.game.info.GameStartedInfo;
 import territory.game.player.ComputerPlayer;
@@ -8,13 +8,12 @@ import territory.game.player.Player;
 import territory.game.player.RemotePlayer;
 import territory.joiner.request.JoinRoomRequest;
 
-import java.io.InputStream;
 import java.util.*;
 
 public class GameJoiner {
 
     //add a computer player before a game is started (for testing and debugging)
-    private static final boolean ADD_COMPUTER_PLAYER = false;
+    private static final boolean ADD_COMPUTER_PLAYER = GlobalConstants.ADD_COMPUTER_PLAYER;
 
     //map from room id to room
     private Map<Integer, GameRoom> roomsById = new HashMap<>();

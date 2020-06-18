@@ -1,7 +1,6 @@
 package territory.game.construction;
 
 import javafx.geometry.Point2D;
-import territory.game.Copyable;
 import territory.game.GameColor;
 import territory.game.Indexable;
 import territory.game.RNG;
@@ -11,7 +10,7 @@ import territory.game.target.MineSlot;
 
 import java.io.Serializable;
 
-public class Mine extends ImageSprite implements Construction, Copyable<Mine>, Indexable, Serializable {
+public class Mine extends ImageSprite implements Construction, Indexable, Serializable {
 
     private int index = -1;
 
@@ -23,22 +22,6 @@ public class Mine extends ImageSprite implements Construction, Copyable<Mine>, I
     public Mine(double x, double y){
         super(x, y);
         initSlots();
-    }
-
-    public Mine(Mine src){
-        super(src);
-
-        this.index = src.index;
-
-        this.slots = new MineSlot[src.slots.length];
-        for(int i = 0; i < src.slots.length; i++){
-            this.slots[i] = src.slots[i].copy();
-        }
-    }
-
-    @Override
-    public Mine copy() {
-        return new Mine(this);
     }
 
     private void initSlots(){

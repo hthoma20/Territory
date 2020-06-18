@@ -1,10 +1,8 @@
 package territory.game.target;
 
-import territory.game.Copyable;
-
 import java.io.Serializable;
 
-public abstract class Slot implements Copyable<Slot>, Target, Serializable {
+public abstract class Slot implements Target, Serializable {
     private double x, y;
 
     private int unitCount = 0;
@@ -12,12 +10,6 @@ public abstract class Slot implements Copyable<Slot>, Target, Serializable {
     public Slot(double x, double y){
         this.x = x;
         this.y = y;
-    }
-
-    public Slot(Slot src){
-        this.x = src.x;
-        this.y = src.y;
-        this.unitCount = src.unitCount;
     }
 
     @Override

@@ -6,7 +6,7 @@ import com.sun.net.httpserver.HttpHandler;
 import java.io.*;
 import java.util.function.Function;
 
-import static territory.joiner.ObjectBytes.getBytes;
+import static territory.util.ObjectUtils.getBytes;
 
 /**
  * Class that handles an http exchange by deserializing an object as the body,

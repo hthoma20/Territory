@@ -1,20 +1,20 @@
 package territory.game.construction;
 
 import javafx.scene.canvas.GraphicsContext;
-import territory.game.Copyable;
+import territory.util.GlobalConstants;
 import territory.game.GameColor;
 import territory.game.sprite.ImageSprite;
 import territory.game.target.BuildSlot;
 
 import java.io.Serializable;
 
-public abstract class Buildable extends ImageSprite implements Copyable<Buildable>, Serializable {
+public abstract class Buildable extends ImageSprite implements Serializable {
 
     protected GameColor color;
 
     private BuildSlot[] slots;
 
-    protected int stoneNeeded = 0;//100;
+    protected int stoneNeeded = GlobalConstants.BUILDABLE_STONE_NEEDED;
 
     public Buildable(GameColor color, double x, double y) {
         super(x, y);
@@ -22,19 +22,6 @@ public abstract class Buildable extends ImageSprite implements Copyable<Buildabl
         this.color = color;
 
         this.slots = initSlots();
-    }
-
-    public Buildable(Buildable src) {
-        super(src);
-
-        this.color = src.color;
-
-        this.slots = new BuildSlot[src.slots.length];
-        for(int i = 0; i < src.slots.length; i++){
-            this.slots[i] = src.slots[i].copy();
-        }
-
-        this.stoneNeeded = src.stoneNeeded;
     }
 
     /**

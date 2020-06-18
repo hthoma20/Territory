@@ -14,8 +14,7 @@ import territory.game.unit.Unit;
 import java.io.Serializable;
 import java.util.*;
 
-public class Village extends ImageSprite
-                    implements Construction, Copyable<Village>, Indexable, Serializable {
+public class Village extends ImageSprite implements Construction, Indexable, Serializable {
 
     private GameColor color;
 
@@ -41,20 +40,6 @@ public class Village extends ImageSprite
     public Village(GameColor color, double x, double y){
         super(x, y);
         this.color = color;
-    }
-
-    public Village(Village src){
-        super(src);
-        this.color = src.color;
-        this.index = src.index;
-        this.population = src.population;
-
-        this.upgrades = new HashSet<>(src.upgrades);
-    }
-
-    @Override
-    public Village copy(){
-        return new Village(this);
     }
 
     @Override

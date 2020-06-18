@@ -15,17 +15,6 @@ public class MineSlot extends Slot implements Serializable {
         this.mine = mine;
     }
 
-    public MineSlot(MineSlot src){
-        super(src);
-
-        this.mine = src.mine;
-    }
-
-    @Override
-    public MineSlot copy(){
-        return new MineSlot(this);
-    }
-
     public Mine getMine() {
         return mine;
     }

@@ -15,17 +15,6 @@ public class BuildSlot extends Slot implements Serializable {
         this.buildable = buildable;
     }
 
-    public BuildSlot(BuildSlot src){
-        super(src);
-
-        this.buildable = src.buildable;
-    }
-
-    @Override
-    public BuildSlot copy(){
-        return new BuildSlot(this);
-    }
-
     public Buildable getBuildable() {
         return buildable;
     }

@@ -1,13 +1,11 @@
 package territory.game.unit.stats;
 
-import territory.game.Copyable;
-
 import java.io.Serializable;
 
 /**
  * Statistics for units
  */
-public abstract class UnitStats implements Copyable<UnitStats>, Serializable {
+public abstract class UnitStats implements Serializable {
 
     protected int health;
     protected double range;
@@ -26,12 +24,6 @@ public abstract class UnitStats implements Copyable<UnitStats>, Serializable {
         this.health = 10;
         this.range = 2;
         this.speed = 1;
-    }
-
-    public UnitStats(UnitStats src){
-        this.health = src.health;
-        this.speed = src.speed;
-        this.range = src.range;
     }
 
     public int getHealth() {

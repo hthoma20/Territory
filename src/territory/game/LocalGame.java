@@ -7,6 +7,8 @@ import territory.game.action.tick.TickAction;
 import territory.game.info.GameOverInfo;
 import territory.game.info.PlayerSetupInfo;
 import territory.game.player.Player;
+import territory.util.GlobalConstants;
+import territory.util.ObjectUtils;
 
 import java.rmi.ServerError;
 import java.util.ArrayList;
@@ -19,7 +21,7 @@ import java.util.List;
 public class LocalGame implements Game {
 
     //territory needed to win the game
-    private int territoryNeeded = 25000;
+    private int territoryNeeded = GlobalConstants.TERRITORY_NEEDED;
 
     private int tickSpeed = 1000/40; // millis/fps
 
@@ -150,8 +152,9 @@ public class LocalGame implements Game {
 
     //send the state to all players
     private void sendStateToPlayers() {
+        GameState stateCopy = ObjectUtils.transitiveCopy(this.state);
         for(Player player : this.players){
-            player.sendState(this.state.copy());
+            player.sendState(stateCopy);
         }
     }
 
