@@ -1,10 +1,13 @@
 package territory.game.construction.upgrade;
 
+import territory.util.GlobalConstants;
+
 import java.io.Serializable;
 
 public enum VillageUpgrade implements Serializable {
-    WELL(100, "Adds an aesthetic well to the village"),
-    BARRACKS(100, "Enables this village to train Soldiers");
+    BARRACKS(GlobalConstants.BARRACKS_WOOD, "Enables this village to train Soldiers"),
+    TRADING_POST(GlobalConstants.TRADING_POST_WOOD, "Increases the rate at which this village earns Gold"),
+    WORK_SHOP(GlobalConstants.WORK_SHOP_WOOD, "Allows you to build gear for your Units");
 
     //the amount of wood required to make this upgrade
     private int woodPrice;

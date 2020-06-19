@@ -6,10 +6,12 @@ import territory.game.*;
 import territory.game.action.tick.GiveGoldAction;
 import territory.game.action.tick.TickAction;
 import territory.game.construction.upgrade.VillageUpgrade;
+import territory.game.construction.upgrade.WorkShop;
 import territory.game.sprite.ImageSprite;
 import territory.game.sprite.ImageStore;
 import territory.game.unit.Soldier;
 import territory.game.unit.Unit;
+import territory.util.GlobalConstants;
 
 import java.io.Serializable;
 import java.util.*;
@@ -18,22 +20,23 @@ public class Village extends ImageSprite implements Construction, Indexable, Ser
 
     private GameColor color;
 
-    private int population = 2;
+    private int population = GlobalConstants.INITIAL_POPULATION;
 
     //spawn time when there are 0 units
     private int firstUnitSpawnTime = 150;
     //how many ticks until spawn
     private int timeToSpawn = firstUnitSpawnTime;
 
-    private double growthRate = 0.002;
-    private int maxPopulation = 20;
+    private double growthRate = GlobalConstants.POPULATION_GROWTH_RATE;
+    private int maxPopulation = GlobalConstants.MAX_POPULATION;
 
     //how many ticks per gold
-    private int goldRate = 200;
+    private int goldRate = GlobalConstants.TICKS_PER_GOLD;
     //how many ticks until gold
     private int timeToGold = goldRate;
 
     private Set<VillageUpgrade> upgrades = new HashSet<>();
+    private WorkShop workShop = null;
 
     private int index = -1;
 
@@ -87,7 +90,7 @@ public class Village extends ImageSprite implements Construction, Indexable, Ser
     }
 
     public static int getGoldPrice(){
-        return 10;
+        return GlobalConstants.VILLAGE_GOLD;
     }
 
     @Override
@@ -139,26 +142,49 @@ public class Village extends ImageSprite implements Construction, Indexable, Ser
         double topY = getTopY();
 
         //paint the well
-        if(hasUpgrade(VillageUpgrade.WELL)) {
-            double wellXOffset = 22;
-            double wellYOffset = 27;
-            double wellX = topX + wellXOffset;
-            double wellY = topY + wellYOffset;
-            gc.drawImage(ImageStore.store.imageFor("Well"), wellX, wellY);
+        if(hasUpgrade(VillageUpgrade.TRADING_POST)) {
+            double tradingPostXOffset = 5;
+            double tradingPostYOffset = 5;
+            double tradingPostX = topX + tradingPostXOffset;
+            double tradingPostY = topY + tradingPostYOffset;
+            gc.drawImage(ImageStore.store.imageFor("Trading_post"), tradingPostX, tradingPostY);
         }
 
         //paint the barracks
         if(hasUpgrade(VillageUpgrade.BARRACKS)){
-            double barracksXOffset = 61;
-            double barracksYOffset = -1;
+            double barracksXOffset = 58;
+            double barracksYOffset = 3;
             double barracksX = topX + barracksXOffset;
             double barracksY = topY + barracksYOffset;
             gc.drawImage(ImageStore.store.imageFor("Barracks"), barracksX, barracksY);
         }
+
+        //paint the work shop
+        if(hasUpgrade(VillageUpgrade.WORK_SHOP)){
+            double workShopXOffset = 4;
+            double workShopYOffset = 24;
+            double workShopX = topX + workShopXOffset;
+            double workShopY = topY + workShopYOffset;
+            gc.drawImage(ImageStore.store.imageFor("Work_shop"), workShopX, workShopY);
+        }
     }
 
     public void upgrade(VillageUpgrade upgrade){
-        this.upgrades.add(upgrade);
+        boolean added = this.upgrades.add(upgrade);
+
+        //if we already had this upgrade, do nothing
+        if(!added){
+            return;
+        }
+
+        switch (upgrade){
+            case TRADING_POST:
+                this.goldRate = GlobalConstants.TICKS_PER_GOLD_WITH_TRADING_POST;
+                return;
+            case WORK_SHOP:
+                this.workShop = new WorkShop();
+                return;
+        }
     }
 
     public boolean hasUpgrade(VillageUpgrade upgrade){
@@ -179,5 +205,9 @@ public class Village extends ImageSprite implements Construction, Indexable, Ser
 
         //we can only spawn soldiers if we have a barracks
         return hasUpgrade(VillageUpgrade.BARRACKS);
+    }
+
+    public WorkShop getWorkShop() {
+        return workShop;
     }
 }

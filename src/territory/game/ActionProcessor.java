@@ -6,6 +6,8 @@ import territory.game.action.player.*;
 import territory.game.action.tick.*;
 import territory.game.construction.*;
 import territory.game.construction.upgrade.VillageUpgrade;
+import territory.game.construction.upgrade.WorkShop;
+import territory.game.construction.upgrade.WorkShopItem;
 import territory.game.info.*;
 import territory.game.player.Player;
 import territory.game.target.BuildProject;
@@ -58,6 +60,12 @@ public class ActionProcessor {
         else if(action instanceof UpgradeVillageAction){
             processUpgradeVillageAction((UpgradeVillageAction) action);
         }
+        else if(action instanceof UpgradeWorkShopAction){
+            processUpgradeWorkShopAction((UpgradeWorkShopAction) action);
+        }
+        else if(action instanceof BuildWorkShopItemAction){
+            processBuildWorkShopItemAction((BuildWorkShopItemAction) action);
+        }
 
         //Tick actions
         else if(action instanceof GiveGoldAction){
@@ -81,7 +89,7 @@ public class ActionProcessor {
 
         //Unhandled action
         else {
-            System.out.println("Unprocessed action " + action.getClass().getName());
+            System.out.println("Unprocessed action " + action.getClass().getSimpleName());
         }
     }
 
@@ -393,6 +401,44 @@ public class ActionProcessor {
         Village village = currentInventory.getVillage(action.getVillageIndex());
         currentInventory.takeWood(woodPrice);
         village.upgrade(action.getUpgrade());
+    }
+
+    private void processUpgradeWorkShopAction(UpgradeWorkShopAction action){
+        int woodPrice = action.getUpgrade().getBenchPrice();
+
+        if(woodPrice > currentInventory.getWood()){
+            player.sendInfo(new InsufficientFundsInfo());
+            return;
+        }
+
+        Village village = currentInventory.getVillage(action.getVillageIndex());
+
+        if(!village.hasUpgrade(VillageUpgrade.WORK_SHOP)){
+            player.sendInfo(new IllegalUpgradeInfo("Village has no Work Shop"));
+            return;
+        }
+
+        currentInventory.takeWood(woodPrice);
+        village.getWorkShop().addBench(action.getUpgrade());
+    }
+
+    private void processBuildWorkShopItemAction(BuildWorkShopItemAction action){
+        int woodPrice = action.getItem().getItemPrice();
+
+        if(woodPrice > currentInventory.getWood()){
+            player.sendInfo(new InsufficientFundsInfo());
+            return;
+        }
+
+        Village village = currentInventory.getVillage(action.getVillageIndex());
+        WorkShop shop = village.getWorkShop();
+        if(shop == null || !shop.hasBench(action.getItem())){
+            player.sendInfo(new IllegalBuildInfo("Work Shop doesn't have bench for " + action.getItem()));
+            return;
+        }
+
+        currentInventory.takeWood(woodPrice);
+        shop.addItem(action.getItem());
     }
 
     private void processGiveGoldAction(GiveGoldAction action) {

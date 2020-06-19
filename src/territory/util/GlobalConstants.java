@@ -22,4 +22,22 @@ public class GlobalConstants {
 
     //LocalGame constants
     public static final int TERRITORY_NEEDED = 25000;
+
+    //Village constants
+    public static final int INITIAL_POPULATION = TESTING_MODE ? 900 : 2;
+    public static final int MAX_POPULATION = TESTING_MODE ? 1000 : 20;
+    public static final double POPULATION_GROWTH_RATE = TESTING_MODE ? 1 : .002;
+    public static final int TICKS_PER_GOLD = 200;
+    public static final int TICKS_PER_GOLD_WITH_TRADING_POST = 100;
+
+    //Price constants
+    public static final int VILLAGE_GOLD = 10;
+    public static final int WORK_SHOP_WOOD = 100;
+    public static final int BARRACKS_WOOD = 100;
+    public static final int TRADING_POST_WOOD = 100;
+    public static final int BOOTS_BENCH_WOOD = 100;
+    public static final int BOOTS_ITEM_WOOD = 40;
+    public static final int ARMOR_BENCH_WOOD = 100;
+    public static final int ARMOR_ITEM_WOOD = 40;
+
 }

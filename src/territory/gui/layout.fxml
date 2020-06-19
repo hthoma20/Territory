@@ -293,26 +293,27 @@
                     </HBox>
 
                     <!-- Village info -->
-                    <HBox fx:id="villagePane">
-                        <VBox>
+                    <HBox fx:id="villagePane" alignment="CENTER" spacing="30">
+                        <VBox alignment="CENTER">
                             <Label text="Upgrade Village" underline="true" />
-                            <VBox fx:id="villageUpgradesPane" />
+                            <VBox fx:id="villageUpgradesPane" alignment="CENTER" />
                         </VBox>
 
-                        <VBox>
-                            <Label text="Workshop" underline="true" />
-                            <HBox>
-                                <VBox>
+                        <VBox fx:id="workShopPane" alignment="CENTER">
+                            <Label text="Work Shop" underline="true" />
+                            <HBox spacing="15">
+                                <VBox alignment="CENTER">
                                     <Label text="Upgrade Shop" underline="true" />
-                                    <VBox fx:id="shopUpgradesPane" />
+                                    <VBox fx:id="shopUpgradesPane" alignment="CENTER" />
                                 </VBox>
-                                <VBox>
+                                <VBox alignment="CENTER" >
                                     <Label text="Build" underline="true" />
-                                    <VBox fx:id="buildPane" />
+                                    <VBox fx:id="benchPane" alignment="CENTER" />
                                 </VBox>
                             </HBox>
                         </VBox>
                     </HBox>
+
                 </SwapPane>
 
             </HBox>

@@ -6,10 +6,13 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.HBox;
 import territory.game.*;
 import territory.game.action.player.*;
 import territory.game.construction.*;
+import territory.game.construction.upgrade.WorkShopItem;
 import territory.game.construction.upgrade.VillageUpgrade;
+import territory.game.construction.upgrade.WorkShop;
 import territory.game.player.GUIPlayer;
 import territory.game.sprite.ImageStore;
 import territory.game.sprite.Sprite;
@@ -29,8 +32,12 @@ import territory.gui.input.InputProcessor;
 import territory.gui.input.MouseDragInput;
 import territory.gui.input.MouseInput;
 import territory.gui.input.MouseScrollInput;
+import territory.util.StateReceivedListener;
+import territory.util.StringUtils;
 
+import javax.swing.plaf.nimbus.State;
 import java.util.*;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 public class Controller {
@@ -54,8 +61,9 @@ public class Controller {
     @FXML private Pane trainUnitsPane;
     @FXML private Pane villagePane;
     @FXML private Pane villageUpgradesPane;
+    @FXML private Pane workShopPane;
     @FXML private Pane shopUpgradesPane;
-    @FXML private Pane buildPane;
+    @FXML private Pane benchPane;
 
     //labels for prices of things on the GUI
     @FXML private Label minerPriceLabel1;
@@ -89,6 +97,7 @@ public class Controller {
     private CanvasPainter canvasPainter;
 
     private GameState currentState;
+    private Inventory currentInventory;
 
     private InteractMode currentInteractMode;
 
@@ -97,8 +106,11 @@ public class Controller {
     private PatrolArea patrolArea;
     private RectangleArea selectionArea;
 
-
     private GUIPlayer player;
+
+    //map from predicate to function
+    //the function will be called the first time that a state matching the predicate is received
+    private final Map<Predicate<GameState>, StateReceivedListener> statePredicates = new HashMap<>();
 
     public void init(Scene scene){
         this.scene = scene;
@@ -111,7 +123,7 @@ public class Controller {
 
         this.currentInteractMode = InteractMode.CREATE_VILLAGE;
 
-        infoSwapPane.show(trainUnitsPane);
+        infoSwapPane.show(villagePane);
 
         setPriceLabels();
 
@@ -182,8 +194,13 @@ public class Controller {
 
     public void updateDisplay(GameState state){
         currentState = state;
+        currentInventory = state.getPlayerInventory(player);
 
         Platform.runLater(()-> {
+
+            //call predicate functions
+            runStatePredicates();
+
             canvasPainter.fitToArea(state.getAreaInPlay());
             //paint the canvas
             canvasPainter.paint();
@@ -192,27 +209,45 @@ public class Controller {
         });
     }
 
+    private void runStatePredicates(){
+        List<Predicate<GameState>> truePredicates = new ArrayList<>();
+        synchronized (statePredicates){
+
+            //check whether each predicate is satisfied
+            for(Predicate<GameState> predicate : statePredicates.keySet()){
+                if(predicate.test(currentState)){
+                    //if it is mark it so
+                    truePredicates.add(predicate);
+                }
+            }
+        }
+
+        //run the corresponding functions
+        for(Predicate<GameState> truePredicate : truePredicates){
+            statePredicates.get(truePredicate).run();
+        }
+
+        statePredicates.keySet().removeAll(truePredicates);
+    }
+
     private void updateLabels(){
         //update the labels
-        Inventory inventory = currentState.getPlayerInventory(this.player);
         TerritoryList territories = currentState.getPlayerTerritories(this.player.getIndex());
-        stoneLabel.setText(""+inventory.getStone());
-        goldLabel.setText(""+inventory.getGold());
-        woodLabel.setText(""+inventory.getWood());
+        stoneLabel.setText(""+currentInventory.getStone());
+        goldLabel.setText(""+currentInventory.getGold());
+        woodLabel.setText(""+currentInventory.getWood());
         territoryLabel.setText(String.format("%,d", (int)(territories.area()/1000)));
 
         updateCountLabels();
     }
 
     private void updateCountLabels(){
-        Inventory inventory = currentState.getPlayerInventory(player);
-
         int minerCount = 0;
         int lumberjackCount = 0;
         int builderCount = 0;
         int soldierCount = 0;
 
-        for(Unit unit : inventory.getUnits()){
+        for(Unit unit : currentInventory.getUnits()){
             if(unit instanceof Miner){
                 minerCount++;
             }
@@ -236,11 +271,11 @@ public class Controller {
         buildersLabel.setText("" + builderCount);
         soldiersLabel.setText("" + soldierCount);
 
-        int villageCount = inventory.getVillages().size();
+        int villageCount = currentInventory.getVillages().size();
         villagesLabel.setText("" + villageCount);
 
         int population = 0;
-        for(Village village : inventory.getVillages()){
+        for(Village village : currentInventory.getVillages()){
             population += village.getPopulation();
         }
         populationLabel.setText("" + population);
@@ -317,8 +352,6 @@ public class Controller {
     private void handleCanvasScroll(MouseScrollInput scrollInput){
         //either up one or down one
         int delta = scrollInput.getDeltaY() > 0 ? 1 : -1;
-
-        System.out.println(scrollInput.getDeltaY() + " " + delta);
 
         InteractMode[] modes = InteractMode.values();
 
@@ -464,6 +497,7 @@ public class Controller {
         for(Sprite sprite : currentState.getSpritesContaining(gamePoint)){
             if(sprite instanceof Village){
                 clickedVillage = (Village) sprite;
+                break;
             }
         }
 
@@ -542,52 +576,132 @@ public class Controller {
             return;
         }
 
-        currentSelection.select((Village)village);
+        currentSelection.select(village);
 
-        displayVillageInfo(village);
+        displayVillageInfo(village.getIndex());
     }
 
     /**
      * update the info pane to display info on the given village
-     * @param village the village to display info for
+     * @param villageIndex the index of the village to display info for
      */
-    private void displayVillageInfo(Village village){
-        //infoSwapPane.show(villagePane);
+    private void displayVillageInfo(int villageIndex){
+        infoSwapPane.show(villagePane);
+
+        Village village = currentInventory.getVillage(villageIndex);
 
         //display available upgrades
         villageUpgradesPane.getChildren().clear();
         for(VillageUpgrade upgrade : village.availableUpgrades()){
-            villageUpgradesPane.getChildren().add(upgradeNode(upgrade));
+            villageUpgradesPane.getChildren().add(nodeFor(villageIndex, upgrade));
         }
+
+        displayWorkShop(village);
     }
 
     /**
      * Create clickable node for the given upgrade
+     *
+     * @param villageIndex the index of village that this upgrade is for
      * @param upgrade the upgrade to make a node for
      * @return a node for the upgrade
      */
-    private Node upgradeNode(VillageUpgrade upgrade){
-        Button upgradeButton = new Button(toCapitalCase(upgrade.name()));
+    private Node nodeFor(int villageIndex, VillageUpgrade upgrade){
+        String label = String.format("%s (%d wood)",
+                StringUtils.toCapitalCase(upgrade.name()), upgrade.getWoodPrice());
+        Button upgradeButton = new Button(label);
         upgradeButton.setTooltip(new Tooltip(upgrade.getDescription()));
+
+
+        upgradeButton.setOnAction(event -> {
+            //upgrade the village
+            player.takeAction(new UpgradeVillageAction(player.getColor(), villageIndex, upgrade));
+
+            //once the village upgrade comes through, display the changes
+            onStatePredicate(
+                state -> state.getPlayerInventory(player).getVillage(villageIndex).hasUpgrade(upgrade),
+                () -> displayVillageInfo(villageIndex));
+        });
         return upgradeButton;
     }
 
     /**
-     * Capitalize the given string, for example
-     * HELLO THERE -> Hello there
-     * @param str the string to capitalize
-     * @return str, but capitalized
+     * @param item the item to get the node for
+     * @return the node that allows you to buy a bench for the given item
      */
-    private String toCapitalCase(String str){
-        if(str.length() < 1){
-            return str;
+    private Node nodeFor(int villageIndex, WorkShopItem item){
+        String label = String.format("%s (%d wood)",
+                StringUtils.toCapitalCase(item.name()), item.getBenchPrice());
+        Button benchButton = new Button(label);
+        benchButton.setTooltip(new Tooltip(item.getDescription()));
+        benchButton.setOnAction(event -> {
+           player.takeAction(new UpgradeWorkShopAction(player.getColor(), villageIndex, item));
+
+           //update display when the upgrade goes through
+            onStatePredicate(
+                    state -> state.getPlayerInventory(player).getVillage(villageIndex).getWorkShop().hasBench(item),
+                    () -> displayVillageInfo(villageIndex)
+            );
+        });
+        return benchButton;
+    }
+
+    /**
+     * @param shop the work shop
+     * @param item the item
+     * @return a node that allows you to build the given item from the given workshop
+     */
+    private Node nodeFor(int villageIndex, WorkShop shop, WorkShopItem item){
+
+        String buttonLabel = String.format("%s (%d wood)",
+                StringUtils.toCapitalCase(item.name()), item.getItemPrice());
+        Button button = new Button(buttonLabel);
+
+        button.setTooltip(new Tooltip(item.getDescription()));
+
+        int currentStock = shop.stock(item);
+
+        button.setOnAction(event -> {
+            player.takeAction(new BuildWorkShopItemAction(player.getColor(), villageIndex, item));
+
+            //when the stock goes up, reflect the change
+            onStatePredicate(
+                state -> state.getPlayerInventory(player).getVillage(villageIndex).getWorkShop().stock(item) > currentStock,
+                () -> displayVillageInfo(villageIndex)
+            );
+        });
+
+        Label label = new Label(""+currentStock);
+
+        HBox box = new HBox();
+        box.getChildren().addAll(button, label);
+        return box;
+    }
+
+    private void displayWorkShop(Village village){
+        //if the village has no shop, don't show it
+        if(!village.hasUpgrade(VillageUpgrade.WORK_SHOP)){
+            workShopPane.setVisible(false);
+            return;
         }
 
-        char first = str.charAt(0);
-        String rest = str.substring(1);
+        workShopPane.setVisible(true);
 
-        return Character.toUpperCase(first) + rest.toLowerCase();
+        WorkShop shop = village.getWorkShop();
+
+        //display available benches
+        shopUpgradesPane.getChildren().clear();
+        for(WorkShopItem item : shop.availableBenches()){
+            shopUpgradesPane.getChildren().add(nodeFor(village.getIndex(), item));
+        }
+
+        //display tools to purchase
+        benchPane.getChildren().clear();
+        for(WorkShopItem item : shop.getBenches()){
+            benchPane.getChildren().add(nodeFor(village.getIndex(), shop, item));
+        }
     }
+
 
     private void postClicked(Post post){
         if(post.getColor() != player.getColor()){
@@ -670,7 +784,7 @@ public class Controller {
         }
 
         for(int index : currentSelection.getIndices()){
-            if(getUnit(index) instanceof Soldier){
+            if(currentInventory.getUnit(index) instanceof Soldier){
                 return true;
             }
         }
@@ -685,7 +799,7 @@ public class Controller {
      */
     private void directBuildersTo(int index, BuildType type){
         for(int builderIndex : currentSelection.getIndices()){
-            if(getUnit(builderIndex) instanceof Builder) {
+            if(currentInventory.getUnit(builderIndex) instanceof Builder) {
                 player.takeAction(new DirectBuilderAction(player.getColor(), builderIndex, index, type));
             }
         }
@@ -697,7 +811,7 @@ public class Controller {
      */
     private void directMinersTo(int index){
         for(int minerIndex : currentSelection.getIndices()){
-            if(getUnit(minerIndex) instanceof Miner) {
+            if(currentInventory.getUnit(minerIndex) instanceof Miner) {
                 player.takeAction(new DirectMinerAction(player.getColor(), minerIndex, index));
             }
         }
@@ -709,7 +823,7 @@ public class Controller {
      */
     private void directLumberjacksTo(int index){
         for(int lumberjackIndex : currentSelection.getIndices()){
-            if(getUnit(lumberjackIndex) instanceof Lumberjack) {
+            if(currentInventory.getUnit(lumberjackIndex) instanceof Lumberjack) {
                 player.takeAction(new DirectLumberjackAction(player.getColor(), lumberjackIndex, index));
             }
         }
@@ -722,14 +836,21 @@ public class Controller {
     private void directSoldiersTo(PatrolArea patrolArea){
         //get the selected indices that are soldiers
         Set<Integer> soldierIndices = currentSelection.getIndices().stream().filter( index ->
-                getUnit(index) instanceof Soldier).collect(Collectors.toSet());
+                currentInventory.getUnit(index) instanceof Soldier).collect(Collectors.toSet());
 
         //direct them to the patrol area
         player.takeAction(new DirectSoldiersAction(player.getColor(), soldierIndices, patrolArea));
     }
 
-    private Unit getUnit(int unitIndex){
-        return currentState.getPlayerInventory(player).getUnit(unitIndex);
+    /**
+     * Register a function to be called when a new state is received which matches the predicate
+     * @param statePredicate the predicate that must be matched
+     * @param listener the function to call
+     */
+    private void onStatePredicate(Predicate<GameState> statePredicate, StateReceivedListener listener){
+        synchronized (statePredicates) {
+            statePredicates.put(statePredicate, listener);
+        }
     }
 
     /**
