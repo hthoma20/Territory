@@ -39,6 +39,14 @@ public class WorkShop implements Serializable {
         return inventory.getOrDefault(item, 0);
     }
 
+    /**
+     * Remove one of the given item from inventory
+     * @param item the item to remove
+     */
+    public void takeItem(WorkShopItem item){
+        inventory.put(item, inventory.get(item) - 1);
+    }
+
     public void addItem(WorkShopItem item){
         //incriment the stock of the item
         inventory.put(item, inventory.get(item) + 1);

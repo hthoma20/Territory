@@ -6,6 +6,8 @@ import territory.game.action.tick.TickAction;
 import territory.game.target.BuildProject;
 import territory.game.player.Player;
 import territory.game.target.Target;
+import territory.game.unit.stats.BuilderStats;
+import territory.util.GlobalConstants;
 
 import java.io.Serializable;
 import java.util.Arrays;
@@ -16,16 +18,20 @@ public class Builder extends Unit implements Serializable {
     private BuildProject project;
 
     //probability to build at each tick, if in range of target
-    private static double buildProbability = .05;
+    private BuilderStats stats;
 
-    public Builder(Player owner, double x, double y) {
+    public Builder(Player owner, double x, double y, BuilderStats stats) {
         super(owner.getColor(), x, y);
+        this.stats = stats;
+    }
 
-        super.speed = .85;
+    @Override
+    public BuilderStats getStats(){
+        return this.stats;
     }
 
     public static int getGoldPrice(){
-        return 10;
+        return GlobalConstants.BUILDER_GOLD;
     }
 
     public void setProject(BuildProject project){
@@ -47,7 +53,7 @@ public class Builder extends Unit implements Serializable {
 
     @Override
     protected List<TickAction> atTarget() {
-        if(!RNG.withProbability(buildProbability)){
+        if(!RNG.withProbability(stats.getBuildProbability())){
             return null;
         }
 

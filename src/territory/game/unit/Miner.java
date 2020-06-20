@@ -9,6 +9,8 @@ import territory.game.construction.Mine;
 import territory.game.target.MineSlot;
 import territory.game.player.Player;
 import territory.game.target.Target;
+import territory.game.unit.stats.MinerStats;
+import territory.util.GlobalConstants;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -18,13 +20,16 @@ public class Miner extends Unit implements Serializable {
 
     private MineSlot target;
 
-    //probability to mine at each tick, if in range of target
-    private static double mineProbability = .05;
+    private MinerStats stats;
 
-    public Miner(Player owner, double x, double y) {
+    public Miner(Player owner, double x, double y, MinerStats stats) {
         super(owner.getColor(), x, y);
+        this.stats = stats;
+    }
 
-        super.speed = 1;
+    @Override
+    public MinerStats getStats(){
+        return this.stats;
     }
 
     @Override
@@ -42,7 +47,7 @@ public class Miner extends Unit implements Serializable {
     }
 
     public static int getGoldPrice(){
-        return 5;
+        return GlobalConstants.MINER_GOLD;
     }
 
     @Override
@@ -69,7 +74,7 @@ public class Miner extends Unit implements Serializable {
     @Override
     protected List<TickAction> atTarget(){
         //choose whether to mine (actually whether not to mine)
-        if(!RNG.withProbability(mineProbability)){
+        if(!RNG.withProbability(stats.getMineProbability())){
             return null;
         }
 

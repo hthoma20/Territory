@@ -27,3 +27,12 @@
 
     -fx-spacing: 20;
 }
+
+.rightClickMenu {
+    -fx-padding: 10;
+    -fx-background-color: #969696;
+    -fx-border-color: #65659b;
+    -fx-border-width: 2;
+    -fx-border-radius: 6;
+    -fx-background-radius: 6;
+}

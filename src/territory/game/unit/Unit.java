@@ -8,6 +8,7 @@ import territory.game.sprite.ImageSprite;
 import territory.game.sprite.Sprite;
 import javafx.geometry.Point2D;
 import territory.game.target.Target;
+import territory.game.unit.stats.UnitStats;
 
 import java.io.Serializable;
 import java.util.List;
@@ -19,15 +20,6 @@ public abstract class Unit extends ImageSprite
 
     private int index = -1;
 
-    //movement per tick
-    //set to default here, adjust this in subclass's constructor
-    protected double speed = 1;
-
-
-    //distance from target to take action
-    protected double range = 2;
-    protected int health = 10;
-
     public Unit(GameColor color, double x, double y) {
         super(x, y);
         this.color = color;
@@ -35,6 +27,8 @@ public abstract class Unit extends ImageSprite
 
     //what are we targeting?
     protected abstract Target getTarget();
+
+    public abstract UnitStats getStats();
 
     //called when we are at the target
     protected abstract List<TickAction> atTarget();
@@ -56,18 +50,20 @@ public abstract class Unit extends ImageSprite
             return null;
         }
 
+        UnitStats stats = getStats();
+
         Point2D location = new Point2D(x, y);
         Point2D destination = new Point2D(target.getX(), target.getY());
 
         Point2D distance = destination.subtract(location);
 
         //if we are at the target
-        if(distance.magnitude() <= range){
+        if(distance.magnitude() <= stats.getRange()){
             return this.atTarget();
         }
 
         //otherwise we are not at the target, move towards it
-        Point2D velocity = distance.normalize().multiply(speed);
+        Point2D velocity = distance.normalize().multiply(stats.getSpeed());
 
         //check if we collide with a something impassible
         if(canMove(currentState, velocity)){
@@ -115,10 +111,10 @@ public abstract class Unit extends ImageSprite
     }
 
     public void dealDamage(int damage){
-        health -= damage;
+        getStats().decrementHealth(damage);
     }
 
     public int getHealth() {
-        return health;
+        return getStats().getHealth();
     }
 }

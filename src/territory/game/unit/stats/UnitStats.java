@@ -1,5 +1,7 @@
 package territory.game.unit.stats;
 
+import territory.util.GlobalConstants;
+
 import java.io.Serializable;
 
 /**
@@ -11,19 +13,18 @@ public abstract class UnitStats implements Serializable {
     protected double range;
     protected double speed;
 
-    public UnitStats(int health, double range, double speed) {
-        this.health = health;
-        this.range = range;
-        this.speed = speed;
+    protected UnitStats(Builder builder) {
+        this.health = builder.health;
+        this.range = builder.range;
+        this.speed = builder.speed;
     }
 
     /**
-     * Construct stats with default values
+     * Take away the given number of health points
+     * @param damage the damage to deal
      */
-    public UnitStats(){
-        this.health = 10;
-        this.range = 2;
-        this.speed = 1;
+    public void decrementHealth(int damage){
+        health -= damage;
     }
 
     public int getHealth() {
@@ -37,4 +38,29 @@ public abstract class UnitStats implements Serializable {
     public double getSpeed() {
         return speed;
     }
+
+
+    public abstract static class Builder {
+        protected int health = GlobalConstants.DEFAULT_HEALTH;
+        protected double range = GlobalConstants.DEFAULT_RANGE;
+        protected double speed = GlobalConstants.DEFAULT_SPEED;
+
+        public Builder health(int health) {
+            this.health = health;
+            return this;
+        }
+
+        public Builder range(double range) {
+            this.range = range;
+            return this;
+        }
+
+        public Builder speed(double speed) {
+            this.speed = speed;
+            return this;
+        }
+
+        public abstract UnitStats build();
+    }
+
 }

@@ -8,7 +8,9 @@ import territory.game.player.Player;
 import territory.game.target.PatrolArea;
 import territory.game.target.PointTarget;
 import territory.game.target.Target;
+import territory.game.unit.stats.SoldierStats;
 import territory.gui.CanvasPainter;
+import territory.util.GlobalConstants;
 
 import java.io.Serializable;
 import java.util.Arrays;
@@ -18,20 +20,20 @@ public class Soldier extends Unit implements Serializable {
 
     private PatrolArea patrolArea;
 
-    //probability to attack at each tick, if in range of target
-    private static double attackProbability = .05;
+    private SoldierStats stats;
 
-    //damage done per attack
-    private static int attackStrength = 2;
-
-    public Soldier(Player owner, double x, double y) {
+    public Soldier(Player owner, double x, double y, SoldierStats stats) {
         super(owner.getColor(), x, y);
+        this.stats = stats;
+    }
 
-        super.speed = .75;
+    @Override
+    public SoldierStats getStats() {
+        return stats;
     }
 
     public static int getGoldPrice(){
-        return 20;
+        return GlobalConstants.SOLDIER_GOLD;
     }
 
     @Override
@@ -79,11 +81,11 @@ public class Soldier extends Unit implements Serializable {
      * @return a list of actions, representing the damage to do, or null if no damage should be done
      */
     private List<TickAction> attackUnit(Unit unit){
-        if(!RNG.withProbability(attackProbability)){
+        if(!RNG.withProbability(stats.getAttackProbability())){
             return null;
         }
 
-        return Arrays.asList(new DealDamageAction(this.color, unit, attackStrength));
+        return Arrays.asList(new DealDamageAction(this.color, unit, stats.getAttackStrength()));
     }
 
     @Override

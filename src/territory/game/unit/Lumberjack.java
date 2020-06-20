@@ -11,6 +11,8 @@ import territory.game.construction.Tree;
 import territory.game.player.Player;
 import territory.game.target.MineSlot;
 import territory.game.target.Target;
+import territory.game.unit.stats.LumberjackStats;
+import territory.util.GlobalConstants;
 
 import java.io.Serializable;
 import java.util.*;
@@ -20,14 +22,16 @@ public class Lumberjack extends Unit implements Serializable {
 
     private Tree target;
 
-    //probability to mine at each tick, if in range of target
-    private static double chopProbability = .05;
-    private static int chopStrength = 2;
+    private LumberjackStats stats;
 
-    public Lumberjack(Player owner, double x, double y) {
+    public Lumberjack(Player owner, double x, double y, LumberjackStats stats) {
         super(owner.getColor(), x, y);
+        this.stats = stats;
+    }
 
-        super.speed = 1;
+    @Override
+    public LumberjackStats getStats() {
+        return stats;
     }
 
     @Override
@@ -40,7 +44,7 @@ public class Lumberjack extends Unit implements Serializable {
     }
 
     public static int getGoldPrice(){
-        return 5;
+        return GlobalConstants.LUMBERJACK_GOLD;
     }
 
     @Override
@@ -78,11 +82,11 @@ public class Lumberjack extends Unit implements Serializable {
             return null;
         }
 
-        if( !RNG.withProbability(chopProbability) ){
+        if( !RNG.withProbability(stats.getChopProbability()) ){
             return null;
         }
 
-        target.chop(chopStrength);
+        target.chop(stats.getChopStrength());
 
         //if we chopped down the tree
         if( !target.isAlive() ){

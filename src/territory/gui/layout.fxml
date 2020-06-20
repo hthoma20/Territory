@@ -16,14 +16,88 @@
 <?import javafx.scene.image.ImageView?>
 
 <?import territory.gui.component.SwapPane?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import territory.gui.component.ResizableCanvas?>
+<?import javafx.scene.layout.StackPane?>
 <BorderPane fx:controller="territory.gui.Controller"
             xmlns:fx="http://javafx.com/fxml">
 
         <center>
             <!-- The territory game canvas -->
-            <Pane fx:id="canvasPane" styleClass="border" VBox.vgrow="ALWAYS">
+            <AnchorPane fx:id="canvasPane" styleClass="border" minWidth="50" minHeight="50">
                 <Canvas fx:id="canvas" />
-            </Pane>
+
+                <!-- train unit buttons -->
+                <HBox fx:id="rightClickMenu" spacing="10" visible="false" styleClass="rightClickMenu">
+                    <VBox alignment="CENTER">
+                        <Button userData="Miner:1" onAction="#trainUnitsButtonClicked" textAlignment="CENTER">
+                            <graphic>
+                                <VBox alignment="CENTER">
+                                    <ImageView fx:id="minerImageView" />
+                                    <HBox>
+                                        <Label fx:id="minerPriceLabel" />
+                                        <Label text=" gold" />
+                                    </HBox>
+                                </VBox>
+                            </graphic>
+                        </Button>
+                        <Button userData="Miner:5" onAction="#trainUnitsButtonClicked">
+                            <text>x5</text>
+                        </Button>
+                    </VBox>
+
+                    <VBox alignment="CENTER">
+                        <Button userData="Lumberjack:1" onAction="#trainUnitsButtonClicked" textAlignment="CENTER">
+                            <graphic>
+                                <VBox alignment="CENTER">
+                                    <ImageView fx:id="lumberjackImageView" />
+                                    <HBox>
+                                        <Label fx:id="lumberjackPriceLabel" />
+                                        <Label text=" gold" />
+                                    </HBox>
+                                </VBox>
+                            </graphic>
+                        </Button>
+                        <Button userData="Lumberjack:5" onAction="#trainUnitsButtonClicked" textAlignment="CENTER">
+                            <text>x5</text>
+                        </Button>
+                    </VBox>
+
+                    <VBox alignment="CENTER">
+                        <Button userData="Builder:1" onAction="#trainUnitsButtonClicked">
+                            <graphic>
+                                <VBox alignment="CENTER">
+                                    <ImageView fx:id="builderImageView" />
+                                    <HBox>
+                                        <Label fx:id="builderPriceLabel" />
+                                        <Label text=" gold" />
+                                    </HBox>
+                                </VBox>
+                            </graphic>
+                        </Button>
+                        <Button userData="Builder:5" onAction="#trainUnitsButtonClicked">
+                            <text>x5</text>
+                        </Button>
+                    </VBox>
+
+                    <VBox alignment="CENTER">
+                        <Button userData="Soldier:1" onAction="#trainUnitsButtonClicked" textAlignment="CENTER">
+                            <graphic>
+                                <VBox alignment="CENTER">
+                                    <ImageView fx:id="soldierImageView" />
+                                    <HBox>
+                                        <Label fx:id="soldierPriceLabel" />
+                                        <Label text=" gold" />
+                                    </HBox>
+                                </VBox>
+                            </graphic>
+                        </Button>
+                        <Button userData="Soldier:5" onAction="#trainUnitsButtonClicked">
+                            <text>x5</text>
+                        </Button>
+                    </VBox>
+                </HBox>
+            </AnchorPane>
         </center>
 
         <right>
@@ -136,164 +210,10 @@
                 </Button>
 
                 <SwapPane fx:id="infoSwapPane">
-                    <!-- train unit buttons -->
-                    <HBox fx:id="trainUnitsPane" spacing="10">
-
-                        <HBox styleClass="unitBox">
-
-                            <VBox alignment="CENTER">
-                                <ImageView fx:id="minerImageView" />
-                                <Label text="Miners" />
-                            </VBox>
-
-                            <VBox alignment="CENTER">
-                                <Button userData="Miner:1" onAction="#trainUnitsButtonClicked" >
-                                    <graphic>
-                                        <HBox>
-                                            <Label text="+1 (" />
-                                            <Label fx:id="minerPriceLabel1" />
-                                            <Label text=" gold)" />
-                                        </HBox>
-                                    </graphic>
-                                </Button>
-                                <Button userData="Miner:5" onAction="#trainUnitsButtonClicked" >
-                                    <graphic>
-                                        <HBox>
-                                            <Label text="+5 (" />
-                                            <Label fx:id="minerPriceLabel5" />
-                                            <Label text=" gold)" />
-                                        </HBox>
-                                    </graphic>
-                                </Button>
-                                <Button userData="Miner:10" onAction="#trainUnitsButtonClicked" >
-                                    <graphic>
-                                        <HBox>
-                                            <Label text="+10 (" />
-                                            <Label fx:id="minerPriceLabel10" />
-                                            <Label text=" gold)" />
-                                        </HBox>
-                                    </graphic>
-                                </Button>
-                            </VBox>
-                        </HBox>
-
-                        <HBox styleClass="unitBox">
-
-                            <VBox alignment="CENTER">
-                                <ImageView fx:id="lumberjackImageView" />
-                                <Label text="Lumberjacks" />
-                            </VBox>
-
-                            <VBox alignment="CENTER">
-                                <Button userData="Lumberjack:1" onAction="#trainUnitsButtonClicked" >
-                                    <graphic>
-                                        <HBox>
-                                            <Label text="+1 (" />
-                                            <Label fx:id="lumberjackPriceLabel1" />
-                                            <Label text=" gold)" />
-                                        </HBox>
-                                    </graphic>
-                                </Button>
-                                <Button userData="Lumberjack:5" onAction="#trainUnitsButtonClicked" >
-                                    <graphic>
-                                        <HBox>
-                                            <Label text="+5 (" />
-                                            <Label fx:id="lumberjackPriceLabel5" />
-                                            <Label text=" gold)" />
-                                        </HBox>
-                                    </graphic>
-                                </Button>
-                                <Button userData="Lumberjack:10" onAction="#trainUnitsButtonClicked" >
-                                    <graphic>
-                                        <HBox>
-                                            <Label text="+10 (" />
-                                            <Label fx:id="lumberjackPriceLabel10" />
-                                            <Label text=" gold)" />
-                                        </HBox>
-                                    </graphic>
-                                </Button>
-                            </VBox>
-                        </HBox>
-
-                        <HBox styleClass="unitBox" >
-
-                            <VBox alignment="CENTER">
-                                <ImageView fx:id="builderImageView" />
-                                <Label text="Builders" />
-                            </VBox>
-
-                            <VBox alignment="CENTER">
-                                <Button userData="Builder:1" onAction="#trainUnitsButtonClicked" >
-                                    <graphic>
-                                        <HBox>
-                                            <Label text="+1 (" />
-                                            <Label fx:id="builderPriceLabel1" />
-                                            <Label text=" gold)" />
-                                        </HBox>
-                                    </graphic>
-                                </Button>
-                                <Button userData="Builder:5" onAction="#trainUnitsButtonClicked" >
-                                    <graphic>
-                                        <HBox>
-                                            <Label text="+5 (" />
-                                            <Label fx:id="builderPriceLabel5" />
-                                            <Label text=" gold)" />
-                                        </HBox>
-                                    </graphic>
-                                </Button>
-                                <Button userData="Builder:10" onAction="#trainUnitsButtonClicked" >
-                                    <graphic>
-                                        <HBox>
-                                            <Label text="+10 (" />
-                                            <Label fx:id="builderPriceLabel10" />
-                                            <Label text=" gold)" />
-                                        </HBox>
-                                    </graphic>
-                                </Button>
-                            </VBox>
-                        </HBox>
-
-                        <HBox styleClass="unitBox" >
-
-                            <VBox alignment="CENTER">
-                                <ImageView fx:id="soldierImageView" />
-                                <Label text="Soldiers" />
-                            </VBox>
-
-                            <VBox alignment="CENTER">
-                                <Button userData="Soldier:1" onAction="#trainUnitsButtonClicked" >
-                                    <graphic>
-                                        <HBox>
-                                            <Label text="+1 (" />
-                                            <Label fx:id="soldierPriceLabel1" />
-                                            <Label text=" gold)" />
-                                        </HBox>
-                                    </graphic>
-                                </Button>
-                                <Button userData="Soldier:5" onAction="#trainUnitsButtonClicked" >
-                                    <graphic>
-                                        <HBox>
-                                            <Label text="+5 (" />
-                                            <Label fx:id="soldierPriceLabel5" />
-                                            <Label text=" gold)" />
-                                        </HBox>
-                                    </graphic>
-                                </Button>
-                                <Button userData="Soldier:10" onAction="#trainUnitsButtonClicked" >
-                                    <graphic>
-                                        <HBox>
-                                            <Label text="+10 (" />
-                                            <Label fx:id="soldierPriceLabel10" />
-                                            <Label text=" gold)" />
-                                        </HBox>
-                                    </graphic>
-                                </Button>
-                            </VBox>
-                        </HBox>
-                    </HBox>
 
                     <!-- Village info -->
                     <HBox fx:id="villagePane" alignment="CENTER" spacing="30">
+
                         <VBox alignment="CENTER">
                             <Label text="Upgrade Village" underline="true" />
                             <VBox fx:id="villageUpgradesPane" alignment="CENTER" />

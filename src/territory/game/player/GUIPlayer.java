@@ -14,12 +14,13 @@ import territory.game.info.GameOverInfo;
 import territory.game.info.LostUnitInfo;
 import territory.game.info.PlayerSetupInfo;
 import territory.gui.Controller;
+import territory.util.GlobalConstants;
 
 import java.util.function.Consumer;
 
 public class GUIPlayer extends Player {
     //whether we should automatically take some actions (for testing and debugging)
-    private static final boolean TAKE_INITIAL_ACTIONS = false;
+    private static final boolean TAKE_INITIAL_ACTIONS = GlobalConstants.TAKE_INITIAL_ACTIONS;
 
     private String displayName = "Un-named GUI Player";
 

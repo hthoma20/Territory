@@ -6,6 +6,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import territory.game.*;
 import territory.game.action.player.*;
@@ -45,6 +46,8 @@ public class Controller {
     @FXML private Pane canvasPane;
     @FXML private Canvas canvas;
 
+    @FXML private Node rightClickMenu;
+
     @FXML private Label stoneLabel;
     @FXML private Label goldLabel;
     @FXML private Label woodLabel;
@@ -58,7 +61,6 @@ public class Controller {
 
     //info pane
     @FXML private SwapPane infoSwapPane;
-    @FXML private Pane trainUnitsPane;
     @FXML private Pane villagePane;
     @FXML private Pane villageUpgradesPane;
     @FXML private Pane workShopPane;
@@ -66,18 +68,10 @@ public class Controller {
     @FXML private Pane benchPane;
 
     //labels for prices of things on the GUI
-    @FXML private Label minerPriceLabel1;
-    @FXML private Label minerPriceLabel5;
-    @FXML private Label minerPriceLabel10;
-    @FXML private Label lumberjackPriceLabel1;
-    @FXML private Label lumberjackPriceLabel5;
-    @FXML private Label lumberjackPriceLabel10;
-    @FXML private Label builderPriceLabel1;
-    @FXML private Label builderPriceLabel5;
-    @FXML private Label builderPriceLabel10;
-    @FXML private Label soldierPriceLabel1;
-    @FXML private Label soldierPriceLabel5;
-    @FXML private Label soldierPriceLabel10;
+    @FXML private Label minerPriceLabel;
+    @FXML private Label builderPriceLabel;
+    @FXML private Label soldierPriceLabel;
+    @FXML private Label lumberjackPriceLabel;
     @FXML private Label villagePriceLabel;
     @FXML private Label postPriceLabel;
 
@@ -119,6 +113,7 @@ public class Controller {
         this.canvas.widthProperty().bind(canvasPane.widthProperty());
         this.canvas.heightProperty().bind(canvasPane.heightProperty());
 
+
         this.canvasPainter = new CanvasPainter(this, canvas);
 
         this.currentInteractMode = InteractMode.CREATE_VILLAGE;
@@ -138,6 +133,8 @@ public class Controller {
         inputProcessor.setOnLeftClick(this::handleLeftClick);
         inputProcessor.setOnRightClick(this::handleRightClick);
         inputProcessor.setOnMouseMove(this::handleMouseMoved);
+
+        canvas.setOnMouseExited(event -> scene.setCursor(null));
     }
 
     public void setPlayer(GUIPlayer player){
@@ -160,7 +157,7 @@ public class Controller {
     }
 
     private void initCursors(GameColor color){
-        this.cursorMap = new HashMap<>(2);
+        this.cursorMap = new HashMap<>(4);
 
         cursorMap.put(InteractMode.CREATE_VILLAGE, cursorForSprite(Village.class, color));
         cursorMap.put(InteractMode.CREATE_POST, cursorForSprite(Post.class, color));
@@ -289,21 +286,10 @@ public class Controller {
         int villageGold = Village.getGoldPrice();
         int postGold = Post.getGoldPrice();
 
-        minerPriceLabel1.setText("" + minerGold);
-        minerPriceLabel5.setText("" + minerGold*5);
-        minerPriceLabel10.setText("" + minerGold*10);
-
-        lumberjackPriceLabel1.setText("" + lumberjackGold);
-        lumberjackPriceLabel5.setText("" + lumberjackGold*5);
-        lumberjackPriceLabel10.setText("" + lumberjackGold*10);
-
-        builderPriceLabel1.setText("" + builderGold);
-        builderPriceLabel5.setText("" + builderGold*5);
-        builderPriceLabel10.setText("" + builderGold*10);
-
-        soldierPriceLabel1.setText("" + soldierGold);
-        soldierPriceLabel5.setText("" + soldierGold*5);
-        soldierPriceLabel10.setText("" + soldierGold*10);
+        minerPriceLabel.setText("" + minerGold);
+        lumberjackPriceLabel.setText("" + lumberjackGold);
+        builderPriceLabel.setText("" + builderGold);
+        soldierPriceLabel.setText("" + soldierGold);
 
         villagePriceLabel.setText("" + villageGold);
         postPriceLabel.setText("" + postGold);
@@ -452,6 +438,12 @@ public class Controller {
     }
 
     private void handleLeftClick(MouseInput input){
+
+        if(rightClickMenu.isVisible()){
+            rightClickMenu.setVisible(false);
+            return;
+        }
+
         //find the point that was clicked in the territory game
         Point2D gamePoint = canvasPainter.canvasPointToGamePoint(input.getX(), input.getY());
 
@@ -490,53 +482,28 @@ public class Controller {
     }
 
     private void handleRightClick(MouseInput input){
+
         Point2D gamePoint = canvasPainter.canvasPointToGamePoint(input.getX(), input.getY());
 
         Village clickedVillage = null;
 
-        for(Sprite sprite : currentState.getSpritesContaining(gamePoint)){
-            if(sprite instanceof Village){
-                clickedVillage = (Village) sprite;
+        for(Sprite clickedSprite : currentState.getSpritesContaining(gamePoint)){
+            if(clickedSprite instanceof Village){
+                clickedVillage = (Village) clickedSprite;
                 break;
             }
         }
 
         if(clickedVillage == null){
+            rightClickMenu.setVisible(false);
             return;
         }
 
-        //create a context menu for the clicked village
-        ContextMenu menu = new ContextMenu();
+        villageClicked(clickedVillage);
 
-        for(VillageUpgrade availableUpgrade : clickedVillage.availableUpgrades()){
-            String label = String.format("%s (%d wood)", availableUpgrade.name(), availableUpgrade.getWoodPrice());
-            MenuItem item = new MenuItem(label);
-            item.setUserData(availableUpgrade);
-            menu.getItems().add(item);
-        }
-
-        menu.getItems().add(new MenuItem("Close Menu"));
-
-        menu.setOnAction(this::handleVillageMenuClicked);
-        menu.setUserData(clickedVillage);
-
-        menu.show(canvas, input.getX(), input.getY());
-    }
-
-    private void handleVillageMenuClicked(ActionEvent event){
-        ContextMenu menu = (ContextMenu)event.getSource();
-        MenuItem itemClicked = (MenuItem)event.getTarget();
-
-        Object itemData = itemClicked.getUserData();
-
-        if(!(itemData instanceof VillageUpgrade)){
-            return;
-        }
-
-        Village village = (Village)menu.getUserData();
-        VillageUpgrade upgrade = (VillageUpgrade)itemData;
-
-        player.takeAction(new UpgradeVillageAction(player.getColor(), village.getIndex(), upgrade));
+        rightClickMenu.setVisible(true);
+        AnchorPane.setLeftAnchor(rightClickMenu, input.getX());
+        AnchorPane.setTopAnchor(rightClickMenu, input.getY());
     }
 
     /**

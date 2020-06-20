@@ -7,10 +7,12 @@ import territory.game.action.tick.GiveGoldAction;
 import territory.game.action.tick.TickAction;
 import territory.game.construction.upgrade.VillageUpgrade;
 import territory.game.construction.upgrade.WorkShop;
+import territory.game.construction.upgrade.WorkShopItem;
 import territory.game.sprite.ImageSprite;
 import territory.game.sprite.ImageStore;
 import territory.game.unit.Soldier;
 import territory.game.unit.Unit;
+import territory.game.unit.stats.*;
 import territory.util.GlobalConstants;
 
 import java.io.Serializable;
@@ -205,6 +207,76 @@ public class Village extends ImageSprite implements Construction, Indexable, Ser
 
         //we can only spawn soldiers if we have a barracks
         return hasUpgrade(VillageUpgrade.BARRACKS);
+    }
+
+
+    /**
+     * "Run the stats through the shop" by
+     * adjusting the unit stats builder based on whats in the shop
+     */
+    private void alterUnitStats(UnitStats.Builder builder, double bootSpeed, int armorHealth){
+        if(workShop.stock(WorkShopItem.BOOTS) > 0){
+            workShop.takeItem(WorkShopItem.BOOTS);
+            builder.speed(bootSpeed);
+        }
+
+        if(workShop.stock(WorkShopItem.ARMOR) > 0){
+            workShop.takeItem(WorkShopItem.ARMOR);
+            builder.health(armorHealth);
+        }
+    }
+
+    /**
+     * Based on the items in the shop, get the next miner's stats
+     * Also spend the shop items
+     * @return the stats that the next miner trained should have
+     */
+    public MinerStats nextMinerStats(){
+        MinerStats.Builder builder = new MinerStats.Builder();
+
+        if(workShop == null){
+            return builder.build();
+        }
+
+        alterUnitStats(builder, GlobalConstants.BOOTS_MINER_SPEED, GlobalConstants.ARMOR_HEALTH);
+
+        return builder.build();
+    }
+
+    public LumberjackStats nextLumberjackStats(){
+        LumberjackStats.Builder builder = new LumberjackStats.Builder();
+
+        if(workShop == null){
+            return builder.build();
+        }
+
+        alterUnitStats(builder, GlobalConstants.BOOTS_LUMBERJACK_SPEED, GlobalConstants.ARMOR_HEALTH);
+
+        return builder.build();
+    }
+
+    public BuilderStats nextBuilderStats(){
+        BuilderStats.Builder builder = new BuilderStats.Builder();
+
+        if(workShop == null){
+            return builder.build();
+        }
+
+        alterUnitStats(builder, GlobalConstants.BOOTS_BUILDER_SPEED, GlobalConstants.ARMOR_HEALTH);
+
+        return builder.build();
+    }
+
+    public SoldierStats nextSoldierStats(){
+        SoldierStats.Builder builder = new SoldierStats.Builder();
+
+        if(workShop == null){
+            return builder.build();
+        }
+
+        alterUnitStats(builder, GlobalConstants.BOOTS_SOLDIER_SPEED, GlobalConstants.ARMOR_HEALTH);
+
+        return builder.build();
     }
 
     public WorkShop getWorkShop() {

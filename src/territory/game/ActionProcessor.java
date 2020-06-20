@@ -14,6 +14,7 @@ import territory.game.target.BuildProject;
 import territory.game.target.BuildType;
 import territory.game.target.PatrolArea;
 import territory.game.unit.*;
+import territory.game.unit.stats.MinerStats;
 
 
 import java.util.ArrayList;
@@ -266,24 +267,26 @@ public class ActionProcessor {
      * @return a new Unit according to the given action
      */
     private Unit createNewUnit(TrainUnitsAction action, double x, double y){
+        Village village = currentInventory.getVillage(action.getVillageIndex());
+
         if(action instanceof TrainMinersAction){
-            Miner newMiner = new Miner(player, x, y);
+            Miner newMiner = new Miner(player, x, y, village.nextMinerStats());
             return newMiner;
         }
 
         if(action instanceof TrainBuildersAction){
-            Builder newBuilder = new Builder(player, x, y);
+            Builder newBuilder = new Builder(player, x, y, village.nextBuilderStats());
             return newBuilder;
         }
 
         if(action instanceof TrainSoldiersAction){
-            Soldier soldier = new Soldier(player, x, y);
+            Soldier soldier = new Soldier(player, x, y, village.nextSoldierStats());
             soldier.setPatrolArea(new PatrolArea(soldier.getColor(), x, y, 50));
             return soldier;
         }
 
         if(action instanceof TrainLumberjacksAction){
-            return new Lumberjack(player, x, y);
+            return new Lumberjack(player, x, y, village.nextLumberjackStats());
         }
 
         throw new RuntimeException("Unknown unit type to create");
