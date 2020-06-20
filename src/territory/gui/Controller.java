@@ -59,6 +59,8 @@ public class Controller {
     @FXML private Label villagesLabel;
     @FXML private Label populationLabel;
 
+    private Map<WorkShopItem, Label> itemStockLabels;
+
     //info pane
     @FXML private SwapPane infoSwapPane;
     @FXML private Pane villagePane;
@@ -120,7 +122,8 @@ public class Controller {
 
         infoSwapPane.show(villagePane);
 
-        setPriceLabels();
+        initPriceLabels();
+        initStockLabels();
 
         InputProcessor inputProcessor = new InputProcessor(scene, canvas);
 
@@ -236,6 +239,8 @@ public class Controller {
         territoryLabel.setText(String.format("%,d", (int)(territories.area()/1000)));
 
         updateCountLabels();
+
+        updateShopLabels();
     }
 
     private void updateCountLabels(){
@@ -278,7 +283,24 @@ public class Controller {
         populationLabel.setText("" + population);
     }
 
-    private void setPriceLabels(){
+    private void updateShopLabels(){
+        if(currentSelection.getType() != Selection.Type.VILLAGE){
+            return;
+        }
+
+        Village village = currentInventory.getVillage(currentSelection.getIndex());
+        WorkShop shop = village.getWorkShop();
+
+        if(shop == null){
+            return;
+        }
+
+        for(WorkShopItem item : WorkShopItem.values()){
+            itemStockLabels.get(item).setText(""+shop.stock(item));
+        }
+    }
+
+    private void initPriceLabels(){
         int minerGold = Miner.getGoldPrice();
         int lumberjackGold = Lumberjack.getGoldPrice();
         int builderGold = Builder.getGoldPrice();
@@ -293,6 +315,16 @@ public class Controller {
 
         villagePriceLabel.setText("" + villageGold);
         postPriceLabel.setText("" + postGold);
+    }
+
+    private void initStockLabels(){
+        WorkShopItem[] items = WorkShopItem.values();
+
+        this.itemStockLabels = new HashMap<>(items.length);
+
+        for(WorkShopItem item : items){
+            itemStockLabels.put(item, new Label("No data"));
+        }
     }
 
     @FXML
@@ -626,22 +658,12 @@ public class Controller {
 
         button.setTooltip(new Tooltip(item.getDescription()));
 
-        int currentStock = shop.stock(item);
-
         button.setOnAction(event -> {
             player.takeAction(new BuildWorkShopItemAction(player.getColor(), villageIndex, item));
-
-            //when the stock goes up, reflect the change
-            onStatePredicate(
-                state -> state.getPlayerInventory(player).getVillage(villageIndex).getWorkShop().stock(item) > currentStock,
-                () -> displayVillageInfo(villageIndex)
-            );
         });
 
-        Label label = new Label(""+currentStock);
-
         HBox box = new HBox();
-        box.getChildren().addAll(button, label);
+        box.getChildren().addAll(button, itemStockLabels.get(item));
         return box;
     }
 
