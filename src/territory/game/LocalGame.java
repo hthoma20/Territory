@@ -82,6 +82,9 @@ public class LocalGame implements Game {
 
     private void runGameLoop(){
         while(gameLoopRunning) {
+
+            System.gc();
+
             long tickStart = System.currentTimeMillis();
 
             //advance the territory game

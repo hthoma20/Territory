@@ -3,7 +3,7 @@ package territory.util;
 public class GlobalConstants {
 
     //GlobalConstants constants
-    private static final boolean TESTING_MODE = true;
+    private static final boolean TESTING_MODE = false;
 
     //JoinController constants
     public static final boolean AUTO_START = TESTING_MODE;
@@ -24,7 +24,7 @@ public class GlobalConstants {
     public static final int BUILDABLE_STONE_NEEDED = TESTING_MODE ? 0 : 100;
 
     //LocalGame constants
-    public static final int TERRITORY_NEEDED = 25000;
+    public static final int TERRITORY_NEEDED = Integer.MAX_VALUE;
 
     //Village constants
     public static final int INITIAL_POPULATION = TESTING_MODE ? 900 : 2;
@@ -38,10 +38,10 @@ public class GlobalConstants {
     public static final int WORK_SHOP_WOOD = 100;
     public static final int BARRACKS_WOOD = 100;
     public static final int TRADING_POST_WOOD = 100;
-    public static final int BOOTS_BENCH_WOOD = 100;
-    public static final int BOOTS_ITEM_WOOD = 40;
-    public static final int ARMOR_BENCH_WOOD = 100;
-    public static final int ARMOR_ITEM_WOOD = 40;
+    public static final int BOOTS_BENCH_WOOD = 50;
+    public static final int BOOTS_ITEM_WOOD = 5;
+    public static final int ARMOR_BENCH_WOOD = 50;
+    public static final int ARMOR_ITEM_WOOD = 5;
 
     public static final int MINER_GOLD = 5;
     public static final int BUILDER_GOLD = 10;

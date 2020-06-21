@@ -2,8 +2,6 @@ package territory.game;
 
 import java.net.*;
 import java.io.*;
-import java.sql.SQLOutput;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
@@ -80,7 +78,7 @@ public abstract class SocketConnection {
 	}
 
 	/**
-	 * Enqueue, and is possible send the given message
+	 * Enqueue, and if possible send the given message
 	 * @param message the Serializable message to send
 	 */
 	public void sendMessage(Object message){
@@ -114,6 +112,7 @@ public abstract class SocketConnection {
 				synchronized (out) {
 					out.writeObject(message);
 					out.flush();
+					out.reset();
 				}
 			}
 			catch(IOException exc){
